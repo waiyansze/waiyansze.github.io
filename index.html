@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="auth-pending">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,6 +10,28 @@
   <script src="./script.js" defer></script>
 </head>
 <body>
+  <section class="access-gate" id="access-gate" aria-labelledby="access-title">
+    <div class="gate-ink" aria-hidden="true">
+      <span class="gate-texture"></span>
+      <img src="./assets/brush-circle.webp" alt="">
+    </div>
+    <div class="gate-panel">
+      <p class="eyebrow">Private portfolio</p>
+      <h1 id="access-title">A little pause<br><em>before entering.</em></h1>
+      <p class="gate-intro">This work is currently shared by invitation.</p>
+      <form class="gate-form" id="gate-form" novalidate>
+        <label for="portfolio-password">Password</label>
+        <div class="gate-input-row">
+          <input id="portfolio-password" name="password" type="password" autocomplete="current-password" required aria-describedby="gate-message">
+          <button type="submit">Enter <span aria-hidden="true">→</span></button>
+        </div>
+        <p class="gate-message" id="gate-message" aria-live="polite"></p>
+      </form>
+      <p class="gate-signature">Wai Yan Sze</p>
+    </div>
+  </section>
+
+  <div class="portfolio-shell" id="portfolio-shell">
   <a class="skip-link" href="#work">Skip to selected work</a>
   <header class="site-header">
     <a class="wordmark" href="#top" aria-label="Wai Yan Sze, home">WAI YAN SZE</a>
@@ -134,5 +156,6 @@
   </main>
 
   <footer><span>Wai Yan Sze</span><span>Different mediums. One way of seeing.</span><span>© 2026</span></footer>
+  </div>
 </body>
 </html>
