@@ -82,41 +82,73 @@
         <h2 id="work-title">From ambiguity<br>to a working outcome.</h2>
       </div>
 
-      <article class="case case-systems">
-        <div class="case-number">01</div>
+      <article class="case case-systems chapter-case" data-active-step="observe">
+        <nav class="chapter-pagination" aria-label="Selected work">
+          <a class="is-current" href="#systems-case" aria-current="true"><span>01</span><b>Systems</b></a>
+          <a href="#enso-case"><span>02</span><b>Space</b></a>
+          <a href="#creative-case"><span>03</span><b>Creative</b></a>
+          <i class="chapter-progress" aria-hidden="true"><span></span></i>
+        </nav>
+        <div class="chapter-stage" id="systems-case">
         <div class="system-visual" aria-hidden="true">
           <div class="map-heading">
-            <span>One order journey</span>
-            <span>Four connected systems</span>
+            <span>UK eStore · Order journey</span>
+            <span class="stage-status">Observe</span>
           </div>
           <div class="systems-rail">
-            <div class="system-node"><small>01 · Storefront</small><strong>Adobe Commerce</strong></div>
-            <div class="system-node"><small>02 · Order &amp; invoice</small><strong>SAP ERP</strong></div>
-            <div class="system-node"><small>03 · Customer data</small><strong>Dynamics 365</strong></div>
-            <div class="system-node"><small>04 · Resolution</small><strong>ServiceNow</strong></div>
+            <div class="system-node is-active" data-system="commerce"><small>01 · Storefront</small><strong>Adobe Commerce</strong></div>
+            <div class="system-node" data-system="sap"><small>02 · Order &amp; invoice</small><strong>SAP ERP</strong></div>
+            <div class="system-node" data-system="dynamics"><small>03 · Customer data</small><strong>Dynamics 365</strong></div>
+            <div class="system-node" data-system="servicenow"><small>04 · Resolution</small><strong>ServiceNow</strong></div>
           </div>
           <div class="incident-trace">
-            <p>Example diagnostic path</p>
+            <p>Active diagnostic path</p>
             <ol>
-              <li><span>Observe</span><b>Duplicate freight</b></li>
-              <li><span>Trace</span><b>Integration hand-offs</b></li>
-              <li><span>Resolve</span><b>65 orders · 15 invoiced</b></li>
+              <li data-trace="observe" class="is-active"><span>Observe</span><b>Duplicate freight</b></li>
+              <li data-trace="trace"><span>Trace</span><b>Integration hand-offs</b></li>
+              <li data-trace="resolve"><span>Resolve</span><b>65 orders · 15 invoiced</b></li>
             </ol>
           </div>
         </div>
+        </div>
         <div class="case-copy">
-          <p class="case-type">B2B eCommerce operations</p>
-          <h3>Making a complex order channel work better</h3>
-          <p>Managing the day-to-day UK eStore across Adobe Commerce, SAP and Dynamics 365 means seeing beyond a single screen. I trace issues across data, process and hand-offs, coordinate resolution, and help customers and teams move through the system with less friction.</p>
-          <ul class="outcomes" aria-label="Selected outcomes">
-            <li><strong>+10.81pp</strong><span>online order adoption</span></li>
-            <li><strong>Top 2</strong><span>global market utilisation</span></li>
-            <li><strong>100+</strong><span>technical and service requests coordinated</span></li>
-          </ul>
+          <header class="chapter-intro">
+            <p class="case-type">01 · B2B eCommerce operations</p>
+            <h3>Making a complex order channel work better</h3>
+            <p>Managing the day-to-day UK eStore means seeing beyond a single screen. The real work happens between systems, data and people.</p>
+          </header>
+          <div class="chapter-beat is-active" data-step="observe" data-system="commerce">
+            <span class="beat-number">01</span>
+            <p class="beat-label">Observe</p>
+            <h4>Start where the friction appears.</h4>
+            <p>Customer questions, unusual charges and failed order states are signals. I first establish what happened, who is affected and whether the issue is isolated or systemic.</p>
+          </div>
+          <div class="chapter-beat" data-step="trace" data-system="sap,dynamics">
+            <span class="beat-number">02</span>
+            <p class="beat-label">Trace</p>
+            <h4>Follow the hand-offs, not just the screen.</h4>
+            <p>I connect storefront behaviour with SAP order and invoice data, Dynamics 365 customer records and the operational process around them to locate where reality diverged from expectation.</p>
+          </div>
+          <div class="chapter-beat" data-step="resolve" data-system="servicenow">
+            <span class="beat-number">03</span>
+            <p class="beat-label">Resolve</p>
+            <h4>Turn diagnosis into coordinated action.</h4>
+            <p>A third-party SAP application created duplicate freight across 65 orders, including 15 already invoiced. I investigated the pattern and coordinated the correction with business and technical teams.</p>
+          </div>
+          <div class="chapter-beat chapter-outcome" data-step="improve" data-system="commerce,sap,dynamics,servicenow">
+            <span class="beat-number">04</span>
+            <p class="beat-label">Improve</p>
+            <h4>Use the learning to make the channel stronger.</h4>
+            <ul class="outcomes" aria-label="Selected outcomes">
+              <li><strong>+10.81pp</strong><span>online order adoption</span></li>
+              <li><strong>Top 2</strong><span>global market utilisation</span></li>
+              <li><strong>134</strong><span>technical and service requests coordinated</span></li>
+            </ul>
+          </div>
         </div>
       </article>
 
-      <article class="case case-enso">
+      <article class="case case-enso" id="enso-case">
         <div class="case-number">02</div>
         <div class="case-copy">
           <p class="case-type">Business launch · Space · Experience</p>
@@ -130,7 +162,7 @@
         </figure>
       </article>
 
-      <article class="case case-creative">
+      <article class="case case-creative" id="creative-case">
         <div class="case-number">03</div>
         <div class="case-copy light-copy">
           <p class="case-type">Business ownership · Creative delivery</p>
