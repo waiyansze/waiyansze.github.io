@@ -98,3 +98,55 @@ hero?.addEventListener('pointerdown', (event) => {
   inkRhythm?.append(drop);
   drop.addEventListener('animationend', () => drop.remove(), { once: true });
 });
+
+const chapterCase = document.querySelector('.chapter-case');
+const chapterBeats = [...document.querySelectorAll('.chapter-beat')];
+const systemNodes = [...document.querySelectorAll('.chapter-case .system-node')];
+const traceSteps = [...document.querySelectorAll('.chapter-case [data-trace]')];
+const stageStatus = document.querySelector('.stage-status');
+
+function activateChapterBeat(beat) {
+  if (!beat || !chapterCase) return;
+
+  const step = beat.dataset.step;
+  const activeSystems = (beat.dataset.system || '').split(',').filter(Boolean);
+  chapterCase.dataset.activeStep = step;
+  chapterBeats.forEach((item) => item.classList.toggle('is-active', item === beat));
+  systemNodes.forEach((node) => node.classList.toggle('is-active', activeSystems.includes(node.dataset.system)));
+  traceSteps.forEach((trace) => trace.classList.toggle('is-active', step === 'improve' || trace.dataset.trace === step));
+  if (stageStatus) stageStatus.textContent = step.charAt(0).toUpperCase() + step.slice(1);
+}
+
+if (chapterCase && desktopMotion.matches) {
+  const chapterObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) activateChapterBeat(entry.target);
+    });
+  }, { rootMargin: '-28% 0px -42% 0px', threshold: 0 });
+
+  chapterBeats.forEach((beat) => chapterObserver.observe(beat));
+
+  let progressFrame;
+  const updateChapterProgress = () => {
+    progressFrame = undefined;
+    const bounds = chapterCase.getBoundingClientRect();
+    const distance = Math.max(1, bounds.height - window.innerHeight);
+    const progress = Math.min(1, Math.max(0, -bounds.top / distance));
+    chapterCase.style.setProperty('--chapter-progress', progress.toFixed(3));
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!progressFrame) progressFrame = requestAnimationFrame(updateChapterProgress);
+  }, { passive: true });
+  updateChapterProgress();
+
+  systemNodes.forEach((node) => {
+    node.addEventListener('pointerenter', () => {
+      systemNodes.forEach((item) => item.classList.toggle('is-active', item === node));
+      if (stageStatus) stageStatus.textContent = node.querySelector('strong')?.textContent || 'System';
+    });
+    node.addEventListener('pointerleave', () => {
+      activateChapterBeat(chapterBeats.find((beat) => beat.dataset.step === chapterCase.dataset.activeStep));
+    });
+  });
+}
