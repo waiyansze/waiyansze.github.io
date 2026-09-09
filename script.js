@@ -150,3 +150,59 @@ if (chapterCase && desktopMotion.matches) {
     });
   });
 }
+
+const workSection = document.querySelector('.work');
+const portfolioCases = [...document.querySelectorAll('.work [data-case]')];
+const caseLinks = [...document.querySelectorAll('[data-case-link]')];
+const ensoCollage = document.querySelector('.enso-collage');
+const creativeCase = document.querySelector('.case-creative');
+
+function setActiveCase(caseName) {
+  caseLinks.forEach((link) => {
+    const isActive = link.dataset.caseLink === caseName;
+    link.classList.toggle('is-current', isActive);
+    if (isActive) link.setAttribute('aria-current', 'true');
+    else link.removeAttribute('aria-current');
+  });
+}
+
+if (portfolioCases.length) {
+  const caseObserver = new IntersectionObserver((entries) => {
+    const visible = entries
+      .filter((entry) => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    if (visible) setActiveCase(visible.target.dataset.case);
+  }, { rootMargin: '-30% 0px -45% 0px', threshold: [0, .12, .3] });
+
+  portfolioCases.forEach((item) => caseObserver.observe(item));
+}
+
+if (workSection && desktopMotion.matches) {
+  let editorialFrame;
+  const updateEditorialMotion = () => {
+    editorialFrame = undefined;
+    const workBounds = workSection.getBoundingClientRect();
+    const workDistance = Math.max(1, workBounds.height - window.innerHeight);
+    const workProgress = Math.min(1, Math.max(0, -workBounds.top / workDistance));
+    workSection.style.setProperty('--work-progress', workProgress.toFixed(3));
+
+    if (ensoCollage) {
+      const bounds = ensoCollage.getBoundingClientRect();
+      const centreOffset = (bounds.top + bounds.height / 2 - window.innerHeight / 2) / window.innerHeight;
+      ensoCollage.style.setProperty('--collage-main-y', `${centreOffset * -22}px`);
+      ensoCollage.style.setProperty('--collage-detail-y', `${centreOffset * 48}px`);
+    }
+
+    if (creativeCase) {
+      const bounds = creativeCase.getBoundingClientRect();
+      const centreOffset = (bounds.top + bounds.height / 2 - window.innerHeight / 2) / window.innerHeight;
+      creativeCase.style.setProperty('--creative-image-y', `${Math.max(-32, Math.min(32, centreOffset * -28))}px`);
+    }
+  };
+
+  window.addEventListener('scroll', () => {
+    if (!editorialFrame) editorialFrame = requestAnimationFrame(updateEditorialMotion);
+  }, { passive: true });
+  window.addEventListener('resize', updateEditorialMotion, { passive: true });
+  updateEditorialMotion();
+}
