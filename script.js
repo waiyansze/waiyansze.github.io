@@ -40,7 +40,7 @@ gateForm?.addEventListener('submit', async (event) => {
   passwordInput.select();
 });
 
-const observed = document.querySelectorAll('.case, .thread-list article');
+const observed = document.querySelectorAll('.statement, .case, .thread-list article');
 if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
