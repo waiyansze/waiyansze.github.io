@@ -82,13 +82,14 @@
         <h2 id="work-title">From ambiguity<br>to a working outcome.</h2>
       </div>
 
-      <article class="case case-systems chapter-case" data-active-step="observe">
-        <nav class="chapter-pagination" aria-label="Selected work">
-          <a class="is-current" href="#systems-case" aria-current="true"><span>01</span><b>Systems</b></a>
-          <a href="#enso-case"><span>02</span><b>Space</b></a>
-          <a href="#creative-case"><span>03</span><b>Creative</b></a>
-          <i class="chapter-progress" aria-hidden="true"><span></span></i>
-        </nav>
+      <nav class="chapter-pagination" aria-label="Selected work">
+        <a class="is-current" href="#systems-case" data-case-link="systems" aria-current="true"><span>01</span><b>Systems</b></a>
+        <a href="#enso-case" data-case-link="space"><span>02</span><b>Space</b></a>
+        <a href="#creative-case" data-case-link="creative"><span>03</span><b>Creative</b></a>
+        <i class="chapter-progress" aria-hidden="true"><span></span></i>
+      </nav>
+
+      <article class="case case-systems chapter-case" data-active-step="observe" data-case="systems">
         <div class="chapter-stage" id="systems-case">
         <div class="system-visual" aria-hidden="true">
           <div class="map-heading">
@@ -148,7 +149,7 @@
         </div>
       </article>
 
-      <article class="case case-enso" id="enso-case">
+      <article class="case case-enso" id="enso-case" data-case="space">
         <div class="case-number">02</div>
         <div class="case-copy">
           <p class="case-type">Business launch · Space · Experience</p>
@@ -156,13 +157,18 @@
           <p>I helped take a 3,000 sq. ft. creative venue from lease and renovation through operational setup and opening in around three and a half months. The role joined commercial planning, physical space, digital journeys, partnerships and daily delivery.</p>
           <div class="case-meta"><span>50+ programmes</span><span>Operations and creative direction</span><span>Website and booking journey</span></div>
         </div>
-        <figure class="case-image image-wide">
-          <img src="./assets/enso-gallery.webp" alt="An exhibition presented inside Ensō House in London" loading="lazy">
-          <figcaption>Ensō House · London · Space operations and exhibition delivery · 2023–2024</figcaption>
-        </figure>
+        <div class="enso-collage">
+          <figure class="case-image image-wide">
+            <img src="./assets/enso-gallery.webp" alt="An exhibition presented inside Ensō House in London" loading="lazy">
+            <figcaption>Ensō House · London · Space operations and exhibition delivery · 2023–2024</figcaption>
+          </figure>
+          <figure class="case-image image-detail" aria-label="A second view of Ensō House">
+            <img src="./assets/enso-installation.webp" alt="A sculptural installation inside Ensō House" loading="lazy">
+          </figure>
+        </div>
       </article>
 
-      <article class="case case-creative" id="creative-case">
+      <article class="case case-creative" id="creative-case" data-case="creative">
         <div class="case-number">03</div>
         <div class="case-copy light-copy">
           <p class="case-type">Business ownership · Creative delivery</p>
