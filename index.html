@@ -43,10 +43,19 @@
   </header>
 
   <main id="top">
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="ink-field" aria-hidden="true">
-        <span class="ink-texture"></span>
-        <img class="cinnabar-brush" src="./assets/brush-circle.webp" alt="">
+    <section class="hero hero-kakemono" data-hero-lens="systems" aria-labelledby="hero-title">
+      <div class="kakemono-scene" aria-hidden="true">
+        <div class="kakemono-mount">
+          <span class="mount-registration">WYS / STUDY 01</span>
+          <div class="ink-field">
+            <span class="ink-texture"></span>
+            <span class="ink-lens ink-lens-systems"><i></i><i></i><i></i><i></i><i></i></span>
+            <span class="ink-lens ink-lens-space"></span>
+            <span class="ink-lens ink-lens-creative"></span>
+            <img class="cinnabar-brush" src="./assets/brush-circle.webp" alt="">
+          </div>
+          <span class="mount-caption">Perspective / <b>Systems</b></span>
+        </div>
       </div>
       <div class="ink-rhythm" aria-hidden="true">
         <span class="ink-drop rhythm-one"></span>
@@ -58,10 +67,17 @@
       </div>
       <div class="hero-copy">
         <p class="eyebrow reveal">Digital operations · Systems · Experience</p>
-        <h1 id="hero-title" class="reveal">Different mediums.<br><em>One way of seeing.</em></h1>
+        <h1 id="hero-title" class="reveal"><span>Different mediums.</span><span><em>One way of seeing.</em></span></h1>
         <p class="hero-intro reveal">I make sense of complex situations, find the relationships that matter, and turn ideas into experiences that work.</p>
         <a class="text-link reveal" href="#work">Selected work <span aria-hidden="true">↓</span></a>
       </div>
+      <div class="hero-lenses" role="group" aria-label="Change the hero perspective">
+        <p>View through</p>
+        <button class="is-active" type="button" data-hero-lens="systems" aria-pressed="true"><span>01</span> Systems</button>
+        <button type="button" data-hero-lens="space" aria-pressed="false"><span>02</span> Space</button>
+        <button type="button" data-hero-lens="creative" aria-pressed="false"><span>03</span> Creative</button>
+      </div>
+      <p class="hero-edition" aria-hidden="true">Living kakemono · Move to observe · Click the ink</p>
     </section>
 
     <section class="statement" aria-label="Approach">
