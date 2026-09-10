@@ -156,13 +156,64 @@ const portfolioCases = [...document.querySelectorAll('.work [data-case]')];
 const caseLinks = [...document.querySelectorAll('[data-case-link]')];
 const ensoCollage = document.querySelector('.enso-collage');
 const creativeCase = document.querySelector('.case-creative');
+const viewerCounter = document.querySelector('.viewer-counter');
+const viewerProjectLabel = document.querySelector('.viewer-project-label span');
+const viewerHelp = document.querySelector('.viewer-help');
+const viewerInfoButton = document.querySelector('[data-viewer-action="info"]');
+const viewerActions = [...document.querySelectorAll('[data-viewer-action]')];
+const caseOrder = ['systems', 'space', 'creative'];
+const caseLabels = { systems: 'Systems', space: 'Space', creative: 'Creative' };
+let currentCaseName = 'systems';
 
 function setActiveCase(caseName) {
+  currentCaseName = caseName;
+  const activeIndex = caseOrder.indexOf(caseName);
+  workSection?.setAttribute('data-active-case', caseName);
+  if (viewerCounter && activeIndex >= 0) viewerCounter.textContent = `0${activeIndex + 1} / 03`;
+  if (viewerProjectLabel) viewerProjectLabel.textContent = caseLabels[caseName] || caseName;
   caseLinks.forEach((link) => {
     const isActive = link.dataset.caseLink === caseName;
     link.classList.toggle('is-current', isActive);
     if (isActive) link.setAttribute('aria-current', 'true');
     else link.removeAttribute('aria-current');
+  });
+}
+
+function goToCase(caseName) {
+  const target = portfolioCases.find((item) => item.dataset.case === caseName);
+  target?.scrollIntoView({ behavior: desktopMotion.matches ? 'smooth' : 'auto', block: 'start' });
+}
+
+viewerActions.forEach((button) => {
+  button.addEventListener('click', () => {
+    const action = button.dataset.viewerAction;
+    const currentIndex = Math.max(0, caseOrder.indexOf(currentCaseName));
+
+    if (action === 'previous') goToCase(caseOrder[(currentIndex - 1 + caseOrder.length) % caseOrder.length]);
+    if (action === 'shuffle') {
+      const choices = caseOrder.filter((name) => name !== currentCaseName);
+      goToCase(choices[Math.floor(Math.random() * choices.length)]);
+    }
+    if (action === 'info' && viewerHelp) {
+      const willOpen = viewerHelp.hidden;
+      viewerHelp.hidden = !willOpen;
+      viewerInfoButton?.setAttribute('aria-expanded', String(willOpen));
+    }
+  });
+});
+
+const systemVisual = document.querySelector('.chapter-case .system-visual');
+if (systemVisual && desktopMotion.matches) {
+  systemVisual.addEventListener('pointermove', (event) => {
+    const bounds = systemVisual.getBoundingClientRect();
+    const x = (event.clientX - bounds.left) / bounds.width - .5;
+    const y = (event.clientY - bounds.top) / bounds.height - .5;
+    systemVisual.style.setProperty('--viewer-tilt-x', `${y * -1.4}deg`);
+    systemVisual.style.setProperty('--viewer-tilt-y', `${x * 1.8}deg`);
+  });
+  systemVisual.addEventListener('pointerleave', () => {
+    systemVisual.style.setProperty('--viewer-tilt-x', '0deg');
+    systemVisual.style.setProperty('--viewer-tilt-y', '0deg');
   });
 }
 
