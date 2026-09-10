@@ -161,9 +161,67 @@ const viewerProjectLabel = document.querySelector('.viewer-project-label span');
 const viewerHelp = document.querySelector('.viewer-help');
 const viewerInfoButton = document.querySelector('[data-viewer-action="info"]');
 const viewerActions = [...document.querySelectorAll('[data-viewer-action]')];
+const projectNavigator = document.querySelector('.chapter-pagination');
+const navigatorHandle = document.querySelector('.chapter-window-bar');
 const caseOrder = ['systems', 'space', 'creative'];
 const caseLabels = { systems: 'Systems', space: 'Space', creative: 'Creative' };
 let currentCaseName = 'systems';
+let navigatorOffsetX = 0;
+let navigatorOffsetY = 0;
+let navigatorDrag;
+
+function positionNavigator(x, y) {
+  if (!projectNavigator) return;
+  navigatorOffsetX = Math.max(window.innerWidth * -.42, Math.min(0, x));
+  navigatorOffsetY = Math.max(window.innerHeight * -.3, Math.min(window.innerHeight * .3, y));
+  projectNavigator.style.setProperty('--nav-drag-x', `${navigatorOffsetX}px`);
+  projectNavigator.style.setProperty('--nav-drag-y', `${navigatorOffsetY}px`);
+}
+
+if (navigatorHandle && desktopMotion.matches) {
+  navigatorHandle.addEventListener('pointerdown', (event) => {
+    navigatorDrag = {
+      id: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: navigatorOffsetX,
+      originY: navigatorOffsetY
+    };
+    navigatorHandle.setPointerCapture(event.pointerId);
+  });
+
+  navigatorHandle.addEventListener('pointermove', (event) => {
+    if (!navigatorDrag || navigatorDrag.id !== event.pointerId) return;
+    positionNavigator(
+      navigatorDrag.originX + event.clientX - navigatorDrag.startX,
+      navigatorDrag.originY + event.clientY - navigatorDrag.startY
+    );
+  });
+
+  const endNavigatorDrag = (event) => {
+    if (navigatorDrag?.id === event.pointerId) navigatorDrag = undefined;
+  };
+  navigatorHandle.addEventListener('pointerup', endNavigatorDrag);
+  navigatorHandle.addEventListener('pointercancel', endNavigatorDrag);
+
+  navigatorHandle.addEventListener('keydown', (event) => {
+    const step = event.shiftKey ? 30 : 10;
+    const movement = {
+      ArrowLeft: [-step, 0],
+      ArrowRight: [step, 0],
+      ArrowUp: [0, -step],
+      ArrowDown: [0, step]
+    }[event.key];
+    if (movement) {
+      event.preventDefault();
+      positionNavigator(navigatorOffsetX + movement[0], navigatorOffsetY + movement[1]);
+    }
+    if (event.key === 'Home') {
+      event.preventDefault();
+      positionNavigator(0, 0);
+    }
+  });
+}
 
 function setActiveCase(caseName) {
   currentCaseName = caseName;
