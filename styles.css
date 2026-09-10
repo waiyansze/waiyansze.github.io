@@ -118,32 +118,32 @@ footer{padding:1.3rem clamp(1.25rem,6vw,7.5rem);display:flex;justify-content:spa
 @media (min-width:901px){
   .site-header{color:var(--ink);border-bottom-color:rgba(17,18,16,.16);border-image:none}
   .site-header nav{color:var(--ink)}
-  .hero.hero-kakemono{--mount-tilt-x:0deg;--mount-tilt-y:0deg;--paper-shift-x:0px;--paper-shift-y:0px;display:block;height:100svh;min-height:680px;padding:0;background:#fff;color:var(--ink);isolation:isolate;overflow:hidden}
-  .hero-kakemono:before{inset:0;background-image:linear-gradient(rgba(255,255,255,.68),rgba(255,255,255,.68)),url("./assets/xuan-ink-texture.webp"),repeating-linear-gradient(88deg,transparent 0 7px,rgba(46,43,37,.023) 8px,transparent 9px 19px);background-size:auto,cover,auto;background-position:center;opacity:.76;mix-blend-mode:multiply;transform:translate(var(--paper-shift-x),var(--paper-shift-y)) scale(1.025);transition:transform .35s cubic-bezier(.2,.65,.2,1)}
-  .kakemono-scene{display:block;position:absolute;z-index:1;top:9vh;right:8vw;width:42vw;height:82vh;perspective:1500px}
-  .kakemono-mount{display:block;position:absolute;inset:0;padding:6vh 4vw 8vh;background:#efede6;border:1px solid rgba(17,18,16,.14);box-shadow:0 3.2rem 6.5rem rgba(17,18,16,.14),0 .4rem 1rem rgba(17,18,16,.08);clip-path:inset(0 0 100% 0);transform:rotateX(var(--mount-tilt-x)) rotateY(var(--mount-tilt-y));transform-origin:50% 10%;animation:kakemonoUnroll 1.08s .12s cubic-bezier(.2,.72,.18,1) forwards;transition:transform .35s cubic-bezier(.2,.65,.2,1)}
+  .hero.hero-kakemono{--mount-tilt-x:0deg;--mount-tilt-y:0deg;--wall-shift-x:0px;--wall-shift-y:0px;--mount-shift-x:0px;--mount-shift-y:0px;--frame-shift-x:0px;--frame-shift-y:0px;--ink-shift-x:0px;--ink-shift-y:0px;--lens-shift-x:0px;--lens-shift-y:0px;display:block;height:100svh;min-height:680px;padding:0;background:#fff;color:var(--ink);isolation:isolate;overflow:hidden}
+  .hero-kakemono:before{inset:-2%;background-image:linear-gradient(rgba(255,255,255,.82),rgba(255,255,255,.82)),url("./assets/xuan-ink-texture.webp"),repeating-linear-gradient(88deg,transparent 0 7px,rgba(46,43,37,.018) 8px,transparent 9px 19px);background-size:auto,cover,auto;background-position:center;opacity:.58;mix-blend-mode:multiply;transform:translate(var(--wall-shift-x),var(--wall-shift-y)) scale(1.045);transition:transform .38s cubic-bezier(.2,.65,.2,1)}
+  .kakemono-scene{display:block;position:absolute;z-index:1;top:16vh;right:6.5vw;width:62vw;height:62vh;perspective:1800px;transform:translate(var(--mount-shift-x),var(--mount-shift-y));transition:transform .4s cubic-bezier(.2,.65,.2,1)}
+  .kakemono-mount{display:block;position:absolute;inset:0;padding:6vh 4vw 8vh;background-color:#d5d6d3;background-image:linear-gradient(rgba(213,214,211,.8),rgba(213,214,211,.8)),url("./assets/xuan-ink-texture.webp");background-size:auto,145%;background-position:center,calc(50% + var(--frame-shift-x)) calc(50% + var(--frame-shift-y));border:1px solid rgba(17,18,16,.2);box-shadow:0 3rem 7rem rgba(17,18,16,.16),0 .45rem 1.2rem rgba(17,18,16,.1);clip-path:inset(0 0 100% 0);transform:rotateX(var(--mount-tilt-x)) rotateY(var(--mount-tilt-y));transform-origin:50% 18%;animation:kakemonoUnroll 1.08s .12s cubic-bezier(.2,.72,.18,1) forwards;transition:transform .38s cubic-bezier(.2,.65,.2,1),background-position .5s cubic-bezier(.2,.65,.2,1)}
   .kakemono-mount:before{content:"";position:absolute;left:2vw;right:2vw;top:2.25vh;height:1px;background:linear-gradient(90deg,transparent,rgba(17,18,16,.32) 10% 90%,transparent)}
   .kakemono-mount:after{content:"";position:absolute;left:1.1vw;right:1.1vw;bottom:2.1vh;height:.42rem;border-radius:50%;background:linear-gradient(180deg,#dad7cf,#f7f5ef 45%,#c7c4bc);box-shadow:0 .45rem .75rem rgba(17,18,16,.14)}
   .mount-registration{display:block;position:absolute;top:3.5vh;left:4vw;color:rgba(17,18,16,.42);font-size:.55rem;letter-spacing:.17em}
   .mount-caption{display:flex;position:absolute;left:4vw;right:4vw;bottom:4.2vh;justify-content:space-between;border-top:1px solid rgba(17,18,16,.18);padding-top:.65rem;color:rgba(17,18,16,.48);font-size:.58rem;letter-spacing:.16em;text-transform:uppercase}
   .mount-caption b{color:var(--red);font-weight:650}
   .hero-kakemono .ink-field{position:relative;inset:auto;width:100%;height:100%;overflow:hidden;background:#171815}
-  .hero-kakemono .ink-texture{inset:-4%;background-image:linear-gradient(rgba(10,11,10,.03),rgba(10,11,10,.16)),url("./assets/xuan-ink-texture.webp");background-size:cover;background-position:center;opacity:1;transform:scale(1.045);animation:inkWash 1.1s .5s cubic-bezier(.18,.62,.2,1) both;transition:filter .7s ease,transform .7s cubic-bezier(.2,.65,.2,1),background-position .7s ease}
-  .hero-kakemono .cinnabar-brush{z-index:5;width:clamp(48px,4.3vw,64px);right:7%;bottom:6%;filter:saturate(.55) brightness(.72) contrast(.98);animation:brushReveal 1.3s 1.05s cubic-bezier(.22,.68,.2,1) forwards}
-  .hero-kakemono .ink-rhythm{z-index:3;inset:15vh 12vw 15vh auto;width:34vw;height:68vh;overflow:hidden}
-  .ink-lens{display:block;position:absolute;z-index:2;inset:0;opacity:0;transition:opacity .65s ease,transform .8s cubic-bezier(.2,.65,.2,1)}
+  .hero-kakemono .ink-texture{inset:-7%;background-image:linear-gradient(rgba(10,11,10,.03),rgba(10,11,10,.16)),url("./assets/xuan-ink-texture.webp");background-size:cover;background-position:calc(50% + var(--ink-shift-x)) calc(50% + var(--ink-shift-y));opacity:1;transform:scale(1.11);animation:inkWash 1.1s .5s cubic-bezier(.18,.62,.2,1) both;transition:filter .7s ease,transform .7s cubic-bezier(.2,.65,.2,1),background-position .42s cubic-bezier(.2,.65,.2,1)}
+  .hero-kakemono .cinnabar-brush{z-index:5;width:clamp(38px,3.2vw,52px);right:6%;bottom:8%;filter:saturate(.62) brightness(.78) contrast(1.04) drop-shadow(0 1px 1px rgba(71,20,14,.18));animation:brushReveal 2.35s 1.05s cubic-bezier(.22,.68,.2,1) forwards}
+  .hero-kakemono .ink-rhythm{z-index:3;inset:22vh 10.5vw auto auto;width:54vw;height:48vh;overflow:hidden;transform:translate(var(--rhythm-shift-x,0px),var(--rhythm-shift-y,0px));transition:transform .42s cubic-bezier(.2,.65,.2,1)}
+  .ink-lens{display:block;position:absolute;z-index:2;inset:-3%;opacity:0;transform:translate(var(--lens-shift-x),var(--lens-shift-y)) scale(1.06);transition:opacity .65s ease,transform .48s cubic-bezier(.2,.65,.2,1)}
   .ink-lens-systems{background-image:linear-gradient(rgba(231,229,220,.13) 1px,transparent 1px),linear-gradient(90deg,rgba(231,229,220,.13) 1px,transparent 1px);background-size:18% 16%;mask-image:linear-gradient(135deg,transparent 3%,#000 34%,#000 72%,transparent 98%)}
   .ink-lens-systems i{position:absolute;width:7px;height:7px;border:1px solid rgba(239,236,226,.85);border-radius:50%;background:#171815;box-shadow:0 0 0 4px rgba(239,236,226,.06)}
   .ink-lens-systems i:nth-child(1){left:18%;top:29%}.ink-lens-systems i:nth-child(2){left:42%;top:45%}.ink-lens-systems i:nth-child(3){left:67%;top:31%}.ink-lens-systems i:nth-child(4){left:79%;top:65%}.ink-lens-systems i:nth-child(5){left:31%;top:72%;border-color:#c85a48}
   .ink-lens-space{background:radial-gradient(ellipse 29% 45% at 23% 22%,rgba(239,237,228,.29),transparent 74%),radial-gradient(ellipse 38% 23% at 73% 58%,rgba(239,237,228,.2),transparent 75%),radial-gradient(circle at 79% 16%,rgba(255,253,245,.24),transparent 12%);filter:blur(7px);transform:scale(1.06)}
   .ink-lens-creative{background:linear-gradient(126deg,transparent 19%,rgba(171,70,55,.28) 19.5%,rgba(171,70,55,.08) 22%,transparent 31%),radial-gradient(ellipse 46% 14% at 53% 74%,rgba(239,237,228,.18),transparent 72%);transform:rotate(-2deg) scale(1.06)}
-  .hero-kakemono[data-hero-lens="systems"] .ink-lens-systems,.hero-kakemono[data-hero-lens="space"] .ink-lens-space,.hero-kakemono[data-hero-lens="creative"] .ink-lens-creative{opacity:1;transform:none}
+  .hero-kakemono[data-hero-lens="systems"] .ink-lens-systems,.hero-kakemono[data-hero-lens="space"] .ink-lens-space,.hero-kakemono[data-hero-lens="creative"] .ink-lens-creative{opacity:1;transform:translate(var(--lens-shift-x),var(--lens-shift-y))}
   .hero-kakemono[data-hero-lens="systems"] .ink-texture{filter:grayscale(.45) contrast(1.17) brightness(.78)}
   .hero-kakemono[data-hero-lens="space"] .ink-texture{filter:grayscale(.75) contrast(.92) brightness(.96);background-position:65% center;transform:scale(1.08)}
   .hero-kakemono[data-hero-lens="creative"] .ink-texture{filter:saturate(.62) contrast(1.3) brightness(.7);background-position:35% center;transform:scale(1.055) rotate(.6deg)}
   .hero-kakemono .hero-copy{position:absolute;z-index:4;inset:0;max-width:none;padding:0;pointer-events:none}
   .hero-kakemono .eyebrow{position:absolute;left:7.5vw;top:15vh;margin:0;color:var(--mid);font-size:.67rem;letter-spacing:.2em}
-  .hero-kakemono h1{position:absolute;left:7.5vw;top:26vh;width:84vw;max-width:none;color:#f5f3ed;font-size:clamp(4.7rem,7.05vw,8.2rem);line-height:.86;letter-spacing:-.064em;mix-blend-mode:difference}
+  .hero-kakemono h1{position:absolute;left:7.5vw;top:25vh;width:87vw;max-width:none;color:#f5f3ed;font-size:clamp(4.7rem,7.35vw,8.6rem);line-height:.84;letter-spacing:-.064em;mix-blend-mode:difference}
   .hero-kakemono h1 span{display:block;width:max-content;max-width:100%}
   .hero-kakemono h1 span+span{margin-top:.12em;margin-left:10vw}
   .hero-kakemono h1 em{color:inherit;font-weight:400}
@@ -157,7 +157,7 @@ footer{padding:1.3rem clamp(1.25rem,6vw,7.5rem);display:flex;justify-content:spa
   .hero-lenses button span{display:block;margin-bottom:.18rem;color:var(--red);font:400 .75rem/1 Georgia,serif}
   .hero-lenses button:hover,.hero-lenses button:focus-visible,.hero-lenses button.is-active{color:var(--ink);transform:translateX(-.25rem)}
   .hero-lenses button.is-active:before{width:.65rem;background:var(--red)}
-  .hero-edition{display:block;position:absolute;z-index:4;right:9vw;bottom:2.35vh;margin:0;color:rgba(17,18,16,.42);font-size:.54rem;letter-spacing:.14em;text-transform:uppercase}
+  .hero-edition{display:block;position:absolute;z-index:4;right:7vw;bottom:2.35vh;margin:0;color:rgba(17,18,16,.42);font-size:.54rem;letter-spacing:.14em;text-transform:uppercase}
 }
 
 @keyframes kakemonoUnroll{0%{clip-path:inset(0 0 100% 0);opacity:.25}100%{clip-path:inset(0);opacity:1}}
