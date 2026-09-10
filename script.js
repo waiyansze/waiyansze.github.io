@@ -65,7 +65,7 @@ hero?.addEventListener('pointerdown', (event) => {
   const bounds = hero.getBoundingClientRect();
   const x = event.clientX - bounds.left;
   const y = event.clientY - bounds.top;
-  const isDarkField = x / bounds.width >= 0.58;
+  const isDarkField = hero.classList.contains('hero-observatory') ? false : x / bounds.width >= 0.58;
   const palette = isDarkField ? darkInkPalette : lightInkPalette;
   const drop = document.createElement('span');
   const size = 52 + Math.random() * 148;
@@ -98,6 +98,65 @@ hero?.addEventListener('pointerdown', (event) => {
   inkRhythm?.append(drop);
   drop.addEventListener('animationend', () => drop.remove(), { once: true });
 });
+
+const observatoryButtons = [...document.querySelectorAll('.observatory-coordinates [data-observatory-view]')];
+let selectedObservatoryView = hero?.dataset.observatoryView || 'systems';
+
+function showObservatoryView(view, commit = false) {
+  if (!hero || !['systems', 'space', 'creative'].includes(view)) return;
+  hero.dataset.observatoryView = view;
+  if (!commit) return;
+  selectedObservatoryView = view;
+  observatoryButtons.forEach((button) => {
+    const isActive = button.dataset.observatoryView === view;
+    button.classList.toggle('is-active', isActive);
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+observatoryButtons.forEach((button) => {
+  const view = button.dataset.observatoryView;
+  button.addEventListener('pointerenter', () => showObservatoryView(view));
+  button.addEventListener('focus', () => showObservatoryView(view));
+  button.addEventListener('pointerleave', () => showObservatoryView(selectedObservatoryView));
+  button.addEventListener('blur', () => showObservatoryView(selectedObservatoryView));
+  button.addEventListener('click', () => showObservatoryView(view, true));
+});
+
+if (hero?.classList.contains('hero-observatory') && desktopMotion.matches) {
+  let observatoryFrame;
+  let observeX = 52;
+  let observeY = 48;
+
+  const renderObservatory = () => {
+    observatoryFrame = undefined;
+    const offsetX = observeX - 50;
+    const offsetY = observeY - 50;
+    hero.style.setProperty('--observe-x', `${observeX}%`);
+    hero.style.setProperty('--observe-y', `${observeY}%`);
+    hero.style.setProperty('--ink-shift-x', `${offsetX * -.2}px`);
+    hero.style.setProperty('--ink-shift-y', `${offsetY * -.15}px`);
+    hero.style.setProperty('--wash-shift-x', `${offsetX * .35}px`);
+    hero.style.setProperty('--wash-shift-y', `${offsetY * .28}px`);
+    hero.style.setProperty('--current-one-x', `${offsetX * -.42}px`);
+    hero.style.setProperty('--current-one-y', `${offsetY * -.3}px`);
+    hero.style.setProperty('--current-two-x', `${offsetX * .55}px`);
+    hero.style.setProperty('--current-two-y', `${offsetY * .38}px`);
+  };
+
+  hero.addEventListener('pointermove', (event) => {
+    const bounds = hero.getBoundingClientRect();
+    observeX = Math.min(88, Math.max(12, ((event.clientX - bounds.left) / bounds.width) * 100));
+    observeY = Math.min(84, Math.max(16, ((event.clientY - bounds.top) / bounds.height) * 100));
+    if (!observatoryFrame) observatoryFrame = requestAnimationFrame(renderObservatory);
+  }, { passive: true });
+
+  hero.addEventListener('pointerleave', () => {
+    observeX = 52;
+    observeY = 48;
+    if (!observatoryFrame) observatoryFrame = requestAnimationFrame(renderObservatory);
+  });
+}
 
 const chapterCase = document.querySelector('.chapter-case');
 const chapterBeats = [...document.querySelectorAll('.chapter-beat')];
