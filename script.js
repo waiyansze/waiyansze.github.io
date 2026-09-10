@@ -110,6 +110,7 @@ hero?.addEventListener('pointerdown', (event) => {
 
 const heroLensButtons = [...document.querySelectorAll('.hero-lenses [data-hero-lens]')];
 const mountCaption = document.querySelector('.mount-caption b');
+const heroSeal = document.querySelector('.hero-kakemono .cinnabar-brush');
 let selectedHeroLens = hero?.dataset.heroLens || 'systems';
 
 function showHeroLens(mode, commit = false) {
@@ -124,6 +125,11 @@ function showHeroLens(mode, commit = false) {
       button.classList.toggle('is-active', isActive);
       button.setAttribute('aria-pressed', String(isActive));
     });
+    if (heroSeal && desktopMotion.matches) {
+      heroSeal.style.animation = 'none';
+      void heroSeal.offsetWidth;
+      heroSeal.style.animation = '';
+    }
   }
 }
 
@@ -143,10 +149,22 @@ if (hero?.classList.contains('hero-kakemono') && desktopMotion.matches) {
 
   const renderHeroMotion = () => {
     heroMotionFrame = undefined;
-    hero.style.setProperty('--mount-tilt-x', `${(0.5 - pointerY) * 1.5}deg`);
-    hero.style.setProperty('--mount-tilt-y', `${(pointerX - 0.5) * 1.9}deg`);
-    hero.style.setProperty('--paper-shift-x', `${(0.5 - pointerX) * 5}px`);
-    hero.style.setProperty('--paper-shift-y', `${(0.5 - pointerY) * 3}px`);
+    const offsetX = pointerX - 0.5;
+    const offsetY = pointerY - 0.5;
+    hero.style.setProperty('--mount-tilt-x', `${offsetY * -1.15}deg`);
+    hero.style.setProperty('--mount-tilt-y', `${offsetX * 1.35}deg`);
+    hero.style.setProperty('--wall-shift-x', `${offsetX * -5}px`);
+    hero.style.setProperty('--wall-shift-y', `${offsetY * -3}px`);
+    hero.style.setProperty('--mount-shift-x', `${offsetX * 10}px`);
+    hero.style.setProperty('--mount-shift-y', `${offsetY * 7}px`);
+    hero.style.setProperty('--frame-shift-x', `${offsetX * -12}px`);
+    hero.style.setProperty('--frame-shift-y', `${offsetY * -9}px`);
+    hero.style.setProperty('--ink-shift-x', `${offsetX * 22}px`);
+    hero.style.setProperty('--ink-shift-y', `${offsetY * 16}px`);
+    hero.style.setProperty('--rhythm-shift-x', `${offsetX * 10}px`);
+    hero.style.setProperty('--rhythm-shift-y', `${offsetY * 7}px`);
+    hero.style.setProperty('--lens-shift-x', `${offsetX * 30}px`);
+    hero.style.setProperty('--lens-shift-y', `${offsetY * 21}px`);
   };
 
   hero.addEventListener('pointermove', (event) => {
