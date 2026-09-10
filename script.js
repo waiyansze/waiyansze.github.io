@@ -62,10 +62,19 @@ const darkInkPalette = ['rgba(224,225,218,.28)', 'rgba(190,192,184,.24)', 'rgba(
 hero?.addEventListener('pointerdown', (event) => {
   if (!desktopMotion.matches || event.button !== 0 || event.target.closest('a, button, input')) return;
 
-  const bounds = hero.getBoundingClientRect();
+  const bounds = hero.classList.contains('hero-kakemono') && inkRhythm
+    ? inkRhythm.getBoundingClientRect()
+    : hero.getBoundingClientRect();
+  if (
+    event.clientX < bounds.left ||
+    event.clientX > bounds.right ||
+    event.clientY < bounds.top ||
+    event.clientY > bounds.bottom
+  ) return;
+
   const x = event.clientX - bounds.left;
   const y = event.clientY - bounds.top;
-  const isDarkField = x / bounds.width >= 0.58;
+  const isDarkField = hero.classList.contains('hero-kakemono') || x / bounds.width >= 0.58;
   const palette = isDarkField ? darkInkPalette : lightInkPalette;
   const drop = document.createElement('span');
   const size = 52 + Math.random() * 148;
@@ -98,6 +107,61 @@ hero?.addEventListener('pointerdown', (event) => {
   inkRhythm?.append(drop);
   drop.addEventListener('animationend', () => drop.remove(), { once: true });
 });
+
+const heroLensButtons = [...document.querySelectorAll('.hero-lenses [data-hero-lens]')];
+const mountCaption = document.querySelector('.mount-caption b');
+let selectedHeroLens = hero?.dataset.heroLens || 'systems';
+
+function showHeroLens(mode, commit = false) {
+  if (!hero || !['systems', 'space', 'creative'].includes(mode)) return;
+  hero.dataset.heroLens = mode;
+  if (mountCaption) mountCaption.textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+
+  if (commit) {
+    selectedHeroLens = mode;
+    heroLensButtons.forEach((button) => {
+      const isActive = button.dataset.heroLens === mode;
+      button.classList.toggle('is-active', isActive);
+      button.setAttribute('aria-pressed', String(isActive));
+    });
+  }
+}
+
+heroLensButtons.forEach((button) => {
+  const mode = button.dataset.heroLens;
+  button.addEventListener('pointerenter', () => showHeroLens(mode));
+  button.addEventListener('focus', () => showHeroLens(mode));
+  button.addEventListener('pointerleave', () => showHeroLens(selectedHeroLens));
+  button.addEventListener('blur', () => showHeroLens(selectedHeroLens));
+  button.addEventListener('click', () => showHeroLens(mode, true));
+});
+
+if (hero?.classList.contains('hero-kakemono') && desktopMotion.matches) {
+  let heroMotionFrame;
+  let pointerX = 0.5;
+  let pointerY = 0.5;
+
+  const renderHeroMotion = () => {
+    heroMotionFrame = undefined;
+    hero.style.setProperty('--mount-tilt-x', `${(0.5 - pointerY) * 1.5}deg`);
+    hero.style.setProperty('--mount-tilt-y', `${(pointerX - 0.5) * 1.9}deg`);
+    hero.style.setProperty('--paper-shift-x', `${(0.5 - pointerX) * 5}px`);
+    hero.style.setProperty('--paper-shift-y', `${(0.5 - pointerY) * 3}px`);
+  };
+
+  hero.addEventListener('pointermove', (event) => {
+    const bounds = hero.getBoundingClientRect();
+    pointerX = Math.min(1, Math.max(0, (event.clientX - bounds.left) / bounds.width));
+    pointerY = Math.min(1, Math.max(0, (event.clientY - bounds.top) / bounds.height));
+    if (!heroMotionFrame) heroMotionFrame = requestAnimationFrame(renderHeroMotion);
+  }, { passive: true });
+
+  hero.addEventListener('pointerleave', () => {
+    pointerX = 0.5;
+    pointerY = 0.5;
+    if (!heroMotionFrame) heroMotionFrame = requestAnimationFrame(renderHeroMotion);
+  });
+}
 
 const chapterCase = document.querySelector('.chapter-case');
 const chapterBeats = [...document.querySelectorAll('.chapter-beat')];
