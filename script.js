@@ -59,6 +59,53 @@ const desktopMotion = window.matchMedia('(min-width: 901px) and (prefers-reduced
 const lightInkPalette = ['rgba(7,8,7,.78)', 'rgba(25,27,24,.62)', 'rgba(55,57,52,.48)', 'rgba(92,94,87,.36)', 'rgba(128,130,122,.26)'];
 const darkInkPalette = ['rgba(224,225,218,.28)', 'rgba(190,192,184,.24)', 'rgba(149,152,143,.2)', 'rgba(108,111,104,.18)', 'rgba(76,79,74,.16)'];
 
+const storyScenes = [...document.querySelectorAll('[data-scene-number]')];
+const sceneMeter = document.querySelector('.scene-meter');
+const sceneCurrent = document.querySelector('.scene-current');
+
+if (storyScenes.length && desktopMotion.matches) {
+  let sceneFrame;
+  const updateStoryScenes = () => {
+    sceneFrame = undefined;
+    const viewportHeight = window.innerHeight;
+    let nearestScene = storyScenes[0];
+    let nearestDistance = Infinity;
+
+    storyScenes.forEach((scene) => {
+      const bounds = scene.getBoundingClientRect();
+      const sceneCentre = bounds.top + bounds.height / 2;
+      const distance = Math.abs(sceneCentre - viewportHeight / 2);
+      const visibility = Math.max(0, Math.min(1, 1 - distance / (viewportHeight * .82)));
+      const progress = Math.max(0, Math.min(1, (viewportHeight - bounds.top) / (viewportHeight + bounds.height)));
+      const shift = (0.5 - progress) * 72;
+
+      scene.style.setProperty('--scene-y', `${shift.toFixed(2)}px`);
+      scene.style.setProperty('--scene-y-soft', `${(shift * .55).toFixed(2)}px`);
+      scene.style.setProperty('--scene-y-counter', `${(shift * -.45).toFixed(2)}px`);
+      scene.style.setProperty('--scene-scale', `${(0.968 + visibility * .032).toFixed(4)}`);
+      scene.style.setProperty('--scene-opacity', `${(0.18 + visibility * .82).toFixed(3)}`);
+
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestScene = scene;
+      }
+    });
+
+    if (sceneCurrent) sceneCurrent.textContent = nearestScene.dataset.sceneNumber || '01';
+    if (sceneMeter) {
+      const scrollDistance = Math.max(1, document.documentElement.scrollHeight - viewportHeight);
+      sceneMeter.style.setProperty('--page-progress', `${Math.max(0, Math.min(1, window.scrollY / scrollDistance)).toFixed(4)}`);
+    }
+  };
+
+  const requestStoryUpdate = () => {
+    if (!sceneFrame) sceneFrame = requestAnimationFrame(updateStoryScenes);
+  };
+  window.addEventListener('scroll', requestStoryUpdate, { passive: true });
+  window.addEventListener('resize', requestStoryUpdate, { passive: true });
+  updateStoryScenes();
+}
+
 hero?.addEventListener('pointerdown', (event) => {
   if (!desktopMotion.matches || event.button !== 0 || event.target.closest('a, button, input')) return;
 
