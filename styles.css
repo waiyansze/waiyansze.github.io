@@ -42,9 +42,12 @@ footer{padding:1.3rem clamp(1.25rem,6vw,7.5rem);display:flex;justify-content:spa
 
 /* Editorial scrollytelling study */
 @media (min-width:901px){
-  .work{position:relative;padding-left:clamp(8.5rem,12vw,13.5rem)}
-  .work>.section-heading,.work>.case{width:80%;margin-left:auto}
-  .work>.chapter-pagination{display:flex;position:sticky;top:50%;z-index:12;width:clamp(9.5rem,11vw,11.25rem);height:auto;margin:0 0 -13.5rem calc(clamp(7rem,10vw,11.4rem)*-1);padding:.7rem;transform:translateY(-50%);flex-direction:column;align-items:stretch;gap:.3rem;background:rgba(255,255,255,.9);border:1px solid rgba(17,18,16,.15);box-shadow:0 16px 42px rgba(17,18,16,.08);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}
+  .work{position:relative;padding-left:clamp(1.25rem,6vw,7.5rem);padding-right:clamp(1.25rem,6vw,7.5rem)}
+  .work>.section-heading,.work>.case{width:80%;margin-left:0;margin-right:auto}
+  .work>.chapter-pagination{display:flex;position:sticky;top:50%;z-index:12;width:clamp(10.5rem,12vw,12.5rem);height:auto;margin:0 0 -16rem 100%;padding:.55rem .65rem .85rem;transform:translate(-100%,-50%);flex-direction:column;align-items:stretch;gap:.3rem;background:rgba(255,255,255,.92);border:1px solid rgba(17,18,16,.2);border-radius:1.6rem;box-shadow:0 18px 52px rgba(17,18,16,.12),inset 0 0 0 4px rgba(17,18,16,.025);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);overflow:hidden}
+  .chapter-window-bar{height:2rem;margin:-.1rem -.1rem .45rem;display:flex;align-items:center;justify-content:space-between;padding:0 .35rem .35rem;border-bottom:1px solid rgba(17,18,16,.14)}
+  .window-dots{display:flex;gap:.28rem}.window-dots i{display:block;width:5px;height:5px;border-radius:50%;background:rgba(17,18,16,.35)}.window-dots i:first-child{background:var(--red)}
+  .window-move{width:18px;height:18px;fill:none;stroke:var(--mid);stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round;opacity:.65}
   .work>.chapter-pagination:before{content:"Selected work";display:block;margin:0 .45rem .6rem;padding-bottom:.6rem;border-bottom:1px solid rgba(17,18,16,.18);font-size:.65rem;font-weight:650;letter-spacing:.14em;text-transform:uppercase;color:var(--mid)}
   .work>.chapter-pagination a{position:relative;display:grid;grid-template-columns:2.35rem auto;align-items:center;gap:.45rem;width:100%;min-height:3rem;padding:.55rem .45rem;border:0;background:transparent;backdrop-filter:none;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;opacity:.5;transition:opacity .35s ease,transform .35s ease,background-color .35s ease,color .35s ease}
   .work>.chapter-pagination a:first-child,.work>.chapter-pagination a:nth-child(3){border-radius:0}
@@ -55,7 +58,7 @@ footer{padding:1.3rem clamp(1.25rem,6vw,7.5rem);display:flex;justify-content:spa
   .work>.chapter-pagination a span{color:var(--red);font:400 1.12rem/1 Georgia,serif;font-variant-numeric:tabular-nums}
   .work>.chapter-pagination a.is-current span{color:#d86a57}
   .work>.chapter-pagination a b{font-weight:550}
-  .work>.chapter-pagination .chapter-progress{top:0;bottom:0;right:auto;left:-.45rem;width:2px;height:100%;background:rgba(17,18,16,.13)}
+  .work>.chapter-pagination .chapter-progress{top:3.2rem;bottom:.85rem;right:auto;left:.3rem;width:2px;height:auto;background:rgba(17,18,16,.13)}
   .work>.chapter-pagination .chapter-progress span{width:100%;height:100%;transform:scaleY(var(--work-progress,0));transform-origin:top}
   .chapter-case{grid-template-rows:auto;}
   .chapter-stage{grid-row:1}
