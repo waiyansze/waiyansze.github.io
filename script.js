@@ -65,7 +65,7 @@ hero?.addEventListener('pointerdown', (event) => {
   const bounds = hero.getBoundingClientRect();
   const x = event.clientX - bounds.left;
   const y = event.clientY - bounds.top;
-  const isDarkField = x / bounds.width >= 0.58;
+  const isDarkField = hero.classList.contains('hero-ink-os') || x / bounds.width >= 0.58;
   const palette = isDarkField ? darkInkPalette : lightInkPalette;
   const drop = document.createElement('span');
   const size = 52 + Math.random() * 148;
@@ -98,6 +98,41 @@ hero?.addEventListener('pointerdown', (event) => {
   inkRhythm?.append(drop);
   drop.addEventListener('animationend', () => drop.remove(), { once: true });
 });
+
+if (hero?.classList.contains('hero-ink-os') && desktopMotion.matches) {
+  let heroPointerFrame;
+  let heroPointerX = 72;
+  let heroPointerY = 38;
+  let heroShiftX = 0;
+  let heroShiftY = 0;
+
+  const paintHeroPointer = () => {
+    heroPointerFrame = undefined;
+    hero.style.setProperty('--hero-x', `${heroPointerX}%`);
+    hero.style.setProperty('--hero-y', `${heroPointerY}%`);
+    hero.style.setProperty('--hero-shift-x', `${heroShiftX}px`);
+    hero.style.setProperty('--hero-shift-y', `${heroShiftY}px`);
+  };
+
+  hero.addEventListener('pointermove', (event) => {
+    const bounds = hero.getBoundingClientRect();
+    const normalX = (event.clientX - bounds.left) / bounds.width;
+    const normalY = (event.clientY - bounds.top) / bounds.height;
+    heroPointerX = (normalX * 100).toFixed(2);
+    heroPointerY = (normalY * 100).toFixed(2);
+    heroShiftX = ((normalX - .5) * -12).toFixed(2);
+    heroShiftY = ((normalY - .5) * -8).toFixed(2);
+    if (!heroPointerFrame) heroPointerFrame = requestAnimationFrame(paintHeroPointer);
+  }, { passive: true });
+
+  hero.addEventListener('pointerleave', () => {
+    heroPointerX = 72;
+    heroPointerY = 38;
+    heroShiftX = 0;
+    heroShiftY = 0;
+    if (!heroPointerFrame) heroPointerFrame = requestAnimationFrame(paintHeroPointer);
+  });
+}
 
 const chapterCase = document.querySelector('.chapter-case');
 const chapterBeats = [...document.querySelectorAll('.chapter-beat')];
