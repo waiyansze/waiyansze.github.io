@@ -166,17 +166,6 @@ function setActiveCase(caseName) {
   });
 }
 
-if (portfolioCases.length) {
-  const caseObserver = new IntersectionObserver((entries) => {
-    const visible = entries
-      .filter((entry) => entry.isIntersecting)
-      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-    if (visible) setActiveCase(visible.target.dataset.case);
-  }, { rootMargin: '-30% 0px -45% 0px', threshold: [0, .12, .3] });
-
-  portfolioCases.forEach((item) => caseObserver.observe(item));
-}
-
 if (workSection && desktopMotion.matches) {
   let editorialFrame;
   const updateEditorialMotion = () => {
@@ -185,6 +174,13 @@ if (workSection && desktopMotion.matches) {
     const workDistance = Math.max(1, workBounds.height - window.innerHeight);
     const workProgress = Math.min(1, Math.max(0, -workBounds.top / workDistance));
     workSection.style.setProperty('--work-progress', workProgress.toFixed(3));
+
+    const readingLine = window.innerHeight * .48;
+    const activeCase = portfolioCases.find((item) => {
+      const bounds = item.getBoundingClientRect();
+      return bounds.top <= readingLine && bounds.bottom > readingLine;
+    });
+    if (activeCase) setActiveCase(activeCase.dataset.case);
 
     if (ensoCollage) {
       const bounds = ensoCollage.getBoundingClientRect();
