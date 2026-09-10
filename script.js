@@ -192,17 +192,35 @@ if (navigatorHandle && desktopMotion.matches) {
 
   navigatorHandle.addEventListener('pointermove', (event) => {
     if (!navigatorDrag || navigatorDrag.id !== event.pointerId) return;
+    if (event.pointerType === 'mouse' && event.buttons === 0) {
+      stopNavigatorDrag(event);
+      return;
+    }
     positionNavigator(
       navigatorDrag.originX + event.clientX - navigatorDrag.startX,
       navigatorDrag.originY + event.clientY - navigatorDrag.startY
     );
   });
 
-  const endNavigatorDrag = (event) => {
-    if (navigatorDrag?.id === event.pointerId) navigatorDrag = undefined;
-  };
-  navigatorHandle.addEventListener('pointerup', endNavigatorDrag);
-  navigatorHandle.addEventListener('pointercancel', endNavigatorDrag);
+  function stopNavigatorDrag(event) {
+    if (!navigatorDrag) return;
+    if (event?.pointerId !== undefined && navigatorDrag.id !== event.pointerId) return;
+    const pointerId = navigatorDrag.id;
+    navigatorDrag = undefined;
+    if (navigatorHandle.hasPointerCapture(pointerId)) {
+      navigatorHandle.releasePointerCapture(pointerId);
+    }
+  }
+
+  navigatorHandle.addEventListener('pointerup', stopNavigatorDrag);
+  navigatorHandle.addEventListener('pointercancel', stopNavigatorDrag);
+  navigatorHandle.addEventListener('lostpointercapture', stopNavigatorDrag);
+  window.addEventListener('pointerup', stopNavigatorDrag);
+  window.addEventListener('pointercancel', stopNavigatorDrag);
+  window.addEventListener('blur', () => stopNavigatorDrag());
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopNavigatorDrag();
+  });
 
   navigatorHandle.addEventListener('keydown', (event) => {
     const step = event.shiftKey ? 30 : 10;
