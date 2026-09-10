@@ -1,0 +1,8 @@
+/* Desktop-only Selected Work navigation alignment fix.
+   Preserve the current iPad/tablet position and move the floating menu into
+   the right-hand gutter on wider laptop/desktop viewports. */
+@media (min-width: 1200px) {
+  .work > .chapter-pagination {
+    margin-left: calc(100% + clamp(3.25rem, 4.5vw, 5rem));
+  }
+}
