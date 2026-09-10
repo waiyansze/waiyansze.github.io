@@ -41,9 +41,10 @@
       <a href="#contact">Contact</a>
     </nav>
   </header>
+  <div class="scene-meter" aria-hidden="true"><span class="scene-current">01</span><i><b></b></i><span>07</span></div>
 
   <main id="top">
-    <section class="hero" aria-labelledby="hero-title">
+    <section class="hero story-scene" data-scene-number="01" aria-labelledby="hero-title">
       <div class="ink-field" aria-hidden="true">
         <span class="ink-texture"></span>
         <img class="cinnabar-brush" src="./assets/brush-circle.webp" alt="">
@@ -64,7 +65,7 @@
       </div>
     </section>
 
-    <section class="statement" aria-label="Approach">
+    <section class="statement story-scene" data-scene-number="02" aria-label="Approach">
       <p class="section-label">How I work</p>
       <p class="statement-copy">
         <span>Observe closely.</span>
@@ -77,7 +78,7 @@
     </section>
 
     <section class="work" id="work" aria-labelledby="work-title">
-      <div class="section-heading">
+      <div class="section-heading story-scene" data-scene-number="03">
         <p class="section-label">Selected work</p>
         <h2 id="work-title">From ambiguity<br>to a working outcome.</h2>
       </div>
@@ -137,30 +138,30 @@
         </div>
         </div>
         <div class="case-copy">
-          <header class="chapter-intro">
+          <header class="chapter-intro story-beat" data-scene-number="03">
             <p class="case-type">01 · B2B eCommerce operations</p>
             <h3>Making a complex order channel work better</h3>
             <p>Managing the day-to-day UK eStore means seeing beyond a single screen. The real work happens between systems, data and people.</p>
           </header>
-          <div class="chapter-beat is-active" data-step="observe" data-system="commerce">
+          <div class="chapter-beat story-beat is-active" data-scene-number="03" data-step="observe" data-system="commerce">
             <span class="beat-number">01</span>
             <p class="beat-label">Observe</p>
             <h4>Start where the friction appears.</h4>
             <p>Customer questions, unusual charges and failed order states are signals. I first establish what happened, who is affected and whether the issue is isolated or systemic.</p>
           </div>
-          <div class="chapter-beat" data-step="trace" data-system="sap,dynamics">
+          <div class="chapter-beat story-beat" data-scene-number="03" data-step="trace" data-system="sap,dynamics">
             <span class="beat-number">02</span>
             <p class="beat-label">Trace</p>
             <h4>Follow the hand-offs, not just the screen.</h4>
             <p>I connect storefront behaviour with SAP order and invoice data, Dynamics 365 customer records and the operational process around them to locate where reality diverged from expectation.</p>
           </div>
-          <div class="chapter-beat" data-step="resolve" data-system="servicenow">
+          <div class="chapter-beat story-beat" data-scene-number="03" data-step="resolve" data-system="servicenow">
             <span class="beat-number">03</span>
             <p class="beat-label">Resolve</p>
             <h4>Turn diagnosis into coordinated action.</h4>
             <p>A third-party SAP application created duplicate freight across 65 orders, including 15 already invoiced. I investigated the pattern and coordinated the correction with business and technical teams.</p>
           </div>
-          <div class="chapter-beat chapter-outcome" data-step="improve" data-system="commerce,sap,dynamics,servicenow">
+          <div class="chapter-beat story-beat chapter-outcome" data-scene-number="03" data-step="improve" data-system="commerce,sap,dynamics,servicenow">
             <span class="beat-number">04</span>
             <p class="beat-label">Improve</p>
             <h4>Use the learning to make the channel stronger.</h4>
@@ -173,7 +174,7 @@
         </div>
       </article>
 
-      <article class="case case-enso" id="enso-case" data-case="space">
+      <article class="case case-enso story-scene" id="enso-case" data-scene-number="04" data-case="space">
         <div class="case-number">02</div>
         <div class="case-copy">
           <p class="case-type">Business launch · Space · Experience</p>
@@ -192,7 +193,7 @@
         </div>
       </article>
 
-      <article class="case case-creative" id="creative-case" data-case="creative">
+      <article class="case case-creative story-scene" id="creative-case" data-scene-number="05" data-case="creative">
         <div class="case-number">03</div>
         <div class="case-copy light-copy">
           <p class="case-type">Business ownership · Creative delivery</p>
@@ -207,7 +208,7 @@
       </article>
     </section>
 
-    <section class="thread" id="thread" aria-labelledby="thread-title">
+    <section class="thread story-scene" id="thread" data-scene-number="06" aria-labelledby="thread-title">
       <div class="thread-intro">
         <p class="section-label">The thread</p>
         <h2 id="thread-title">The medium changed.<br>The underlying practice did not.</h2>
@@ -219,7 +220,7 @@
       </div>
     </section>
 
-    <section class="contact" id="contact" aria-labelledby="contact-title">
+    <section class="contact story-scene" id="contact" data-scene-number="07" aria-labelledby="contact-title">
       <div>
         <p class="section-label">Next chapter</p>
         <h2 id="contact-title">Looking for work where systems, people and practical change meet.</h2>
