@@ -43,9 +43,13 @@
   </header>
 
   <main id="top">
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="ink-field" aria-hidden="true">
+    <section class="hero hero-observatory" data-observatory-view="systems" aria-labelledby="hero-title">
+      <div class="ink-field observatory-field" aria-hidden="true">
         <span class="ink-texture"></span>
+        <span class="observatory-current current-one"></span>
+        <span class="observatory-current current-two"></span>
+        <span class="observatory-void"></span>
+        <span class="observatory-reticle"><i></i><i></i></span>
         <img class="cinnabar-brush" src="./assets/brush-circle.webp" alt="">
       </div>
       <div class="ink-rhythm" aria-hidden="true">
@@ -58,10 +62,16 @@
       </div>
       <div class="hero-copy">
         <p class="eyebrow reveal">Digital operations · Systems · Experience</p>
-        <h1 id="hero-title" class="reveal">Different mediums.<br><em>One way of seeing.</em></h1>
+        <h1 id="hero-title" class="reveal"><span>Different</span><span>mediums.</span><span><em>One way</em></span><span><em>of seeing.</em></span></h1>
         <p class="hero-intro reveal">I make sense of complex situations, find the relationships that matter, and turn ideas into experiences that work.</p>
         <a class="text-link reveal" href="#work">Selected work <span aria-hidden="true">↓</span></a>
       </div>
+      <div class="observatory-coordinates" role="group" aria-label="Change the observation field">
+        <button class="is-active" type="button" data-observatory-view="systems" aria-pressed="true"><span>01</span> Systems</button>
+        <button type="button" data-observatory-view="space" aria-pressed="false"><span>02</span> Space</button>
+        <button type="button" data-observatory-view="creative" aria-pressed="false"><span>03</span> Creative</button>
+      </div>
+      <p class="observatory-index" aria-hidden="true"><span>FIELD 01</span><span>MOVE TO REVEAL</span><span>WYS / 2026</span></p>
     </section>
 
     <section class="statement" aria-label="Approach">
