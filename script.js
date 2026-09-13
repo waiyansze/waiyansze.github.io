@@ -214,8 +214,8 @@ const viewerInfoButton = document.querySelector('[data-viewer-action="info"]');
 const viewerActions = [...document.querySelectorAll('[data-viewer-action]')];
 const projectNavigator = document.querySelector('.chapter-pagination');
 const navigatorHandle = document.querySelector('.chapter-window-bar');
-const caseOrder = ['systems', 'space', 'creative'];
-const caseLabels = { systems: 'Systems', space: 'Space', creative: 'Creative' };
+const caseOrder = ['systems', 'space', 'creative', 'digital'];
+const caseLabels = { systems: 'Systems', space: 'Space', creative: 'Creative', digital: 'Digital' };
 let currentCaseName = 'systems';
 let navigatorOffsetX = 0;
 let navigatorOffsetY = 0;
@@ -296,7 +296,7 @@ function setActiveCase(caseName) {
   currentCaseName = caseName;
   const activeIndex = caseOrder.indexOf(caseName);
   workSection?.setAttribute('data-active-case', caseName);
-  if (viewerCounter && activeIndex >= 0) viewerCounter.textContent = `0${activeIndex + 1} / 03`;
+  if (viewerCounter && activeIndex >= 0) viewerCounter.textContent = `0${activeIndex + 1} / 0${caseOrder.length}`;
   if (viewerProjectLabel) viewerProjectLabel.textContent = caseLabels[caseName] || caseName;
   caseLinks.forEach((link) => {
     const isActive = link.dataset.caseLink === caseName;
