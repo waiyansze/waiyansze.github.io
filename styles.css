@@ -174,9 +174,16 @@ footer{padding:1.3rem clamp(1.25rem,6vw,7.5rem);display:flex;justify-content:spa
 .red-stop{color:var(--red)}.thread-list em{display:block;margin-top:.8rem;color:var(--ink)}
 .content-edition footer{flex-wrap:wrap;align-items:center;gap:1rem 2rem}
 .build-credit{max-width:34rem;font-size:.75rem;line-height:1.6;text-transform:none;letter-spacing:0}
-.digital-projects,.digital-projects summary{color:inherit;border-color:rgba(255,255,255,.3)}
-.digital-projects h4{font:1.4rem/1.2 Georgia,serif;margin:1.5rem 0 .75rem}
-.digital-projects p{font-size:1rem;line-height:1.65;color:#cbccc7}
+.case-digital{display:block;color:var(--ink);padding-block:5rem}
+.digital-intro h3{font-size:clamp(2.4rem,3.5vw,4.5rem);letter-spacing:-.04em;line-height:1.08}
+.digital-intro>p:last-child{max-width:36rem;color:var(--mid);margin-block:1.5rem 3rem}
+.digital-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem}
+.digital-card{padding:1.5rem;border-top:2px solid var(--red);background:rgba(230,229,221,.28)}
+.digital-card h4{font:400 clamp(1.8rem,2.3vw,2.8rem)/1.12 Georgia,serif;margin:1.4rem 0}
+.digital-card p{font-size:1rem;line-height:1.65;color:var(--mid)}
+.digital-card .project-stack,.digital-card .project-focus{font-size:.67rem;letter-spacing:.08em;text-transform:uppercase}
+.digital-card .project-stack{color:var(--red)}
+.project-focus{border-top:1px solid var(--line);padding-top:1rem;margin-top:2rem}
 .content-edition :is(a,button,summary):focus-visible{outline:2px solid var(--red);outline-offset:5px}
 @media(min-width:901px){
   .content-edition .site-header{position:fixed;height:64px;background:rgba(255,255,255,.96);color:var(--ink);border-image:none;border-bottom:1px solid var(--line);backdrop-filter:blur(12px);z-index:40}
@@ -186,7 +193,7 @@ footer{padding:1.3rem clamp(1.25rem,6vw,7.5rem);display:flex;justify-content:spa
   .content-edition .hero.story-scene{height:auto;min-height:100svh;padding-top:8rem;padding-bottom:5rem}
   .content-edition .hero .text-link{margin-bottom:1.5rem}
   .content-edition .story-scene{--scene-opacity:1;--scene-scale:1;--scene-y:0px;--scene-y-soft:0px;--scene-y-counter:0px;overflow:visible}
-  .content-edition .work{padding-top:0}
+  .content-edition .work{padding-top:0;clip-path:inset(0)}
   .content-edition .work>.section-heading.story-scene{height:auto;min-height:100svh;padding-block:7rem;grid-template-columns:1fr;gap:2rem;align-content:center}
   .content-edition .chapter-case{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:2.5vw}
   .content-edition .chapter-case .system-visual{top:7.5rem;height:calc(100svh - 10rem);min-height:400px;padding:1.5rem}
@@ -204,7 +211,13 @@ footer{padding:1.3rem clamp(1.25rem,6vw,7.5rem);display:flex;justify-content:spa
   .content-edition .case-enso .enso-collage{align-self:center}
   .content-edition .case-creative{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:2.5vw}
   .content-edition .case-creative .image-hero{margin-left:0;align-self:center}
-  .content-edition .thread{grid-template-columns:1.15fr 1fr;gap:8vw;padding-block:8rem;border-top:1px solid var(--line)}
+  .content-edition .thread{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6vw;padding:7rem clamp(2rem,8vw,10rem);border-top:1px solid var(--line);align-items:start;isolation:isolate}
+  .content-edition .thread h2{font-size:clamp(2.6rem,3.8vw,4.8rem);line-height:1.08;max-width:16ch}
+  .content-edition .thread-list h3{font-size:clamp(1.7rem,2.3vw,2.7rem);line-height:1.15}
+  .content-edition .thread-list article{padding:1.6rem 0 2.4rem}
+  .content-edition .thread.story-scene>.thread-intro,.content-edition .thread.story-scene>.thread-list{opacity:1;transform:none;will-change:auto}
+  .content-edition .case-digital{min-height:100svh;padding-block:7rem}
+  .content-edition .work>.chapter-pagination{margin-bottom:-20rem}
   .content-edition .contact{grid-template-columns:1fr;gap:2rem;align-content:center;padding-block:8rem;background:#f2f2ef}
   .content-edition .contact h2{max-width:17ch;font-size:clamp(2.8rem,4.5vw,5.5rem)}
   .content-edition .contact-copy{max-width:40rem}.content-edition .contact-copy p{max-width:none}
@@ -214,4 +227,5 @@ footer{padding:1.3rem clamp(1.25rem,6vw,7.5rem);display:flex;justify-content:spa
   .content-edition .site-header nav{gap:.8rem}.content-edition .site-header nav a{font-size:.75rem}
   .content-edition .story-beat{padding-block:2.5rem}
   .content-edition .case-jumps{flex-direction:column;align-items:flex-start}
+  .digital-grid{grid-template-columns:1fr}
 }
