@@ -214,8 +214,8 @@ const viewerInfoButton = document.querySelector('[data-viewer-action="info"]');
 const viewerActions = [...document.querySelectorAll('[data-viewer-action]')];
 const projectNavigator = document.querySelector('.chapter-pagination');
 const navigatorHandle = document.querySelector('.chapter-window-bar');
-const caseOrder = ['systems', 'space', 'creative', 'digital'];
-const caseLabels = { systems: 'Systems', space: 'Space', creative: 'Creative', digital: 'Digital' };
+const caseOrder = ['systems', 'space', 'creative'];
+const caseLabels = { systems: 'Systems', space: 'Space', creative: 'Creative' };
 let currentCaseName = 'systems';
 let navigatorOffsetX = 0;
 let navigatorOffsetY = 0;
@@ -379,4 +379,54 @@ if (workSection && desktopMotion.matches) {
   }, { passive: true });
   window.addEventListener('resize', updateEditorialMotion, { passive: true });
   updateEditorialMotion();
+}
+
+// Independent horizontal gallery: native scrolling, no vertical wheel capture.
+const digitalTrack = document.querySelector('.digital-track');
+if (digitalTrack) {
+  const slides = [...digitalTrack.querySelectorAll('.digital-slide')];
+  const pages = [...document.querySelectorAll('.digital-pagination a')];
+  const arrows = [...document.querySelectorAll('[data-digital-direction]')];
+  const counter = document.querySelector('.digital-counter');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let selected = 0;
+  let scrollFrame;
+  const slideLeft = (index) => slides[index].getBoundingClientRect().left - digitalTrack.getBoundingClientRect().left + digitalTrack.scrollLeft;
+  const markSelected = (index) => {
+    selected = index;
+    pages.forEach((page, i) => {
+      if (i === index) page.setAttribute('aria-current', 'true');
+      else page.removeAttribute('aria-current');
+    });
+    arrows.forEach((arrow) => {
+      arrow.disabled = Number(arrow.dataset.digitalDirection) < 0 ? index === 0 : index === slides.length - 1;
+    });
+    if (counter) counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+  };
+  const showSlide = (index, smooth = true) => {
+    const next = Math.max(0, Math.min(slides.length - 1, index));
+    digitalTrack.scrollTo({left:slideLeft(next),behavior:smooth && !reduceMotion.matches ? 'smooth' : 'instant'});
+    markSelected(next);
+  };
+  pages.forEach((page, index) => page.addEventListener('click', (event) => {
+    event.preventDefault();
+    showSlide(index);
+  }));
+  arrows.forEach((arrow) => arrow.addEventListener('click', () => showSlide(selected + Number(arrow.dataset.digitalDirection))));
+  digitalTrack.addEventListener('keydown', (event) => {
+    if (event.target !== digitalTrack) return;
+    const targets = {ArrowLeft:selected - 1,ArrowRight:selected + 1,Home:0,End:slides.length - 1};
+    if (event.key in targets) { event.preventDefault(); showSlide(targets[event.key]); }
+  });
+  digitalTrack.addEventListener('scroll', () => {
+    if (scrollFrame) return;
+    scrollFrame = requestAnimationFrame(() => {
+      scrollFrame = undefined;
+      const distances = slides.map((_, i) => Math.abs(slideLeft(i) - digitalTrack.scrollLeft));
+      markSelected(distances.indexOf(Math.min(...distances)));
+    });
+  }, {passive:true});
+  window.addEventListener('resize', () => showSlide(selected, false), {passive:true});
+  document.querySelector('.digital-arrows').hidden = false;
+  markSelected(0);
 }
