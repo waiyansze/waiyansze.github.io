@@ -9,6 +9,7 @@ function unlockPortfolio() {
   root.classList.remove('auth-pending');
   root.classList.add('auth-unlocked');
   document.querySelector('#portfolio-shell')?.removeAttribute('aria-hidden');
+  window.dispatchEvent(new Event('portfolio:unlocked'));
 }
 
 async function hashPassword(value) {
@@ -74,7 +75,8 @@ if (storyScenes.length && desktopMotion.matches) {
     storyScenes.forEach((scene) => {
       const bounds = scene.getBoundingClientRect();
       const sceneCentre = bounds.top + bounds.height / 2;
-      const distance = Math.abs(sceneCentre - viewportHeight / 2);
+      const centreDistance = Math.abs(sceneCentre - viewportHeight / 2);
+      const distance = Math.max(0, centreDistance - Math.max(0, bounds.height - viewportHeight) / 2);
       const visibility = Math.max(0, Math.min(1, 1 - distance / (viewportHeight * .82)));
       const progress = Math.max(0, Math.min(1, (viewportHeight - bounds.top) / (viewportHeight + bounds.height)));
       const shift = (0.5 - progress) * 72;
@@ -83,7 +85,7 @@ if (storyScenes.length && desktopMotion.matches) {
       scene.style.setProperty('--scene-y-soft', `${(shift * .55).toFixed(2)}px`);
       scene.style.setProperty('--scene-y-counter', `${(shift * -.45).toFixed(2)}px`);
       scene.style.setProperty('--scene-scale', `${(0.968 + visibility * .032).toFixed(4)}`);
-      scene.style.setProperty('--scene-opacity', `${(0.18 + visibility * .82).toFixed(3)}`);
+      scene.style.setProperty('--scene-opacity', `${(0.65 + visibility * .35).toFixed(3)}`);
 
       if (distance < nearestDistance) {
         nearestDistance = distance;
@@ -103,6 +105,8 @@ if (storyScenes.length && desktopMotion.matches) {
   };
   window.addEventListener('scroll', requestStoryUpdate, { passive: true });
   window.addEventListener('resize', requestStoryUpdate, { passive: true });
+  window.addEventListener('portfolio:unlocked', requestStoryUpdate);
+  document.addEventListener('toggle', requestStoryUpdate, true);
   updateStoryScenes();
 }
 
@@ -160,7 +164,7 @@ function activateChapterBeat(beat) {
   chapterCase.dataset.activeStep = step;
   chapterBeats.forEach((item) => item.classList.toggle('is-active', item === beat));
   systemNodes.forEach((node) => node.classList.toggle('is-active', activeSystems.includes(node.dataset.system)));
-  traceSteps.forEach((trace) => trace.classList.toggle('is-active', step === 'improve' || trace.dataset.trace === step));
+  traceSteps.forEach((trace) => trace.classList.toggle('is-active', ['prevent', 'evidence'].includes(step) || trace.dataset.trace === step));
   if (stageStatus) stageStatus.textContent = step.charAt(0).toUpperCase() + step.slice(1);
 }
 
