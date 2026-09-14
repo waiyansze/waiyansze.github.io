@@ -450,3 +450,22 @@ footer{padding:1.3rem clamp(1.25rem,6vw,7.5rem);display:flex;justify-content:spa
   .content-edition .creative-editorial>.image-hero{position:static}
   .work-index a,.work-index a:after{transition:none}
 }
+
+/* End Selected Work before the independent digital gallery begins. */
+.content-edition .work:after{
+  content:"";
+  display:block;
+  height:clamp(4rem,7vw,7rem);
+  background:
+    linear-gradient(var(--red),var(--red)) center/1px 2rem no-repeat,
+    repeating-linear-gradient(88deg,transparent 0 11px,rgba(46,43,37,.025) 12px,transparent 13px 25px),
+    #fafaf6;
+  border-block:1px solid #d9dad2;
+}
+.content-edition .digital-showcase{
+  border-top:1px solid #747b6c;
+}
+.content-edition .digital-heading .section-label{
+  color:#e29c88;
+  letter-spacing:.18em;
+}
