@@ -80,7 +80,7 @@
           <a href="#enso-case" data-work-index="space"><span>02</span> Space</a>
           <a href="#creative-case" data-work-index="creative"><span>03</span> Creative</a>
         </nav>
-      <article class="case case-systems chapter-case scroll-sequence" id="systems-case" data-scene-number="03"  data-active-step="observe" data-case="systems">
+      <article class="case case-systems chapter-case scroll-sequence" id="systems-case" data-scene-number="03"  data-active-step="overview" data-case="systems">
         <div class="systems-pin">
         <div class="systems-frame">
       <div class="work-viewer-chrome" aria-label="Selected work viewer">
@@ -109,7 +109,7 @@
         <div class="system-visual" aria-hidden="true">
           <div class="map-heading">
             <span>UK eStore · Order journey</span>
-            <span class="stage-status">Observe</span>
+            <span class="stage-status">Overview</span>
           </div>
           <div class="systems-rail">
             <div class="system-node is-active" data-system="commerce"><small>01 · Storefront</small><strong>Adobe Commerce</strong></div>
@@ -118,80 +118,53 @@
             <div class="system-node" data-system="servicenow"><small>04 · Resolution</small><strong>ServiceNow</strong></div>
           </div>
           <div class="incident-trace">
-            <p>Active diagnostic path</p>
+            <p>One operational-improvement practice</p>
             <ol>
-              <li data-trace="observe" class="is-active"><span>Observe</span><b>Duplicate freight</b></li>
-              <li data-trace="trace"><span>Trace</span><b>Integration hand-offs</b></li>
-              <li data-trace="coordinate"><span>Coordinate</span><b>65 orders · 15 invoiced</b></li>
+              <li data-trace="precheck"><span>01 / Quality</span><b>Catch issues early</b></li>
+              <li data-trace="pricing"><span>02 / Workflow</span><b>Remove repetitive work</b></li>
+              <li data-trace="trace"><span>03 / Diagnosis</span><b>Trace connected failures</b></li>
+              <li data-trace="visibility"><span>04 / Visibility</span><b>Restore operational visibility</b></li>
             </ol>
           </div>
         </div>
         </div>
         <div class="systems-copy-viewport" tabindex="0" role="region" aria-label="Systems story. Scroll down to read each panel."><div class="case-copy systems-track">
-          <header class="chapter-intro story-beat" data-step="overview" data-system="commerce,sap,dynamics,servicenow"><div class="panel-body">
-            <p class="case-type">B2B eCommerce · Business systems · Process improvement</p>
-            <h3>Operating and improving a B2B eCommerce channel across four connected systems</h3>
-            <p>As the sole day-to-day administrator of the UK B2B eStore, I manage an operational journey spanning Adobe Commerce, SAP ERP, Dynamics 365 and ServiceNow. The channel processes around 120 to 140 orders per month, requiring me to monitor order quality, investigate cross-system issues and coordinate improvements without interrupting normal trading.</p>
-            <details class="case-details"><summary>My role and scope</summary><ul>
-              <li>Monitor the day-to-day UK eStore order journey</li><li>Validate order, customer and system information</li><li>Investigate incidents that cross system and team boundaries</li><li>Coordinate evidence, escalation, testing and resolution</li><li>Identify recurring manual work and opportunities for process improvement</li>
-            </ul><p>134 technical and service requests coordinated.</p></details>
-            <nav class="case-jumps" aria-label="Systems case studies"><a href="#freight-case">01 / Freight incident</a><a href="#pricing-case">02 / Pricing workflow</a><a href="#precheck-case">03 / Order pre-check</a><a href="#channel-evidence">Channel evidence ↓</a></nav>
-            <p>The examples below show three different parts of the role: resolving a high-impact incident, redesigning a repetitive workflow and preventing order issues before fulfilment.</p>
-          </div></header>
-          <div id="freight-case" class="chapter-beat story-beat"  data-step="observe" data-system="commerce,sap"><div class="panel-body">
-            <p class="case-type">Featured case / Duplicate freight</p>
-            <h4>Tracing a duplicate-freight error across four connected systems</h4>
-            <p>I identified a systemic freight error affecting 65 orders, traced the issue through the connected order journey and coordinated correction and escalation while normal ordering continued.</p>
-            <dl class="incident-facts"><div><dt>65</dt><dd>affected orders</dd></div><div><dt>15</dt><dd>already invoiced</dd></div></dl>
-            <details class="case-details"><summary>Context, ownership and constraints</summary><p>The UK eStore depends on connected storefront, ERP, customer-data and service-management systems. An error visible on an individual order can therefore originate somewhere else in the wider journey.</p><p>A third-party SAP application introduced duplicate freight charges. I established the scale, validated the evidence and coordinated the response. The technical correction itself remained with the relevant SAP and support teams.</p><ul><li>Customer impact had to be managed proactively.</li><li>Normal ordering could not be blocked.</li><li>The third-party application was outside my direct control.</li><li>Other business units could potentially face the same issue.</li></ul></details></div>
-          </div>
-          <div class="chapter-beat story-beat"  data-step="observe" data-system="commerce"><div class="panel-body">
-            <span class="beat-number">01</span><p class="beat-label">Observe</p>
-            <h4>Start where the friction appears.</h4>
-            <p>Unusual freight charges provided the first signal. I compared the affected orders to determine whether the issue came from individual order entry or a repeatable system pattern, then established who was affected and which orders had already progressed to invoicing.</p></div>
-          </div>
-          <div class="chapter-beat story-beat"  data-step="trace" data-system="sap,dynamics"><div class="panel-body">
-            <span class="beat-number">02</span><p class="beat-label">Trace</p>
-            <h4>Follow the hand-offs, not just the screen.</h4>
-            <p>I connected the storefront behaviour with SAP order and invoice data and the operational steps around them. This traced the duplicated charge to a third-party SAP application rather than treating 65 orders as unrelated exceptions.</p></div>
-          </div>
-          <div class="chapter-beat story-beat"  data-step="coordinate" data-system="servicenow"><div class="panel-body">
-            <span class="beat-number">03</span><p class="beat-label">Coordinate</p>
-            <h4>Turn the diagnosis into a controlled response.</h4>
-            <p>I documented the evidence and raised the incident with the SAP and global teams, highlighting the possible risk to other business units. I coordinated adjustments for affected orders, prioritised customer communication where needed and kept the normal eStore order flow moving during the investigation.</p></div>
-          </div>
-          <div class="chapter-beat story-beat"  data-step="prevent" data-system="commerce,sap,dynamics,servicenow"><div class="panel-body">
-            <span class="beat-number">04</span><p class="beat-label">Prevent</p>
-            <h4>Escalate the pattern, not only the individual errors.</h4>
-            <p>In addition to correcting the affected orders, I asked the SAP team to investigate preventative action and informed the global team so that the issue could be assessed beyond the UK operation.</p>
-            <details class="case-details"><summary>Incident-specific outcomes</summary><ul><li>65 affected orders identified and brought into the correction process</li><li>15 already-invoiced orders isolated for additional action</li><li>Customers informed and order adjustments coordinated where required</li><li>Normal eStore ordering continued during investigation and correction</li><li>Potential cross-market risk raised with the global team</li><li>Preventative-action request escalated to the SAP team</li></ul></details></div>
-          </div>
-          <div id="pricing-case" class="chapter-beat story-beat mini-case"  data-step="pricing" data-system="commerce"><div class="panel-body">
-            <p class="case-type">Mini case 02 / Pricing workflow</p>
-            <h4>Turning a manual pricing task into a validated upload workflow</h4>
-            <p>Key-account pricing updates required account discounts to be matched and entered manually before the data could be sent to IT for upload into Adobe Commerce. The repetitive preparation created unnecessary administrative work and increased the opportunity for input errors.</p>
-            <ol class="workflow" aria-label="Pricing workflow"><li>Source pricing</li><li>Copilot-generated CSV</li><li>Human validation</li><li>IT upload</li></ol>
-            <p>I identified the repeatable logic in the task and configured a Copilot agent to generate the required CSV from the source pricing information. I defined the expected structure and checks so that the output could be reviewed before being submitted to IT.</p>
-            <details class="case-details"><summary>My contribution and outcome</summary><ul><li>Identified the manual steps and transformation logic</li><li>Defined source inputs and the CSV format required by IT</li><li>Prompted and configured the Copilot agent</li><li>Checked account-to-discount mappings and output structure</li><li>Retained human validation before upload</li></ul><p>The workflow replaced repeated manual matching and data entry with a generated, reviewable CSV while retaining validation before upload.</p></details></div>
-          </div>
-          <div id="precheck-case" class="chapter-beat story-beat mini-case"  data-step="precheck" data-system="commerce,sap,dynamics"><div class="panel-body">
-            <p class="case-type">Mini case 03 / Order pre-check</p>
-            <h4>Catching order issues before they became fulfilment problems</h4>
-            <p>Orders could contain customer, product, pricing or processing issues that were easier to correct before they progressed into fulfilment, invoicing or a potential return.</p>
-            <p>I introduced a consistent pre-processing review across approximately 120 to 140 monthly eStore orders. When something did not align with the available customer, product or system information, I investigated and coordinated the correction before the order moved forward.</p>
-            <ul class="validation-list" aria-label="Order review areas"><li>Customer information</li><li>Product details</li><li>Pricing</li><li>Processing exceptions</li></ul>
-            <p>Approximately 10% of monthly orders are corrected during pre-processing checks, reducing the risk of avoidable fulfilment, invoicing and return issues later in the order journey.</p>
-            <details class="case-details"><summary>My role in the review</summary><p>I compare incoming orders with relevant records, clarify exceptions, coordinate corrections with internal teams or customers, and capture recurring patterns for wider follow-up.</p></details></div>
-          </div>
-          <div id="channel-evidence" class="chapter-beat story-beat chapter-outcome"  data-step="evidence" data-system="commerce,sap,dynamics,servicenow"><div class="panel-body">
-            <p class="case-type">Overall channel evidence</p>
-            <h4>A wider view of the channel.</h4>
-            <ul class="outcomes"><li><strong>+10.81pp</strong><span>online order share during my tenure</span></li><li><strong>~10%</strong><span>monthly orders corrected during pre-processing checks</span></li><li><strong>134</strong><span>technical and service requests coordinated</span></li></ul>
-            <p class="evidence-note">These figures describe the channel during the period I managed it. They are not outcomes caused solely by the freight incident or by my work alone.</p></div>
-          </div>
+<header id="systems-overview" class="chapter-intro story-beat" data-step="overview" data-system="commerce,sap,dynamics,servicenow" data-label="Digital operations · Business systems · Process improvement"><div class="panel-body"><p class="case-type">Digital operations · Business systems · Process improvement</p><h3>Turning operational friction into a more reliable B2B eCommerce channel</h3>
+<p>As the sole day-to-day administrator of the UK B2B eStore, I manage an order journey spanning Adobe Commerce, SAP ERP, Dynamics 365 and ServiceNow. Across approximately 120 to 140 orders each month, my role is to spot operational friction, understand where it originates and coordinate practical improvements without interrupting normal trading.</p>
+<details class="case-details"><summary>Context, my role and approach</summary>
+<p><strong>Context.</strong> The eStore is not a standalone website. Every order depends on customer records, pricing, product data, fulfilment and invoicing moving correctly between systems and teams. A small discrepancy at one point can surface downstream as an incorrect charge, a failed order status, additional customer contact or avoidable manual work.</p>
+<p><strong>My role.</strong> I sit between customers, commercial operations and technical teams. I validate what happened, connect evidence across systems, distinguish isolated exceptions from repeatable patterns and translate operational problems into actions that the relevant team can investigate, test or implement.</p>
+<p><strong>The improvement approach.</strong> Rather than treating every question or ticket as a separate task, I look across order checks, customer feedback, system data, analytics and service requests to find the underlying pattern. The aim is not only to correct the immediate issue, but to make the channel easier to operate and less likely to create the same friction again.</p>
+<p><strong>Operating scope.</strong> Approximately 120 to 140 orders reviewed per month; 98 incidents and 36 service requests coordinated.</p>
+<p><strong>Stakeholders.</strong> Customers, Sales, Customer Service, Finance, Logistics, Warehouse, Product, IT and technical support.</p></details>
+<nav class="case-jumps" aria-label="Selected operational improvements"><a href="#precheck-case">01 / Catch issues early</a><a href="#pricing-case">02 / Remove repetitive work</a><a href="#freight-case">03 / Trace connected failures</a><a href="#visibility-case">04 / Restore operational visibility</a><a href="#channel-evidence">Channel evidence ↓</a></nav>
+<p>Four examples of one improvement practice: quality control, automation, cross-system diagnosis and operational visibility.</p></div></header>
+<div id="precheck-case" class="chapter-beat story-beat" data-step="precheck" data-system="commerce,sap,dynamics" data-label="01 / Catch issues early"><div class="panel-body"><p class="case-type">01 / Catch issues early</p><h4>Make quality control part of the journey.</h4>
+<p>I review approximately 120 to 140 eStore orders each month before they progress through normal processing. When customer, product, pricing or system information does not align, I investigate the exception and coordinate the correction at the earliest practical point. Around 10% of monthly orders currently require some form of pre-processing correction, reducing the risk of avoidable fulfilment, invoicing or return issues downstream.</p>
+<ul class="validation-list" aria-label="Illustrative order validation areas"><li>Customer information</li><li>Product details</li><li>Pricing</li><li>System information</li></ul>
+<p class="evidence-note">Illustrative review areas, not a reproduced internal checklist.</p>
+<ul class="outcomes"><li><strong>~10%</strong><span>of monthly orders corrected before normal processing</span></li></ul></div></div>
+<div id="pricing-case" class="chapter-beat story-beat" data-step="pricing" data-system="commerce" data-label="02 / Remove repetitive work"><div class="panel-body"><p class="case-type">02 / Remove repetitive work</p><h4>Turn repeatable logic into a controlled workflow.</h4>
+<p>Key-account pricing updates previously required discounts to be matched and entered manually before IT could upload them into Adobe Commerce. I identified the repeatable logic, configured a Copilot agent to generate the required CSV and retained human checks on the account mappings and output structure before submission. The resulting workflow replaces repeated data entry with a faster, reviewable process.</p>
+<p><strong>Before</strong></p><ol class="workflow" aria-label="Previous pricing workflow"><li>Source discounts</li><li>Manual matching</li><li>Manual entry</li><li>IT upload</li></ol>
+<p><strong>Now</strong></p><ol class="workflow" aria-label="Improved pricing workflow"><li>Source pricing</li><li>Copilot-generated CSV</li><li>Human validation</li><li>IT upload</li></ol>
+<ul class="outcomes"><li><strong>~½ day</strong><span>estimated time saved per week during active pricing-update work</span></li></ul></div></div>
+<div id="freight-case" class="chapter-beat story-beat" data-step="trace" data-system="commerce,sap,servicenow" data-label="03 / Trace connected failures"><div class="panel-body"><p class="case-type">03 / Trace connected failures</p><h4>Follow the hand-offs, not only the visible error.</h4>
+<p>When a third-party SAP application introduced duplicate freight charges, I established that the problem affected 65 orders, including 15 that had already been invoiced. I connected the order and invoice evidence, raised the incident with the SAP and global teams and coordinated customer and order corrections while the normal eStore flow continued. The incident became one example of a wider principle: resolve the immediate impact, then escalate the pattern so it can be assessed beyond a single order or market.</p>
+<dl class="incident-facts"><div><dt>65</dt><dd>affected orders identified</dd></div><div><dt>15</dt><dd>already invoiced</dd></div></dl>
+<ol class="workflow" aria-label="Incident evidence and response"><li>Order evidence</li><li>Invoice evidence</li><li>SAP and global escalation</li><li>Coordinated corrections</li></ol>
+<p>The technical correction remained with the relevant SAP and support teams.</p></div></div>
+<div id="visibility-case" class="chapter-beat story-beat" data-step="visibility" data-system="commerce,sap,dynamics,servicenow" data-label="04 / Restore operational visibility"><div class="panel-body"><p class="case-type">04 / Restore operational visibility</p><h4>Make the channel easier to understand and manage.</h4>
+<p>Reliable operations also depend on reliable information. I worked with the relevant teams to restore Matomo analytics visibility, investigate an incorrect completed-shipment status and improve UK product cross-reference information. Each change addressed a different symptom, but the method was consistent: validate the evidence, identify the responsible hand-off and make the next action clear to the team able to resolve it.</p>
+<ul class="validation-list"><li>Matomo reporting restored</li><li>Completed-shipment status issue investigated and corrected</li><li>UK product cross-reference improved</li></ul></div></div>
+<div id="channel-evidence" class="chapter-beat story-beat" data-step="evidence" data-system="commerce,sap,dynamics,servicenow" data-label="Outcome and channel evidence"><div class="panel-body"><p class="case-type">Outcome and channel evidence</p><h4>A more dependable channel, within a wider team effort.</h4>
+<p>During the period I managed the channel, online order share increased from 25.83% to 36.64%, while online value share rose from 16.25% to 23.15%. The UK became the second-highest-utilisation market globally and the highest in Europe across more than 20 markets.</p>
+<p>These results reflect wider commercial and team activity. My contribution has been to make the channel more dependable in daily use: identifying issues earlier, connecting operational evidence across systems and turning recurring friction into clearer processes and actionable change.</p>
+<ul class="outcomes"><li><strong>+10.81pp</strong><span>online order share during my tenure</span></li><li><strong>+6.90pp</strong><span>online value share during my tenure</span></li><li><strong>#2 / #1</strong><span>global / Europe · UK utilisation across 20+ markets</span></li><li><strong>~10%</strong><span>monthly orders corrected before normal processing</span></li></ul>
+<p>Operating scale: approximately 120 to 140 orders reviewed per month · 98 incidents and 36 service requests coordinated · four connected systems across the order journey.</p></div></div>
         </div></div>
         </div>
-        <div class="systems-controls"><button type="button" data-system-direction="-1" aria-label="Previous Systems panel">←</button><span class="systems-counter" aria-live="polite">01 / 09</span><span class="systems-scroll-hint">Scroll to explore →</span><button type="button" data-system-direction="1" aria-label="Next Systems panel">→</button></div>
+        <div class="systems-controls"><button type="button" data-system-direction="-1" aria-label="Previous Systems panel">←</button><span class="systems-counter" aria-live="polite">01 / 06</span><span class="systems-scroll-hint">Scroll to explore →</span><button type="button" data-system-direction="1" aria-label="Next Systems panel">→</button></div>
         </div></div>
       </article>
 
