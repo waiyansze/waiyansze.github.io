@@ -266,6 +266,20 @@ function updatePage() {
   pageFrame = undefined;
   siteHeader?.classList.toggle('is-scrolled',window.scrollY > 16);
   sequences.forEach(state => state.update());
+  // Clip the scrolling sections to the stationary frame's inner opening.
+  document.querySelectorAll('.work-gallery > .case').forEach(section => {
+    if (!motionQuery.matches) {
+      section.style.removeProperty('--frame-clip-top');
+      section.style.removeProperty('--frame-clip-bottom');
+      return;
+    }
+    const bounds = section.getBoundingClientRect();
+    section.style.setProperty('--frame-clip-top', Math.max(0,82-bounds.top)+'px');
+    section.style.setProperty('--frame-clip-bottom', Math.max(0,bounds.bottom-(window.innerHeight-26))+'px');
+  });
+  const footer = document.querySelector('footer');
+  if (sceneMeter && footer) sceneMeter.hidden = footer.getBoundingClientRect().top < window.innerHeight;
+
 }
 function requestPageUpdate() {
   if (!pageFrame) pageFrame = requestAnimationFrame(updatePage);
