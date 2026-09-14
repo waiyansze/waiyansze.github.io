@@ -371,6 +371,23 @@ footer{padding:1.3rem clamp(1.25rem,6vw,7.5rem);display:flex;justify-content:spa
 }
 
 /* Independent project art directions, one quiet section index. */
+/* A chapter break separates the digital gallery from the working practice. */
+.content-edition .digital-showcase{border-bottom:1px solid #777d70;box-shadow:0 18px 40px #1112100d}
+.content-edition .thread.story-scene{position:relative;margin-top:clamp(4rem,8vw,8rem);padding:clamp(3rem,6vw,6rem) clamp(1.5rem,8vw,10rem) clamp(5rem,8vw,9rem);background:#fafaf6;isolation:isolate;border-top:1px solid #d9dad2;row-gap:clamp(3.5rem,6vw,7rem);align-items:start;scroll-margin-top:80px}
+.content-edition .thread:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:url('./assets/xuan-ink-texture.webp') center/cover;opacity:.035}
+.thread-chapter{grid-column:1/-1;display:flex;justify-content:space-between;align-items:flex-start;gap:2rem;border-bottom:1px solid #d0d2c8;padding-bottom:2rem}
+.thread-chapter-label{display:flex;align-items:center;gap:1rem;margin:0;font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:#4d5349}
+.thread-chapter-label>span{font:italic 2.5rem/1 Georgia,serif;color:var(--red);letter-spacing:-.06em}
+.thread-chapter-bridge{margin:0;font:400 clamp(1.3rem,2vw,2rem)/1.35 Georgia,serif;letter-spacing:-.025em;color:#343a30}
+.thread-chapter-bridge>span{color:var(--red);padding-left:1rem}
+.thread-chapter-bridge em{color:#707767}
+.content-edition .thread-intro .section-label{font-size:.65rem;letter-spacing:.13em;color:var(--red)}
+.content-edition .thread-list{margin-top:0}
+.content-edition .thread-list article:first-child{border-top:0;padding-top:0}
+@media(max-width:560px){
+  .thread-chapter{gap:1.5rem;flex-direction:column;padding-bottom:1.5rem}
+  .content-edition .thread.story-scene{row-gap:2.5rem;margin-top:3rem}
+}
 .content-edition footer{padding-block:3rem;position:relative;margin-top:2rem}
 .content-edition footer p{max-width:70rem;line-height:1.9}
 .scene-meter[hidden]{display:none!important}
