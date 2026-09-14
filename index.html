@@ -74,6 +74,9 @@
         <h2 id="work-title">From ambiguity<br>to a working outcome.</h2>
       </div>
 
+      <article class="case case-systems chapter-case scroll-sequence" id="systems-case" data-scene-number="03"  data-active-step="observe" data-case="systems">
+        <div class="systems-pin">
+        <div class="systems-frame">
       <div class="work-viewer-chrome" aria-label="Selected work viewer">
         <div class="viewer-topline" aria-hidden="true">
           <span>WAI / SELECTED WORK</span>
@@ -94,8 +97,8 @@
         <p class="viewer-help" hidden>Scroll to follow the story, choose a chapter, or shuffle between different mediums.</p>
       </div>
 
-      <nav class="chapter-pagination" aria-label="Selected work">
-        <div class="chapter-window-bar" role="button" tabindex="0" aria-label="Move the project navigator. Drag, use arrow keys, or press Home to reset.">
+      <div class="systems-nav-rail"><nav class="chapter-pagination" aria-label="Selected work">
+        <div class="chapter-window-bar" role="button" tabindex="0" aria-label="Move the project navigator within its rail. Drag vertically, use up and down arrows, or press Home to reset.">
           <span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span>
           <svg class="window-move" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M12 3l-2.5 2.5M12 3l2.5 2.5M12 21l-2.5-2.5M12 21l2.5-2.5M3 12l2.5-2.5M3 12l2.5 2.5M21 12l-2.5-2.5M21 12l-2.5 2.5"/></svg>
         </div>
@@ -103,10 +106,11 @@
         <a href="#enso-case" data-case-link="space"><span>02</span><b>Space</b></a>
         <a href="#creative-case" data-case-link="creative"><span>03</span><b>Creative</b></a>
         <i class="chapter-progress" aria-hidden="true"><span></span></i>
-      </nav>
+      </nav></div>
 
-      <article class="case case-systems chapter-case" data-active-step="observe" data-case="systems">
-        <div class="chapter-stage" id="systems-case">
+
+        <div class="systems-content">
+        <div class="chapter-stage">
         <div class="system-visual" aria-hidden="true">
           <div class="map-heading">
             <span>UK eStore · Order journey</span>
@@ -128,8 +132,8 @@
           </div>
         </div>
         </div>
-        <div class="case-copy">
-          <header class="chapter-intro story-beat" data-scene-number="03">
+        <div class="systems-copy-viewport" tabindex="0" role="region" aria-label="Systems story. Scroll down to read each panel."><div class="case-copy systems-track">
+          <header class="chapter-intro story-beat" data-step="overview" data-system="commerce,sap,dynamics,servicenow"><div class="panel-body">
             <p class="case-type">B2B eCommerce · Business systems · Process improvement</p>
             <h3>Operating and improving a B2B eCommerce channel across four connected systems</h3>
             <p>As the sole day-to-day administrator of the UK B2B eStore, I manage an operational journey spanning Adobe Commerce, SAP ERP, Dynamics 365 and ServiceNow. The channel processes around 120 to 140 orders per month, requiring me to monitor order quality, investigate cross-system issues and coordinate improvements without interrupting normal trading.</p>
@@ -138,62 +142,67 @@
             </ul><p>134 technical and service requests coordinated.</p></details>
             <nav class="case-jumps" aria-label="Systems case studies"><a href="#freight-case">01 / Freight incident</a><a href="#pricing-case">02 / Pricing workflow</a><a href="#precheck-case">03 / Order pre-check</a><a href="#channel-evidence">Channel evidence ↓</a></nav>
             <p>The examples below show three different parts of the role: resolving a high-impact incident, redesigning a repetitive workflow and preventing order issues before fulfilment.</p>
-          </header>
-          <div id="freight-case" class="chapter-beat story-beat" data-scene-number="03" data-step="observe" data-system="commerce,sap">
+          </div></header>
+          <div id="freight-case" class="chapter-beat story-beat"  data-step="observe" data-system="commerce,sap"><div class="panel-body">
             <p class="case-type">Featured case / Duplicate freight</p>
             <h4>Tracing a duplicate-freight error across four connected systems</h4>
             <p>I identified a systemic freight error affecting 65 orders, traced the issue through the connected order journey and coordinated correction and escalation while normal ordering continued.</p>
             <dl class="incident-facts"><div><dt>65</dt><dd>affected orders</dd></div><div><dt>15</dt><dd>already invoiced</dd></div></dl>
-            <details class="case-details"><summary>Context, ownership and constraints</summary><p>The UK eStore depends on connected storefront, ERP, customer-data and service-management systems. An error visible on an individual order can therefore originate somewhere else in the wider journey.</p><p>A third-party SAP application introduced duplicate freight charges. I established the scale, validated the evidence and coordinated the response. The technical correction itself remained with the relevant SAP and support teams.</p><ul><li>Customer impact had to be managed proactively.</li><li>Normal ordering could not be blocked.</li><li>The third-party application was outside my direct control.</li><li>Other business units could potentially face the same issue.</li></ul></details>
+            <details class="case-details"><summary>Context, ownership and constraints</summary><p>The UK eStore depends on connected storefront, ERP, customer-data and service-management systems. An error visible on an individual order can therefore originate somewhere else in the wider journey.</p><p>A third-party SAP application introduced duplicate freight charges. I established the scale, validated the evidence and coordinated the response. The technical correction itself remained with the relevant SAP and support teams.</p><ul><li>Customer impact had to be managed proactively.</li><li>Normal ordering could not be blocked.</li><li>The third-party application was outside my direct control.</li><li>Other business units could potentially face the same issue.</li></ul></details></div>
           </div>
-          <div class="chapter-beat story-beat" data-scene-number="03" data-step="observe" data-system="commerce">
+          <div class="chapter-beat story-beat"  data-step="observe" data-system="commerce"><div class="panel-body">
             <span class="beat-number">01</span><p class="beat-label">Observe</p>
             <h4>Start where the friction appears.</h4>
-            <p>Unusual freight charges provided the first signal. I compared the affected orders to determine whether the issue came from individual order entry or a repeatable system pattern, then established who was affected and which orders had already progressed to invoicing.</p>
+            <p>Unusual freight charges provided the first signal. I compared the affected orders to determine whether the issue came from individual order entry or a repeatable system pattern, then established who was affected and which orders had already progressed to invoicing.</p></div>
           </div>
-          <div class="chapter-beat story-beat" data-scene-number="03" data-step="trace" data-system="sap,dynamics">
+          <div class="chapter-beat story-beat"  data-step="trace" data-system="sap,dynamics"><div class="panel-body">
             <span class="beat-number">02</span><p class="beat-label">Trace</p>
             <h4>Follow the hand-offs, not just the screen.</h4>
-            <p>I connected the storefront behaviour with SAP order and invoice data and the operational steps around them. This traced the duplicated charge to a third-party SAP application rather than treating 65 orders as unrelated exceptions.</p>
+            <p>I connected the storefront behaviour with SAP order and invoice data and the operational steps around them. This traced the duplicated charge to a third-party SAP application rather than treating 65 orders as unrelated exceptions.</p></div>
           </div>
-          <div class="chapter-beat story-beat" data-scene-number="03" data-step="coordinate" data-system="servicenow">
+          <div class="chapter-beat story-beat"  data-step="coordinate" data-system="servicenow"><div class="panel-body">
             <span class="beat-number">03</span><p class="beat-label">Coordinate</p>
             <h4>Turn the diagnosis into a controlled response.</h4>
-            <p>I documented the evidence and raised the incident with the SAP and global teams, highlighting the possible risk to other business units. I coordinated adjustments for affected orders, prioritised customer communication where needed and kept the normal eStore order flow moving during the investigation.</p>
+            <p>I documented the evidence and raised the incident with the SAP and global teams, highlighting the possible risk to other business units. I coordinated adjustments for affected orders, prioritised customer communication where needed and kept the normal eStore order flow moving during the investigation.</p></div>
           </div>
-          <div class="chapter-beat story-beat" data-scene-number="03" data-step="prevent" data-system="commerce,sap,dynamics,servicenow">
+          <div class="chapter-beat story-beat"  data-step="prevent" data-system="commerce,sap,dynamics,servicenow"><div class="panel-body">
             <span class="beat-number">04</span><p class="beat-label">Prevent</p>
             <h4>Escalate the pattern, not only the individual errors.</h4>
             <p>In addition to correcting the affected orders, I asked the SAP team to investigate preventative action and informed the global team so that the issue could be assessed beyond the UK operation.</p>
-            <details class="case-details"><summary>Incident-specific outcomes</summary><ul><li>65 affected orders identified and brought into the correction process</li><li>15 already-invoiced orders isolated for additional action</li><li>Customers informed and order adjustments coordinated where required</li><li>Normal eStore ordering continued during investigation and correction</li><li>Potential cross-market risk raised with the global team</li><li>Preventative-action request escalated to the SAP team</li></ul></details>
+            <details class="case-details"><summary>Incident-specific outcomes</summary><ul><li>65 affected orders identified and brought into the correction process</li><li>15 already-invoiced orders isolated for additional action</li><li>Customers informed and order adjustments coordinated where required</li><li>Normal eStore ordering continued during investigation and correction</li><li>Potential cross-market risk raised with the global team</li><li>Preventative-action request escalated to the SAP team</li></ul></details></div>
           </div>
-          <div id="pricing-case" class="chapter-beat story-beat mini-case" data-scene-number="03" data-step="pricing" data-system="commerce">
+          <div id="pricing-case" class="chapter-beat story-beat mini-case"  data-step="pricing" data-system="commerce"><div class="panel-body">
             <p class="case-type">Mini case 02 / Pricing workflow</p>
             <h4>Turning a manual pricing task into a validated upload workflow</h4>
             <p>Key-account pricing updates required account discounts to be matched and entered manually before the data could be sent to IT for upload into Adobe Commerce. The repetitive preparation created unnecessary administrative work and increased the opportunity for input errors.</p>
             <ol class="workflow" aria-label="Pricing workflow"><li>Source pricing</li><li>Copilot-generated CSV</li><li>Human validation</li><li>IT upload</li></ol>
             <p>I identified the repeatable logic in the task and configured a Copilot agent to generate the required CSV from the source pricing information. I defined the expected structure and checks so that the output could be reviewed before being submitted to IT.</p>
-            <details class="case-details"><summary>My contribution and outcome</summary><ul><li>Identified the manual steps and transformation logic</li><li>Defined source inputs and the CSV format required by IT</li><li>Prompted and configured the Copilot agent</li><li>Checked account-to-discount mappings and output structure</li><li>Retained human validation before upload</li></ul><p>The workflow replaced repeated manual matching and data entry with a generated, reviewable CSV while retaining validation before upload.</p></details>
+            <details class="case-details"><summary>My contribution and outcome</summary><ul><li>Identified the manual steps and transformation logic</li><li>Defined source inputs and the CSV format required by IT</li><li>Prompted and configured the Copilot agent</li><li>Checked account-to-discount mappings and output structure</li><li>Retained human validation before upload</li></ul><p>The workflow replaced repeated manual matching and data entry with a generated, reviewable CSV while retaining validation before upload.</p></details></div>
           </div>
-          <div id="precheck-case" class="chapter-beat story-beat mini-case" data-scene-number="03" data-step="precheck" data-system="commerce,sap,dynamics">
+          <div id="precheck-case" class="chapter-beat story-beat mini-case"  data-step="precheck" data-system="commerce,sap,dynamics"><div class="panel-body">
             <p class="case-type">Mini case 03 / Order pre-check</p>
             <h4>Catching order issues before they became fulfilment problems</h4>
             <p>Orders could contain customer, product, pricing or processing issues that were easier to correct before they progressed into fulfilment, invoicing or a potential return.</p>
             <p>I introduced a consistent pre-processing review across approximately 120 to 140 monthly eStore orders. When something did not align with the available customer, product or system information, I investigated and coordinated the correction before the order moved forward.</p>
             <ul class="validation-list" aria-label="Order review areas"><li>Customer information</li><li>Product details</li><li>Pricing</li><li>Processing exceptions</li></ul>
             <p>Approximately 10% of monthly orders are corrected during pre-processing checks, reducing the risk of avoidable fulfilment, invoicing and return issues later in the order journey.</p>
-            <details class="case-details"><summary>My role in the review</summary><p>I compare incoming orders with relevant records, clarify exceptions, coordinate corrections with internal teams or customers, and capture recurring patterns for wider follow-up.</p></details>
+            <details class="case-details"><summary>My role in the review</summary><p>I compare incoming orders with relevant records, clarify exceptions, coordinate corrections with internal teams or customers, and capture recurring patterns for wider follow-up.</p></details></div>
           </div>
-          <div id="channel-evidence" class="chapter-beat story-beat chapter-outcome" data-scene-number="03" data-step="evidence" data-system="commerce,sap,dynamics,servicenow">
+          <div id="channel-evidence" class="chapter-beat story-beat chapter-outcome"  data-step="evidence" data-system="commerce,sap,dynamics,servicenow"><div class="panel-body">
             <p class="case-type">Overall channel evidence</p>
             <h4>A wider view of the channel.</h4>
             <ul class="outcomes"><li><strong>+10.81pp</strong><span>online order share during my tenure</span></li><li><strong>~10%</strong><span>monthly orders corrected during pre-processing checks</span></li><li><strong>134</strong><span>technical and service requests coordinated</span></li></ul>
-            <p class="evidence-note">These figures describe the channel during the period I managed it. They are not outcomes caused solely by the freight incident or by my work alone.</p>
+            <p class="evidence-note">These figures describe the channel during the period I managed it. They are not outcomes caused solely by the freight incident or by my work alone.</p></div>
           </div>
+        </div></div>
         </div>
+        <div class="systems-controls"><button type="button" data-system-direction="-1" aria-label="Previous Systems panel">←</button><span class="systems-counter" aria-live="polite">01 / 09</span><span class="systems-scroll-hint">Scroll to explore →</span><button type="button" data-system-direction="1" aria-label="Next Systems panel">→</button></div>
+        </div></div>
       </article>
 
       <article class="case case-enso story-scene" id="enso-case" data-scene-number="04" data-case="space">
+        <div class="case-sheet"><p class="case-sheet-label">02 / Space</p>
+
         <div class="case-number">02</div>
         <div class="case-copy">
           <p class="case-type">Business launch · Space · Experience</p>
@@ -210,9 +219,12 @@
             <img src="./assets/enso-installation.webp" alt="A sculptural installation inside Ensō House" loading="lazy">
           </figure>
         </div>
+      </div>
       </article>
 
       <article class="case case-creative story-scene" id="creative-case" data-scene-number="05" data-case="creative">
+        <div class="case-sheet"><p class="case-sheet-label">03 / Creative</p>
+
         <div class="case-number">03</div>
         <div class="case-copy light-copy">
           <p class="case-type">Business ownership · Creative delivery</p>
@@ -224,13 +236,15 @@
           <img src="./assets/floral-still-life.webp" alt="A large-scale floral still life created for an event setting" loading="lazy">
             <figcaption>The Floral Flowerist · Hong Kong · Business ownership and creative delivery · 2014–2021</figcaption>
         </figure>
+      </div>
       </article>
     </section>
 
-    <section class="digital-showcase story-scene" id="digital-projects" data-scene-number="06" aria-labelledby="digital-title">
+    <section class="digital-showcase story-scene scroll-sequence" id="digital-projects" data-scene-number="06" aria-labelledby="digital-title">
+      <div class="digital-pin">
       <header class="digital-heading">
         <div><p class="section-label">Digital projects / 2021–2026</p><h2 id="digital-title">Another canvas.<br><em>Made for the web.</em></h2></div>
-        <p>Five websites across exhibitions, creative businesses and artist portfolios.<br><span>Explore sideways ↔</span></p>
+        <p>Five websites across exhibitions, creative businesses and artist portfolios.<br><span>Scroll down to explore →</span></p>
       </header>
       <div class="digital-track" id="digital-track" tabindex="0" role="region" aria-label="Digital projects. Scroll horizontally or use the project controls.">
         <article class="digital-slide" id="digital-striking" aria-labelledby="striking-title">
@@ -258,6 +272,7 @@
         <nav class="digital-pagination" aria-label="Choose a digital project"><a href="#digital-striking" aria-current="true"><span>01</span><b>STRIKING!</b></a><a href="#digital-santa"><span>02</span><b>Santa Flora</b></a><a href="#digital-lustra"><span>03</span><b>Lustra</b></a><a href="#digital-ink"><span>04</span><b>Ink painting</b></a><a href="#digital-calligraphy"><span>05</span><b>Calligraphy</b></a></nav>
         <div class="digital-arrows" hidden><button type="button" data-digital-direction="-1" aria-label="Previous digital project" aria-controls="digital-track">←</button><span class="digital-counter" aria-live="polite" aria-atomic="true">01 / 05</span><button type="button" data-digital-direction="1" aria-label="Next digital project" aria-controls="digital-track">→</button></div>
       </div>
+      </div>
     </section>
 
     <section class="thread story-scene" id="thread" data-scene-number="07" aria-labelledby="thread-title">
@@ -279,13 +294,13 @@
       </div>
       <div class="contact-copy">
         <p>Based in Reading and open to relocating to London. I am looking for hybrid opportunities across digital operations, business systems, process improvement and product operations. I have the right to work in the UK and do not require sponsorship.</p>
-        <a class="contact-link" href="https://www.linkedin.com/in/waiyansze/" target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+        <div class="contact-links"><a class="contact-link" href="https://www.linkedin.com/in/waiyansze/" target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a><a class="contact-link" href="mailto:waiswy23@gmail.com">Email <span aria-hidden="true">↗</span></a></div>
       </div>
-      <svg class="cinnabar-mark contact-mark" viewBox="0 0 120 120" aria-hidden="true"><path pathLength="1" d="M87 95C63 111 29 98 19 70C8 40 30 14 59 14C86 14 106 34 105 60C105 72 101 82 94 90"/></svg>
+      <img class="contact-brush" src="./assets/brush-circle.webp" alt="" aria-hidden="true" width="120" height="120">
     </section>
   </main>
 
-  <footer><span>Wai.</span><span>Different mediums. One way of seeing.</span><a href="#digital-projects">Digital projects ↑</a><a href="https://www.instagram.com/szewaiyan" target="_blank" rel="noreferrer">Ikebana / flowers ↗</a><span class="build-credit">Designed and built by Wai using semantic HTML, CSS and vanilla JavaScript. Hosted on GitHub Pages.</span><span>© 2026</span></footer>
+  <footer><p>© 2026 • Wai • Original content by Wai. Client work and third-party materials belong to their respective owners. Please do not reproduce without permission.</p></footer>
   </div>
 </body>
 </html>
