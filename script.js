@@ -266,16 +266,14 @@ function updatePage() {
   pageFrame = undefined;
   siteHeader?.classList.toggle('is-scrolled',window.scrollY > 16);
   sequences.forEach(state => state.update());
-  // Clip the scrolling sections to the stationary frame's inner opening.
-  document.querySelectorAll('.work-gallery > .case').forEach(section => {
-    if (!motionQuery.matches) {
-      section.style.removeProperty('--frame-clip-top');
-      section.style.removeProperty('--frame-clip-bottom');
-      return;
-    }
+  const workCases = [...document.querySelectorAll('.work-gallery > .case')];
+  const activeCase = workCases.find(section => {
     const bounds = section.getBoundingClientRect();
-    section.style.setProperty('--frame-clip-top', Math.max(0,82-bounds.top)+'px');
-    section.style.setProperty('--frame-clip-bottom', Math.max(0,bounds.bottom-(window.innerHeight-26))+'px');
+    return bounds.top <= window.innerHeight * .45 && bounds.bottom > window.innerHeight * .45;
+  });
+  document.querySelectorAll('[data-work-index]').forEach(link => {
+    if (link.dataset.workIndex === activeCase?.dataset.case) link.setAttribute('aria-current','location');
+    else link.removeAttribute('aria-current');
   });
   const footer = document.querySelector('footer');
   if (sceneMeter && footer) sceneMeter.hidden = footer.getBoundingClientRect().top < window.innerHeight;
@@ -287,7 +285,6 @@ function requestPageUpdate() {
 function measurePage() {
   document.body.classList.toggle('has-scroll-sequences',motionQuery.matches);
   sequences.forEach(state => state.measure());
-  positionNavigator(navigatorOffsetY);
   requestPageUpdate();
 }
 window.addEventListener('scroll',requestPageUpdate,{passive:true});
@@ -312,43 +309,6 @@ window.addEventListener('hashchange',() => routePanel(location.hash,false));
 window.addEventListener('load',() => {measurePage();routePanel(location.hash,false);});
 window.addEventListener('portfolio:unlocked',() => routePanel(location.hash,false));
 
-// Navigator can move only within its reserved rail, never over copy.
-const navigatorHandle = document.querySelector('.chapter-window-bar');
-const projectNavigator = document.querySelector('.chapter-pagination');
-const navRail = document.querySelector('.systems-nav-rail');
-let navigatorOffsetY = 0;
-let navigatorDrag;
-function positionNavigator(y) {
-  if (!projectNavigator || !navRail) return;
-  const limit = Math.max(0,(navRail.clientHeight-projectNavigator.offsetHeight)/2);
-  navigatorOffsetY = clamp(y,-limit,limit);
-  projectNavigator.style.setProperty('--nav-drag-y',navigatorOffsetY+'px');
-}
-function stopNavigatorDrag(event) {
-  if (!navigatorDrag || (event?.pointerId !== undefined && event.pointerId !== navigatorDrag.id)) return;
-  const id = navigatorDrag.id;
-  navigatorDrag = undefined;
-  if (navigatorHandle.hasPointerCapture(id)) navigatorHandle.releasePointerCapture(id);
-}
-navigatorHandle?.addEventListener('pointerdown',event => {
-  if (event.button !== 0) return;
-  navigatorDrag={id:event.pointerId,startY:event.clientY,origin:navigatorOffsetY};
-  navigatorHandle.setPointerCapture(event.pointerId);
-});
-navigatorHandle?.addEventListener('pointermove',event => {
-  if (!navigatorDrag || event.pointerId !== navigatorDrag.id) return;
-  if (event.pointerType === 'mouse' && event.buttons === 0) {stopNavigatorDrag(event);return;}
-  positionNavigator(navigatorDrag.origin+event.clientY-navigatorDrag.startY);
-});
-['pointerup','pointercancel','lostpointercapture'].forEach(type => navigatorHandle?.addEventListener(type,stopNavigatorDrag));
-window.addEventListener('pointerup',stopNavigatorDrag);
-window.addEventListener('blur',() => stopNavigatorDrag());
-document.addEventListener('visibilitychange',() => {if(document.hidden) stopNavigatorDrag();});
-navigatorHandle?.addEventListener('keydown',event => {
-  if (!['ArrowUp','ArrowDown','Home'].includes(event.key)) return;
-  event.preventDefault();
-  positionNavigator(event.key === 'Home' ? 0 : navigatorOffsetY+(event.key === 'ArrowUp' ? -10:10));
-});
 document.querySelectorAll('[data-viewer-action]').forEach(button => button.addEventListener('click',() => {
   const action=button.dataset.viewerAction;
   if (action === 'info') {
