@@ -33,7 +33,7 @@ gateForm?.addEventListener('submit', async (event) => {
     sessionStorage.setItem(AUTH_KEY, PASSWORD_HASH);
     passwordInput.value = '';
     unlockPortfolio();
-    window.scrollTo({ top: 0 });
+    if (!location.hash) window.scrollTo({ top: 0 });
     return;
   }
 
@@ -259,7 +259,6 @@ function createSequence(section, pinSelector, trackSelector, slideSelector, body
   mark(0);
   sequences.push(state);
 }
-createSequence(systemsSection,'.systems-pin','.systems-track','.story-beat','.panel-body','systems');
 createSequence(digitalSection,'.digital-pin','.digital-track','.digital-slide','.digital-description','digital');
 
 function updatePage() {
@@ -275,7 +274,7 @@ function updatePage() {
     if (link.dataset.workIndex === activeCase?.dataset.case) link.setAttribute('aria-current','location');
     else link.removeAttribute('aria-current');
   });
-  const footer = document.querySelector('footer');
+  const footer = document.querySelector('.site-footer');
   if (sceneMeter && footer) sceneMeter.hidden = footer.getBoundingClientRect().top < window.innerHeight;
 
 }
