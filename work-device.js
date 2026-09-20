@@ -37,7 +37,7 @@
       else link.removeAttribute('aria-current');
     });
     pages.hidden = chapter !== 0;
-    const name = ['Systems', 'Space', 'Creative'][chapter];
+    const name = ['Systems', 'Space', 'Flowers'][chapter];
     const spine = section.querySelector('.editorial-spine');
     if (spine) spine.textContent = name;
     section.querySelectorAll('[data-editorial-work-dot]').forEach((dot, i) => {
@@ -49,9 +49,9 @@
     counter.textContent = chapter === 0 ? `${String(index + 1).padStart(2, '0')} / ${String(panels.length).padStart(2, '0')}` : `${String(chapter + 1).padStart(2, '0')} / 03 chapters`;
     label.append(counter);
     previous.disabled = index === 0;
-    next.setAttribute('aria-label', index === steps.length - 1 ? 'Continue to Digital projects' : index === panels.length - 1 ? 'Next chapter: Space' : index === panels.length ? 'Next chapter: Creative' : 'Next work page');
+    next.setAttribute('aria-label', index === steps.length - 1 ? 'Continue to Digital projects' : index === panels.length - 1 ? 'Next chapter: Space' : index === panels.length ? 'Next chapter: Flowers' : 'Next work page');
     previous.setAttribute('aria-label', chapter > 0 ? 'Previous work chapter' : 'Previous work page');
-    next.textContent = index >= panels.length - 1 ? '↓' : '→';
+    next.textContent = '→';
     help.textContent = index === steps.length - 1 ? 'Scroll to continue to Digital projects ↓' : chapter ? 'Scroll to read this chapter ↓' : index === panels.length - 1 ? 'Scroll to continue to Space ↓' : 'Scroll to follow the story or choose a chapter.';
     const systemPanel = panels[Math.min(index, panels.length - 1)];
     mapStatus.textContent = systemPanel.dataset.label;

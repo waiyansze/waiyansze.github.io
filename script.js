@@ -278,14 +278,14 @@ function createSequence(section, pinSelector, trackSelector, slideSelector, body
   mark(0);
   sequences.push(state);
 }
-createSequence(digitalSection,'.digital-pin','.digital-track','.digital-slide','.digital-description','digital');
+if (digitalSection?.querySelector('.digital-track')) createSequence(digitalSection,'.digital-pin','.digital-track','.digital-slide','.digital-description','digital');
 
 function updatePage() {
   pageFrame = undefined;
   siteHeader?.classList.toggle('is-scrolled',window.scrollY > 16);
   sequences.forEach(state => state.update());
   const digitalBounds = digitalSection?.getBoundingClientRect();
-  document.body.classList.toggle('in-editorial-digital', Boolean(motionQuery.matches && digitalBounds && digitalBounds.top < 70 && digitalBounds.bottom > window.innerHeight - 50));
+  document.body.classList.toggle('in-editorial-digital', Boolean(digitalSection?.querySelector('.digital-pin') && motionQuery.matches && digitalBounds && digitalBounds.top < 70 && digitalBounds.bottom > window.innerHeight - 50));
   const workCases = [...document.querySelectorAll('.work-gallery > .case')];
   const activeCase = workCases.find(section => {
     const bounds = section.getBoundingClientRect();

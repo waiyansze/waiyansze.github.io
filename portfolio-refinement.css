@@ -1,0 +1,66 @@
+/* Light ink reader and an independent vertical digital gallery. */
+.editorial-edition .work-device>.editorial-spine{writing-mode:vertical-rl;transform:none;grid-row:1/3;text-align:left;align-self:stretch;padding:0 16px 100px 0;border-right:1px dotted #7a807377;font-size:.78rem}
+.editorial-edition .editorial-tools{gap:14px;align-self:end;background:var(--paper);padding-top:12px}
+.editorial-edition .editorial-tools>button{width:36px;height:36px;font:500 1.2rem Arial,sans-serif}
+.editorial-edition .device-viewport{background:#f4f3ec;color:#242d29;box-shadow:0 18px 42px -25px #28382d55}
+.editorial-edition .device-systems,.editorial-edition .device-creative{background:linear-gradient(115deg,#faf9f3f5,#eef0e9ed),url('./assets/xuan-ink-texture.webp') center/cover;color:#24302b}
+.editorial-edition .device-space{background:linear-gradient(130deg,#faf9f4ec,#f0f1e8ed),url('./assets/xuan-ink-texture.webp') center/cover}
+.editorial-edition .device-reading h3,.editorial-edition .device-creative .device-reading h3{color:#24302b}
+.editorial-edition .device-reading p,.editorial-edition .device-creative .device-reading p,.editorial-edition .device-improvements{color:#4a554d}
+.editorial-edition .device-reading h4,.editorial-edition .device-reading .device-eyebrow,.editorial-edition .device-creative .device-reading .device-eyebrow{color:#a34736}
+.editorial-edition .device-reading .device-proof,.editorial-edition .device-creative .device-reading .device-proof{color:#35473b;border-color:#77877555}
+.editorial-edition .device-map-label,.editorial-edition .device-practice>p{color:#596759;border-color:#69796644}
+.editorial-edition .device-map-status{color:#a34736}
+.editorial-edition .device-nodes{border-color:#7a897855;background:#ecede477}
+.editorial-edition .device-nodes>div{color:#63715f;border-color:#81927844}
+.editorial-edition .device-nodes>div span{color:#62745b}
+.editorial-edition .device-nodes>div.is-active{background:#dde3d4;color:#24332a}
+.editorial-edition .device-practice a{color:#344936}
+.editorial-edition .device-practice a span{color:#a34736}
+.editorial-edition .device-practice a[aria-current]{background:#839b7110}
+.editorial-edition .device-workflow li{color:#43543f;border-color:#81927844}
+.editorial-edition .device-workflow li:before{color:#a34736}
+.editorial-edition .device-creative figcaption{color:#62715d}
+.editorial-edition .device-pages a:after{background:#73826955}
+.editorial-edition .device-pages a[aria-current]:after{background:#a34736;box-shadow:0 0 0 3px #a3473615}
+.editorial-edition .space-story{display:grid;grid-template-columns:1fr 1fr;gap:2rem 3rem;margin:2.5rem 0}
+.editorial-edition .space-story section{border-top:1px solid #85907655;padding-top:1.5rem}
+.editorial-edition .space-story h4{font-size:.76rem;line-height:1.6}
+.editorial-edition .device-space .device-reading>p{max-width:75ch}
+
+.editorial-edition .digital-deliveries{position:relative;isolation:isolate;background:#f9f8f1;color:#28312b;padding:5rem 6vw 6rem;border-top:1px solid #828b7033;overflow:clip}
+.editorial-edition .digital-deliveries:before{content:'';position:absolute;inset:0;z-index:-1;background:url('./assets/xuan-ink-texture.webp') center/cover;opacity:.06;pointer-events:none}
+.deliveries-intro{display:flex;justify-content:space-between;gap:2rem;position:relative;z-index:2;font-size:.8rem}
+.deliveries-intro>p{max-width:24rem;margin:0;color:#67715f;line-height:1.65}
+.deliveries-backdrop{position:sticky;top:18vh;height:60vh;margin-top:8vh;z-index:0;pointer-events:none;display:flex;flex-direction:column;justify-content:center}
+.deliveries-backdrop h2{font:400 clamp(5rem,14vw,16rem)/.8 Georgia,serif;letter-spacing:-.065em;color:#818e7752;margin:0}
+.deliveries-backdrop h2 em{font-weight:400}
+.deliveries-backdrop>p{font-size:.8rem;color:#7d8973;margin-top:2rem;letter-spacing:.08em}
+.deliveries-flow{position:relative;z-index:1;margin-top:-14vh;display:flex;flex-direction:column;gap:16vh;padding-bottom:10vh}
+.delivery-card{width:clamp(320px,43%,680px);margin:0 3% 0 auto;background:#fafaf6;border:1px solid #72816a2b;padding:14px;box-shadow:0 20px 55px -35px #25332580;scroll-margin-top:100px;transition:box-shadow .3s,translate .3s}
+.delivery-card:nth-child(even){margin:0 auto 0 6%}
+.delivery-card:nth-child(3){margin-right:10%}
+.delivery-card:hover{box-shadow:0 22px 65px -30px #25332580;translate:0 -4px}
+.delivery-screen{margin:0;background:white}
+.delivery-screen img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:contain;background:#fff}
+.delivery-screen figcaption{font-size:.62rem;color:#7b8474;line-height:1.5;padding:.6rem 0;background:#fafaf6}
+.delivery-screen .screen-bar{display:flex;justify-content:space-between;gap:1rem;background:#e9ede2;color:#4f5b45;font-size:.65rem;padding:.4rem .65rem}
+.delivery-description{padding:1rem .5rem .6rem;color:#4c5848}
+.delivery-description h3{font:400 clamp(1.7rem,2.5vw,2.8rem)/1.15 Georgia,serif;color:#283a2c;margin:.8rem 0}
+.delivery-description h3 span{font:.7rem/1.6 Arial,sans-serif}
+.delivery-description p{font-size:.9rem;line-height:1.7;max-width:55ch;margin:.65rem 0}
+.delivery-description .project-stack{color:#a34736;font-size:.62rem;letter-spacing:.08em}
+.delivery-description .digital-visit{display:inline-flex;color:#334b37;border-bottom:1px solid #879879;gap:2rem;margin:.65rem 0 0;font-size:.8rem;padding:.4rem 0}
+.deliveries-end{position:relative;z-index:2;display:flex;justify-content:space-between;padding:2rem 0 0;border-top:1px solid #6e7e5d55;color:#46553c;font-size:.9rem}
+.delivery-card:focus-within{outline:2px solid #a34736;outline-offset:5px}
+@media(max-width:900px),(max-height:559px){
+ .editorial-edition .space-story{grid-template-columns:1fr;gap:1rem}
+ .editorial-edition .digital-deliveries{padding:4rem 1.25rem}
+ .deliveries-intro{flex-direction:column;gap:.75rem}
+ .deliveries-backdrop{top:90px;height:34vh;margin-top:3rem}
+ .deliveries-backdrop h2{font-size:19vw}
+ .deliveries-flow{gap:4rem;margin-top:0;padding-bottom:4rem}
+ .delivery-card,.delivery-card:nth-child(even),.delivery-card:nth-child(3){width:92%;margin:0 0 0 auto}
+ .delivery-card:nth-child(even){margin-left:0;margin-right:auto}
+}
+@media(prefers-reduced-motion:reduce){.deliveries-backdrop{position:relative;top:auto;height:auto;margin:3rem 0}.deliveries-flow{margin:0}.delivery-card{transition:none}.delivery-card:hover{translate:none}}
