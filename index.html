@@ -83,13 +83,24 @@
         <div class="work-device-pin">
           <div class="work-device">
             <p class="editorial-spine" aria-hidden="true">Systems</p>
+            <div class="editorial-tools" aria-label="Selected work controls">
+              <button type="button" data-work-direction="-1" aria-label="Previous work page">←</button>
+              <button type="button" data-editorial-reset="work" aria-label="Restart selected work">↻</button>
+              <a href="#thread" aria-label="Read the thread">i</a>
+            </div>
             <header class="device-header">
               <a class="device-signature" href="#work">WAI <span>/ SELECTED WORK</span></a>
+              <div class="editorial-meta" aria-hidden="true">
+                <p><time data-editorial-time>--:--:--</time><span>/</span><b data-editorial-day>---</b><span>/</span><time data-editorial-date>--.--.----</time></p>
+                <i></i>
+                <span class="editorial-meta-dots"><b data-editorial-work-dot="0" class="is-current"></b><b data-editorial-work-dot="1"></b><b data-editorial-work-dot="2"></b></span>
+              </div>
               <nav class="device-navigation" aria-label="Selected work chapters">
                 <a href="#systems-case" data-work-chapter="0" aria-current="location"><span>01</span> Systems</a>
                 <a href="#enso-case" data-work-chapter="1"><span>02</span> Space</a>
                 <a href="#creative-case" data-work-chapter="2"><span>03</span> Creative</a>
               </nav>
+              <p class="editorial-rail-words" aria-hidden="true"><b>observe</b><b>connect</b><b>carry through</b></p>
               <a class="device-exit" href="#digital-projects" aria-label="Continue to Digital projects">Continue <span aria-hidden="true">↓</span></a>
             </header>
             <div class="device-viewport" tabindex="0" role="region" aria-label="Selected work reader" aria-describedby="device-instructions">
@@ -228,7 +239,6 @@
               </div>
             </div>
             <footer class="device-footer">
-              <button type="button" data-work-direction="-1" aria-label="Previous work page">←</button>
               <p class="device-page-label" aria-live="polite">Systems <span>01 / 06</span></p>
               <nav class="device-pages" aria-label="Systems pages">
                 <a href="#systems-overview" aria-label="Systems overview" aria-current="page">01</a>
@@ -250,6 +260,16 @@
     <section class="digital-showcase story-scene scroll-sequence" id="digital-projects" data-scene-number="06" aria-labelledby="digital-title">
       <div class="digital-pin">
       <p class="editorial-spine" aria-hidden="true">Digital projects</p>
+      <div class="editorial-tools digital-tools" aria-label="Digital project controls">
+        <a href="#work" aria-label="Return to selected work">←</a>
+        <button type="button" data-editorial-reset="digital" aria-label="Restart digital projects">↻</button>
+        <a href="#thread" aria-label="Read the thread">i</a>
+      </div>
+      <div class="editorial-meta editorial-digital-meta" aria-hidden="true">
+        <p><time data-editorial-time>--:--:--</time><span>/</span><b data-editorial-day>---</b><span>/</span><time data-editorial-date>--.--.----</time></p>
+        <i></i>
+        <span class="editorial-meta-dots"><b data-editorial-digital-dot="0" class="is-current"></b><b data-editorial-digital-dot="1"></b><b data-editorial-digital-dot="2"></b><b data-editorial-digital-dot="3"></b><b data-editorial-digital-dot="4"></b></span>
+      </div>
       <header class="digital-heading">
         <div><p class="section-label">Digital projects / 2021–2026</p><h2 id="digital-title">Another canvas.<br><em>Made for the web.</em></h2></div>
         <p>Five website projects for exhibitions, businesses and artists.<br><span>Scroll down to explore →</span></p>

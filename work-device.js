@@ -40,6 +40,10 @@
     const name = ['Systems', 'Space', 'Creative'][chapter];
     const spine = section.querySelector('.editorial-spine');
     if (spine) spine.textContent = name;
+    section.querySelectorAll('[data-editorial-work-dot]').forEach((dot, i) => {
+      dot.classList.toggle('is-complete', i < chapter);
+      dot.classList.toggle('is-current', i === chapter);
+    });
     label.replaceChildren(document.createTextNode(name));
     const counter = document.createElement('span');
     counter.textContent = chapter === 0 ? `${String(index + 1).padStart(2, '0')} / ${String(panels.length).padStart(2, '0')}` : `${String(chapter + 1).padStart(2, '0')} / 03 chapters`;
@@ -170,6 +174,7 @@
   });
   previous.addEventListener('click', () => go(selected - 1));
   next.addEventListener('click', () => go(selected + 1));
+  section.querySelector('[data-editorial-reset="work"]')?.addEventListener('click', () => go(0));
   viewport.addEventListener('keydown', event => {
     if (event.target !== viewport || !query.matches) return;
     const destination = {ArrowLeft:selected - 1,ArrowRight:selected + 1,Home:0,End:steps.length - 1};

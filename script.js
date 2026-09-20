@@ -41,6 +41,18 @@ gateForm?.addEventListener('submit', async (event) => {
   passwordInput.select();
 });
 
+function refreshEditorialMetadata() {
+  const now = new Date();
+  const time = [now.getHours(), now.getMinutes(), now.getSeconds()].map(value => String(value).padStart(2, '0')).join(':');
+  const date = [now.getDate(), now.getMonth() + 1].map(value => String(value).padStart(2, '0')).join('.') + '.' + now.getFullYear();
+  const day = new Intl.DateTimeFormat('en-GB', { weekday: 'long' }).format(now).toUpperCase();
+  document.querySelectorAll('[data-editorial-time]').forEach(node => { node.textContent = time; node.dateTime = now.toTimeString().slice(0, 8); });
+  document.querySelectorAll('[data-editorial-day]').forEach(node => node.textContent = day);
+  document.querySelectorAll('[data-editorial-date]').forEach(node => { node.textContent = date; node.dateTime = now.toISOString().slice(0, 10); });
+}
+refreshEditorialMetadata();
+window.setInterval(refreshEditorialMetadata, 1000);
+
 const observed = document.querySelectorAll('.statement, .case, .thread-list article');
 if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
   const io = new IntersectionObserver((entries) => {
@@ -187,6 +199,12 @@ function createSequence(section, pinSelector, trackSelector, slideSelector, body
       button.disabled = direction < 0 ? index === 0 : index === slides.length - 1;
     });
     if (counter) counter.textContent = String(index + 1).padStart(2,'0') + ' / ' + String(slides.length).padStart(2,'0');
+    if (kind === 'digital') {
+      document.querySelectorAll('[data-editorial-digital-dot]').forEach((dot, i) => {
+        dot.classList.toggle('is-complete', i < index);
+        dot.classList.toggle('is-current', i === index);
+      });
+    }
     if (kind === 'systems') updateSystemMap(slides[index]);
   };
   state.measure = () => {
@@ -242,6 +260,7 @@ function createSequence(section, pinSelector, trackSelector, slideSelector, body
   };
   links.forEach((link,i) => link.addEventListener('click',event => {event.preventDefault();state.go(i);}));
   buttons.forEach(button => button.addEventListener('click',() => state.go(state.selected+Number(button.dataset.digitalDirection || button.dataset.systemDirection))));
+  section.querySelectorAll('[data-editorial-reset="digital"]').forEach(button => button.addEventListener('click',() => state.go(0)));
   const keyboardRegion = kind === 'systems' ? section.querySelector('.systems-copy-viewport') : track;
   keyboardRegion.addEventListener('keydown',event => {
     if (event.target !== keyboardRegion) return;
