@@ -115,3 +115,24 @@
  .has-work-device .story-page-media.portrait img{max-height:55vh}
 }
 @media(max-width:900px),(max-height:559px){.editorial-edition .story-page-layout{grid-template-columns:1fr}.editorial-edition .story-page{border-bottom:1px solid #85907655}.editorial-edition .story-page-media img{max-height:440px}.editorial-edition .story-page-copy{grid-row:1}}
+
+.editorial-edition .story-page-media.image-gallery{display:block}
+.editorial-edition .image-gallery>figure[hidden]{display:none!important}
+.image-zoom{display:block;position:relative;width:100%;border:0;padding:0;background:transparent;cursor:zoom-in;color:inherit;touch-action:pan-y}
+.editorial-edition .story-page-media.image-gallery .image-zoom>img{width:100%;height:clamp(240px,43vh,580px);max-height:none;object-fit:contain}
+.image-zoom-hint{position:absolute;bottom:.6rem;right:.6rem;background:#faf9f0e6;padding:.4rem .6rem;border-radius:2px;font:500 .65rem/1.3 Arial,sans-serif;color:#344239}
+.image-gallery-controls{display:flex;align-items:center;gap:.65rem;margin-top:1rem;flex-wrap:wrap}
+.image-gallery-controls button{border:1px solid #7b83754d;color:#344239;background:transparent;border-radius:2px;cursor:pointer;min-width:36px;min-height:36px}
+.image-gallery-count{font:500 .7rem/1.4 Arial,sans-serif;font-variant-numeric:tabular-nums}
+.image-gallery-picks{display:flex;gap:.4rem;margin-left:auto}
+.image-gallery-picks button{padding:3px;font-size:.7rem}
+.image-gallery-picks button[aria-pressed=true]{border-color:#a34736;box-shadow:0 0 0 1px #a34736}
+.editorial-edition .story-page-media.image-gallery .image-gallery-picks img{width:48px;height:34px;max-height:none;object-fit:cover}
+.image-gallery.plans .image-gallery-picks button{padding:.4rem .65rem}
+.work-image-dialog{width:min(94vw,1600px);max-width:94vw;max-height:94dvh;padding:1rem;border:1px solid #92998a;background:#faf9f1;color:#26342c;overflow:auto}
+.work-image-dialog::backdrop{background:#101510df}
+.work-image-dialog>button{display:block;margin:0 0 .75rem auto;padding:.65rem 1rem;cursor:pointer;border:1px solid #8a9285;background:transparent;color:inherit}
+.work-image-dialog>img{display:block;width:100%;height:75dvh;object-fit:contain}
+.work-image-dialog>p{font:400 .85rem/1.5 Arial,sans-serif;margin:.8rem 0 0}
+.work-image-dialog button:focus-visible{outline:2px solid #a34736;outline-offset:3px}
+@media(max-width:900px){.editorial-edition .story-page-media.image-gallery .image-zoom>img{height:clamp(220px,45vh,480px)}}

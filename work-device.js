@@ -201,6 +201,7 @@
   });
   window.addEventListener('scroll', requestUpdate, {passive:true});
   window.addEventListener('resize', () => measure(), {passive:true});
+  window.addEventListener('portfolio:mediachange', () => measure());
   query.addEventListener('change', () => measure());
   window.addEventListener('hashchange', () => route(location.hash, false));
   const initialize = () => {measure(false);route(location.hash, false);};
