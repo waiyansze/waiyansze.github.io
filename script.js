@@ -265,6 +265,8 @@ function updatePage() {
   pageFrame = undefined;
   siteHeader?.classList.toggle('is-scrolled',window.scrollY > 16);
   sequences.forEach(state => state.update());
+  const digitalBounds = digitalSection?.getBoundingClientRect();
+  document.body.classList.toggle('in-editorial-digital', Boolean(motionQuery.matches && digitalBounds && digitalBounds.top < 70 && digitalBounds.bottom > window.innerHeight - 50));
   const workCases = [...document.querySelectorAll('.work-gallery > .case')];
   const activeCase = workCases.find(section => {
     const bounds = section.getBoundingClientRect();

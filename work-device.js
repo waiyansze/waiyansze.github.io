@@ -38,6 +38,8 @@
     });
     pages.hidden = chapter !== 0;
     const name = ['Systems', 'Space', 'Creative'][chapter];
+    const spine = section.querySelector('.editorial-spine');
+    if (spine) spine.textContent = name;
     label.replaceChildren(document.createTextNode(name));
     const counter = document.createElement('span');
     counter.textContent = chapter === 0 ? `${String(index + 1).padStart(2, '0')} / ${String(panels.length).padStart(2, '0')}` : `${String(chapter + 1).padStart(2, '0')} / 03 chapters`;
