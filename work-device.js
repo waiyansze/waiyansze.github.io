@@ -9,10 +9,14 @@
   const chapters = [...section.querySelectorAll('.device-chapter')];
   const systemTrack = section.querySelector('.device-system-track');
   const panels = [...section.querySelectorAll('.device-panel')];
-  const steps = [...panels, ...chapters.slice(1)];
+  const groups = chapters.map((chapter, i) => i === 0 ? panels : [...chapter.querySelectorAll('.story-page')]);
+  const tracks = [systemTrack, ...chapters.slice(1).map(chapter => chapter.querySelector('.chapter-track'))];
+  const steps = groups.flat();
+  const starts = groups.map((group, i) => groups.slice(0, i).reduce((n, pages) => n + pages.length, 0));
   const readings = steps.map(step => step.querySelector('.device-reading'));
   const chapterLinks = [...section.querySelectorAll('[data-work-chapter]')];
-  const pageLinks = [...section.querySelectorAll('.device-pages a')];
+  let pageLinks = [];
+  let shownChapter = -1;
   const pages = section.querySelector('.device-pages');
   const previous = section.querySelector('[data-work-direction="-1"]');
   const next = section.querySelector('[data-work-direction="1"]');
@@ -21,7 +25,7 @@
   const mapStatus = section.querySelector('.device-map-status');
   const query = matchMedia('(min-width:901px) and (min-height:560px) and (prefers-reduced-motion:no-preference)');
   const bound = (value, min, max) => Math.max(min, Math.min(max, value));
-  const chapterOf = index => Math.max(0, index - panels.length + 1);
+  const chapterOf = index => Math.max(0, starts.findLastIndex(start => index >= start));
   let segments = [], total = 0, selected = -1, frame = 0, measured = false;
 
   function mark(index) {
@@ -32,11 +36,20 @@
       if (i === chapter) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
     });
+    if (shownChapter !== chapter) {
+      shownChapter = chapter;
+      pages.setAttribute('aria-label', ['Systems', 'Space', 'Flowers'][chapter] + ' pages');
+      pages.replaceChildren(...groups[chapter].map((step, i) => {
+        const a = document.createElement('a'); a.href = '#' + step.id; a.textContent = String(i + 1).padStart(2, '0');
+        a.setAttribute('aria-label', step.dataset.label || ('Page ' + (i + 1))); return a;
+      }));
+      pageLinks = [...pages.querySelectorAll('a')];
+    }
     pageLinks.forEach((link, i) => {
-      if (i === index) link.setAttribute('aria-current', 'page');
+      if (i === index - starts[chapter]) link.setAttribute('aria-current', 'page');
       else link.removeAttribute('aria-current');
     });
-    pages.hidden = chapter !== 0;
+    pages.hidden = false;
     const name = ['Systems', 'Space', 'Flowers'][chapter];
     const spine = section.querySelector('.editorial-spine');
     if (spine) spine.textContent = name;
@@ -46,13 +59,13 @@
     });
     label.replaceChildren(document.createTextNode(name));
     const counter = document.createElement('span');
-    counter.textContent = chapter === 0 ? `${String(index + 1).padStart(2, '0')} / ${String(panels.length).padStart(2, '0')}` : `${String(chapter + 1).padStart(2, '0')} / 03 chapters`;
+    counter.textContent = `${String(index - starts[chapter] + 1).padStart(2, '0')} / ${String(groups[chapter].length).padStart(2, '0')}`;
     label.append(counter);
     previous.disabled = index === 0;
-    next.setAttribute('aria-label', index === steps.length - 1 ? 'Continue to Digital projects' : index === panels.length - 1 ? 'Next chapter: Space' : index === panels.length ? 'Next chapter: Flowers' : 'Next work page');
-    previous.setAttribute('aria-label', chapter > 0 ? 'Previous work chapter' : 'Previous work page');
+    next.setAttribute('aria-label', index === steps.length - 1 ? 'Continue to Digital projects' : 'Next work page');
+    previous.setAttribute('aria-label', 'Previous work page');
     next.textContent = '→';
-    help.textContent = index === steps.length - 1 ? 'Scroll to continue to Digital projects ↓' : chapter ? 'Scroll to read this chapter ↓' : index === panels.length - 1 ? 'Scroll to continue to Space ↓' : 'Scroll to follow the story or choose a chapter.';
+    help.textContent = index === steps.length - 1 ? 'Continue to Digital projects ↓' : 'Scroll or use the arrows to turn the page →';
     const systemPanel = panels[Math.min(index, panels.length - 1)];
     mapStatus.textContent = systemPanel.dataset.label;
     const activeSystems = systemPanel.dataset.systems.split(',');
@@ -83,11 +96,15 @@
       }
     }
     const index = bound(Math.round(position), 0, steps.length - 1);
-    const chapterPosition = Math.max(0, position - panels.length + 1);
+    const from = Math.floor(position), to = Math.min(from + 1, steps.length - 1);
+    const chapterPosition = chapterOf(from) + (chapterOf(to) - chapterOf(from)) * (position - from);
     stack.style.transform = `translate3d(0,${-chapterPosition * viewport.clientHeight}px,0)`;
-    systemTrack.style.transform = `translate3d(${-Math.min(position, panels.length - 1) * systemTrack.clientWidth}px,0,0)`;
+    tracks.forEach((track, c) => {
+      const local = bound(position - starts[c], 0, groups[c].length - 1);
+      track.style.transform = `translate3d(${-local * track.clientWidth}px,0,0)`;
+    });
     steps.forEach((step, i) => step.inert = i !== index);
-    chapters[0].inert = index >= panels.length;
+    chapters.forEach((chapter, c) => chapter.inert = c !== chapterOf(index));
     mark(index);
     device.style.setProperty('--work-progress', String(total ? offset / total : 0));
     if (inView) {
@@ -113,11 +130,11 @@
     const oldHeight = section.offsetHeight;
     document.body.classList.toggle('has-work-device', query.matches);
     steps.forEach(step => step.inert = false);
-    chapters[0].inert = false;
+    chapters.forEach(chapter => chapter.inert = false);
     if (!query.matches) {
       section.style.removeProperty('--work-height');
       stack.style.removeProperty('transform');
-      systemTrack.style.removeProperty('transform');
+      tracks.forEach(track => track.style.removeProperty('transform'));
       readings.forEach(body => body.scrollTop = 0);
       segments = [];
       total = 0;
@@ -159,7 +176,9 @@
 
   function route(hash, smooth = true) {
     let index = steps.findIndex(step => `#${step.id}` === hash);
-    if (hash === '#systems-case' || hash === '#work-viewer') index = 0;
+    const c = chapters.findIndex(chapter => '#' + chapter.id === hash);
+    if (c >= 0) index = starts[c];
+    if (hash === '#work-viewer') index = 0;
     if (index < 0) return false;
     go(index, smooth);
     return true;

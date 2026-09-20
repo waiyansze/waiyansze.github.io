@@ -88,3 +88,30 @@
 .editorial-edition .enso-programme figure:last-child img{max-height:440px;object-position:left}
 @media(max-width:1100px){.editorial-edition .device-creative-layout{grid-template-columns:1fr}.editorial-edition .space-story section{grid-template-columns:1fr;gap:.65rem}}
 @media(max-width:900px){.editorial-edition .enso-programme{grid-template-columns:1fr}}
+
+/* All three chapters share the bounded horizontal reader. */
+.editorial-edition .story-page{min-width:0}
+.editorial-edition .story-page-layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(1.25rem,2.5vw,3rem);align-items:center;min-width:0}
+.editorial-edition .story-page-copy{min-width:0}
+.editorial-edition .story-page-media{display:grid;gap:1rem;min-width:0}
+.editorial-edition .story-page-media figure{margin:0;min-width:0}
+.editorial-edition .story-page-media img{display:block;width:100%;height:auto;object-fit:contain}
+.editorial-edition .story-page-media figcaption{font-size:.65rem;line-height:1.45;color:#657063;padding-top:.4rem}
+.editorial-edition.has-work-device .story-page .device-reading h3{font-size:clamp(1.65rem,2.5vw,3rem);line-height:1.12;margin-bottom:1.1rem}
+.editorial-edition .story-page .device-reading p{font-size:clamp(.92rem,1vw,1.1rem);line-height:1.65;margin-bottom:1rem}
+.editorial-edition .story-page .device-reading .device-eyebrow{font-size:.65rem}
+.editorial-edition .story-page .device-reading .device-proof{font-size:.85rem}
+.editorial-edition .story-page .device-reading{padding:clamp(1.2rem,2.5vw,3rem)}
+@media(min-width:901px) and (min-height:560px) and (prefers-reduced-motion:no-preference){
+ .has-work-device .chapter-window{height:100%;overflow:hidden}
+ .has-work-device .chapter-track{height:100%;width:100%;display:flex;will-change:transform}
+ .has-work-device .story-page{height:100%;flex:0 0 100%;overflow:hidden}
+ .has-work-device .story-page-layout{min-height:100%}
+ .has-work-device .story-page-media img{max-height:42vh}
+ .has-work-device .story-page-media:has(figure:nth-child(2)) img{max-height:22vh}
+ .has-work-device .story-page-media.exhibitions{grid-template-columns:1fr 1fr}
+ .has-work-device .story-page-media.exhibitions figure:last-child{grid-column:1/-1}
+ .has-work-device .story-page-media.exhibitions img{max-height:20vh}
+ .has-work-device .story-page-media.portrait img{max-height:55vh}
+}
+@media(max-width:900px),(max-height:559px){.editorial-edition .story-page-layout{grid-template-columns:1fr}.editorial-edition .story-page{border-bottom:1px solid #85907655}.editorial-edition .story-page-media img{max-height:440px}.editorial-edition .story-page-copy{grid-row:1}}

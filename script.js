@@ -41,17 +41,6 @@ gateForm?.addEventListener('submit', async (event) => {
   passwordInput.select();
 });
 
-function refreshEditorialMetadata() {
-  const now = new Date();
-  const time = [now.getHours(), now.getMinutes(), now.getSeconds()].map(value => String(value).padStart(2, '0')).join(':');
-  const date = [now.getDate(), now.getMonth() + 1].map(value => String(value).padStart(2, '0')).join('.') + '.' + now.getFullYear();
-  const day = new Intl.DateTimeFormat('en-GB', { weekday: 'long' }).format(now).toUpperCase();
-  document.querySelectorAll('[data-editorial-time]').forEach(node => { node.textContent = time; node.dateTime = now.toTimeString().slice(0, 8); });
-  document.querySelectorAll('[data-editorial-day]').forEach(node => node.textContent = day);
-  document.querySelectorAll('[data-editorial-date]').forEach(node => { node.textContent = date; node.dateTime = now.toISOString().slice(0, 10); });
-}
-refreshEditorialMetadata();
-window.setInterval(refreshEditorialMetadata, 1000);
 
 const observed = document.querySelectorAll('.statement, .case, .thread-list article');
 if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
