@@ -28,7 +28,7 @@
       zoom.type = 'button'; zoom.className = 'image-zoom';
       zoom.setAttribute('aria-label', `Enlarge image: ${img.alt}`);
       img.before(zoom); zoom.append(img);
-      const hint = document.createElement('span'); hint.className = 'image-zoom-hint'; hint.textContent = 'View larger ↗';
+      const hint = document.createElement('span'); hint.className = 'image-zoom-hint'; hint.textContent = '+'; hint.setAttribute('aria-hidden', 'true');
       zoom.append(hint);
       zoom.addEventListener('click', () => {
         if (suppressClick) { suppressClick = false; return; }

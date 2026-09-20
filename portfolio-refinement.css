@@ -120,7 +120,7 @@
 .editorial-edition .image-gallery>figure[hidden]{display:none!important}
 .image-zoom{display:block;position:relative;width:100%;border:0;padding:0;background:transparent;cursor:zoom-in;color:inherit;touch-action:pan-y}
 .editorial-edition .story-page-media.image-gallery .image-zoom>img{width:100%;height:clamp(240px,43vh,580px);max-height:none;object-fit:contain}
-.image-zoom-hint{position:absolute;bottom:.6rem;right:.6rem;background:#faf9f0e6;padding:.4rem .6rem;border-radius:2px;font:500 .65rem/1.3 Arial,sans-serif;color:#344239}
+.image-zoom-hint{position:absolute;bottom:.6rem;right:.6rem;display:grid;place-items:center;width:28px;height:28px;background:#faf9f0d9;border:1px solid #7b83754d;border-radius:50%;font:400 1.2rem/1 Arial,sans-serif;color:#344239}
 .image-gallery-controls{display:flex;align-items:center;gap:.65rem;margin-top:1rem;flex-wrap:wrap}
 .image-gallery-controls button{border:1px solid #7b83754d;color:#344239;background:transparent;border-radius:2px;cursor:pointer;min-width:36px;min-height:36px}
 .image-gallery-count{font:500 .7rem/1.4 Arial,sans-serif;font-variant-numeric:tabular-nums}
