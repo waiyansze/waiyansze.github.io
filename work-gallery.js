@@ -1,5 +1,13 @@
 /* Image selection is independent of the document's chapter pagination. */
 (() => {
+  const videos = [...document.querySelectorAll('.wedding-motion video')];
+  const visibility = new IntersectionObserver(entries => {
+    entries.forEach(entry => { if (!entry.isIntersecting) entry.target.pause(); });
+  });
+  videos.forEach(video => visibility.observe(video));
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) videos.forEach(video => video.pause());
+  });
   const media = [...document.querySelectorAll('.story-page-media')];
   if (!media.length) return;
   const dialog = document.createElement('dialog');

@@ -136,3 +136,6 @@
 .work-image-dialog>p{font:400 .85rem/1.5 Arial,sans-serif;margin:.8rem 0 0}
 .work-image-dialog button:focus-visible{outline:2px solid #a34736;outline-offset:3px}
 @media(max-width:900px){.editorial-edition .story-page-media.image-gallery .image-zoom>img{height:clamp(220px,45vh,480px)}}
+.wedding-motion{min-width:0}
+.wedding-motion video{display:block;width:100%;height:auto;max-height:55vh;background:#101210;border-radius:4px}
+.wedding-video-caption{font-size:.7rem;line-height:1.5;color:#657063;margin-top:.6rem}
