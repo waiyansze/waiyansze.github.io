@@ -32,6 +32,7 @@
     if (index === selected) return;
     selected = index;
     const chapter = chapterOf(index);
+    chapters.forEach((item, i) => item.classList.toggle('is-active', i === chapter));
     chapterLinks.forEach((link, i) => {
       if (i === chapter) link.setAttribute('aria-current', 'location');
       else link.removeAttribute('aria-current');
@@ -98,9 +99,6 @@
       }
     }
     const index = bound(Math.round(position), 0, steps.length - 1);
-    const from = Math.floor(position), to = Math.min(from + 1, steps.length - 1);
-    const chapterPosition = chapterOf(from) + (chapterOf(to) - chapterOf(from)) * (position - from);
-    stack.style.transform = `translate3d(0,${-chapterPosition * viewport.clientHeight}px,0)`;
     tracks.forEach((track, c) => {
       const local = bound(position - starts[c], 0, groups[c].length - 1);
       track.style.transform = `translate3d(${-local * track.clientWidth}px,0,0)`;
@@ -174,6 +172,10 @@
       const top = section.getBoundingClientRect().top + scrollY + segments[target].start;
       window.scrollTo({top,behavior:smooth ? 'smooth':'instant'});
     } else steps[target].scrollIntoView({block:'start',behavior:'instant'});
+    if (!smooth) {
+      // Apply content visibility, inert state and navigation together after a direct jump.
+      update();
+    }
   }
 
   function route(hash, smooth = true) {
@@ -188,7 +190,8 @@
 
   document.addEventListener('click', event => {
     const link = event.target.closest('a[href^="#"]');
-    if (link && route(link.hash)) {
+    if (event.defaultPrevented) return;
+    if (link && route(link.hash, !link.matches('[data-work-chapter]'))) {
       event.preventDefault();
       history.replaceState(null, '', link.hash);
     }
@@ -196,6 +199,30 @@
   previous.addEventListener('click', () => go(selected - 1));
   next.addEventListener('click', () => go(selected + 1));
   section.querySelector('[data-editorial-reset="work"]')?.addEventListener('click', () => go(0));
+  const systemDestinations = {
+    commerce: '#pricing-case',
+    sap: '#freight-case',
+    dynamics: '#precheck-case',
+    servicenow: '#visibility-case'
+  };
+  section.querySelectorAll('[data-node]').forEach(node => {
+    const destination = systemDestinations[node.dataset.node];
+    if (!destination) return;
+    node.setAttribute('role', 'link');
+    node.tabIndex = 0;
+    node.setAttribute('aria-label', `${node.textContent.trim()}. Open related example.`);
+    const open = () => {
+      route(destination, false);
+      history.replaceState(null, '', destination);
+    };
+    node.addEventListener('click', open);
+    node.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        open();
+      }
+    });
+  });
   viewport.addEventListener('keydown', event => {
     if (event.target !== viewport || !query.matches) return;
     const destination = {ArrowLeft:selected - 1,ArrowRight:selected + 1,Home:0,End:steps.length - 1};

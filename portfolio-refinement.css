@@ -163,17 +163,28 @@
 .image-gallery-picks{margin:0;max-width:100%;overflow-x:auto;gap:.45rem;padding:3px}
 .image-gallery-picks button{flex-shrink:0}
 .image-kind{position:absolute;left:.5rem;top:.5rem;padding:.35rem .55rem;border-radius:2px;background:#faf9f0ed;color:#344239;font:500 .65rem/1.3 Arial,sans-serif;pointer-events:none}
-.editorial-edition .wedding-film-page .story-page-layout{grid-template-columns:1fr;align-content:center;gap:1.2rem}
-.editorial-edition .wedding-film-page .story-page-copy{grid-row:1;max-width:58rem}
-.editorial-edition .wedding-film-page .story-page-copy>p:not(.device-eyebrow){display:none}
-.editorial-edition .wedding-film-page .story-page-copy h3{margin-bottom:0}
-.editorial-edition .wedding-film-page .wedding-motion{width:100%;grid-row:2}
+.editorial-edition .wedding-film-page .story-page-layout{grid-template-columns:minmax(0,1.55fr) minmax(260px,.75fr);align-items:center;gap:clamp(1.5rem,3vw,3.5rem)}
+.editorial-edition .wedding-film-page .story-page-copy{grid-column:2;grid-row:1;max-width:34rem}
+.editorial-edition .wedding-film-page .story-page-copy h3{margin-bottom:1rem}
+.editorial-edition .wedding-film-page .wedding-motion{width:100%;grid-column:1;grid-row:1}
 .editorial-edition .wedding-film-page video{width:100%;max-height:65vh;object-fit:contain}
-.wedding-video-caption{display:none}
+.wedding-video-caption{margin:.55rem 0 0;color:#687268;font-size:.72rem;letter-spacing:.04em}
+.booking-journey{display:grid;align-content:center;min-height:100%;padding:clamp(1rem,2vw,2rem);background:linear-gradient(145deg,#e8ebe1,#f6f5ed)}
+.booking-journey-card{padding:clamp(1.3rem,2.5vw,2.4rem);border:1px solid #7f8b794d;background:#faf9f2cc;box-shadow:0 18px 50px #26312812}
+.booking-journey-card>p{margin:0 0 1.25rem;color:var(--red);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+.booking-journey-card ol{list-style:none;margin:0;padding:0}
+.booking-journey-card li{position:relative;display:grid;grid-template-columns:2.2rem 1fr;gap:.1rem .8rem;padding:0 0 1.25rem}
+.booking-journey-card li:not(:last-child)::after{content:"";position:absolute;left:.7rem;top:1.5rem;bottom:.2rem;width:1px;background:#87958166}
+.booking-journey-card li>span{grid-row:1/3;color:var(--red);font:italic 600 .8rem Georgia,serif}
+.booking-journey-card strong{color:#29372e;font:500 clamp(1rem,1.35vw,1.3rem)/1.25 Georgia,serif}
+.booking-journey-card small{margin-top:.25rem;color:#687268;font:400 .76rem/1.4 Arial,sans-serif}
 @media(max-width:1100px){.editorial-edition{--rail:120px;--work-gap:1rem}.editorial-edition .editorial-meta{padding-left:19rem}}
 @media(max-width:900px),(max-height:559px){
  .editorial-edition .story-page-layout{grid-template-columns:1fr}
  .editorial-edition .story-page-media.image-gallery .image-zoom>img{height:clamp(240px,52vh,560px)}
  .editorial-edition .device-signature{display:flex;grid-column:1/-1;font-size:.6rem}
  .editorial-edition .wedding-film-page video{max-height:none}
+ .editorial-edition .wedding-film-page .story-page-layout{grid-template-columns:1fr}
+ .editorial-edition .wedding-film-page .wedding-motion{grid-column:1;grid-row:2}
+ .editorial-edition .wedding-film-page .story-page-copy{grid-column:1;grid-row:1}
 }
