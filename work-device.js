@@ -243,7 +243,6 @@
   window.addEventListener('hashchange', () => route(location.hash, false));
   const initialize = () => {measure(false);route(location.hash, false);};
   window.addEventListener('load', initialize);
-  window.addEventListener('portfolio:unlocked', () => requestAnimationFrame(initialize));
   document.fonts?.ready.then(() => measure());
   section.querySelectorAll('img').forEach(img => img.addEventListener('load', () => measure(), {once:true}));
   measure(false);
