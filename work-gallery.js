@@ -4,7 +4,11 @@
   const visibility = new IntersectionObserver(entries => {
     entries.forEach(entry => { if (!entry.isIntersecting) entry.target.pause(); });
   });
-  videos.forEach(video => visibility.observe(video));
+  videos.forEach(video => {
+    visibility.observe(video);
+    video.addEventListener('contextmenu', event => event.preventDefault());
+    video.addEventListener('keydown', event => event.stopPropagation());
+  });
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) videos.forEach(video => video.pause());
   });
@@ -29,6 +33,8 @@
     const figures = [...container.querySelectorAll(':scope > figure')];
     let active = 0, touchStart, suppressClick = false;
     container.classList.add('image-gallery');
+    const stage = document.createElement('div'); stage.className = 'image-gallery-stage';
+    stage.append(...figures); container.append(stage);
     figures.forEach((figure, i) => {
       figure.id ||= `work-image-${galleryIndex}-${i}`;
       const img = figure.querySelector('img');
@@ -38,6 +44,12 @@
       img.before(zoom); zoom.append(img);
       const hint = document.createElement('span'); hint.className = 'image-zoom-hint'; hint.textContent = '+'; hint.setAttribute('aria-hidden', 'true');
       zoom.append(hint);
+      const description = figure.querySelector('figcaption')?.textContent || '';
+      if (/proposal|visualisation|invitation design|original backdrop design|floor plan|3D view/i.test(description)) {
+        const badge = document.createElement('span'); badge.className = 'image-kind';
+        badge.textContent = /invitation/i.test(description) ? 'Invitation design' : /floor plan|3D view/i.test(description) ? 'Design drawing' : 'Design proposal';
+        zoom.append(badge);
+      }
       zoom.addEventListener('click', () => {
         if (suppressClick) { suppressClick = false; return; }
         opener = zoom; full.src = img.currentSrc || img.src; full.alt = img.alt;
@@ -51,6 +63,7 @@
     const previous = document.createElement('button'), next = document.createElement('button');
     previous.type = next.type = 'button'; previous.textContent = '←'; next.textContent = '→';
     previous.setAttribute('aria-label', 'Previous image'); next.setAttribute('aria-label', 'Next image');
+    previous.className = 'gallery-arrow gallery-arrow-previous'; next.className = 'gallery-arrow gallery-arrow-next';
     const count = document.createElement('span'); count.className = 'image-gallery-count';
     count.setAttribute('aria-live', 'polite'); count.setAttribute('aria-atomic', 'true');
     const picks = document.createElement('div'); picks.className = 'image-gallery-picks';
@@ -71,7 +84,7 @@
       window.dispatchEvent(new Event('portfolio:mediachange'));
     }
     previous.addEventListener('click', () => select(active - 1)); next.addEventListener('click', () => select(active + 1));
-    controls.append(previous, count, next, picks); container.append(controls);
+    stage.append(previous, next); controls.append(count, picks); container.append(controls);
     container.addEventListener('keydown', event => {
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
       event.preventDefault(); event.stopPropagation();

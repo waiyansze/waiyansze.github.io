@@ -51,6 +51,8 @@
     });
     pages.hidden = false;
     const name = ['Systems', 'Space', 'Flowers'][chapter];
+    const breadcrumb = section.querySelector('[data-work-breadcrumb]');
+    if (breadcrumb) breadcrumb.textContent = name;
     const spine = section.querySelector('.editorial-spine');
     if (spine) spine.textContent = name;
     section.querySelectorAll('[data-editorial-work-dot]').forEach((dot, i) => {
@@ -65,7 +67,7 @@
     next.setAttribute('aria-label', index === steps.length - 1 ? 'Continue to Digital projects' : 'Next work page');
     previous.setAttribute('aria-label', 'Previous work page');
     next.textContent = '→';
-    help.textContent = index === steps.length - 1 ? 'Continue to Digital projects ↓' : 'Scroll or use the arrows to turn the page →';
+    help.textContent = index === steps.length - 1 ? '' : 'Scroll or use the arrows to turn the page →';
     const systemPanel = panels[Math.min(index, panels.length - 1)];
     mapStatus.textContent = systemPanel.dataset.label;
     const activeSystems = systemPanel.dataset.systems.split(',');

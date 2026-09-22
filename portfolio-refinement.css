@@ -139,3 +139,41 @@
 .wedding-motion{min-width:0}
 .wedding-motion video{display:block;width:100%;height:auto;max-height:55vh;background:#101210;border-radius:4px}
 .wedding-video-caption{font-size:.7rem;line-height:1.5;color:#657063;margin-top:.6rem}
+
+/* A quieter reader: larger artwork, one set of image controls. */
+.editorial-edition{--rail:clamp(120px,10vw,155px);--work-gap:clamp(1rem,2.3vw,2.8rem)}
+.editorial-edition .work-device{column-gap:var(--work-gap)}
+.editorial-edition .device-pages{right:calc(var(--rail) + clamp(1rem,3vw,3rem) + var(--work-gap) + 6px)}
+.editorial-edition .story-page-layout{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:clamp(1.4rem,2.4vw,2.7rem)}
+.editorial-edition .story-page .device-reading{padding:clamp(1rem,1.9vw,2.25rem) clamp(1.6rem,2.3vw,2.7rem)}
+.editorial-edition .device-signature{flex-wrap:wrap;gap:.55rem;align-items:center;letter-spacing:.06em}
+.editorial-edition .device-signature a{color:inherit;font:inherit}
+.editorial-edition .device-signature span{display:inline;font-size:inherit}
+.editorial-edition .device-signature [data-work-breadcrumb]{color:var(--red);text-transform:none;letter-spacing:0}
+.editorial-edition .editorial-meta{padding-left:clamp(19rem,28vw,28rem)}
+.image-gallery-stage{position:relative;min-width:0}
+.editorial-edition .image-gallery figure[hidden]{display:none!important}
+.editorial-edition .story-page-media.image-gallery figcaption{display:none}
+.editorial-edition .story-page-media.image-gallery .image-zoom>img{height:clamp(270px,55vh,720px);object-fit:contain}
+.gallery-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:2;display:grid;place-items:center;width:36px;height:44px;border:0;border-radius:3px;background:#faf9f0e8;color:#293a30;box-shadow:0 2px 10px #1721191a;cursor:pointer;font:500 1.15rem Arial,sans-serif}
+.gallery-arrow-previous{left:.5rem}.gallery-arrow-next{right:.5rem}
+.gallery-arrow:focus-visible,.image-gallery-picks button:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+.image-gallery-count{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.image-gallery-controls{justify-content:center;margin-top:.65rem;min-width:0}
+.image-gallery-picks{margin:0;max-width:100%;overflow-x:auto;gap:.45rem;padding:3px}
+.image-gallery-picks button{flex-shrink:0}
+.image-kind{position:absolute;left:.5rem;top:.5rem;padding:.35rem .55rem;border-radius:2px;background:#faf9f0ed;color:#344239;font:500 .65rem/1.3 Arial,sans-serif;pointer-events:none}
+.editorial-edition .wedding-film-page .story-page-layout{grid-template-columns:1fr;align-content:center;gap:1.2rem}
+.editorial-edition .wedding-film-page .story-page-copy{grid-row:1;max-width:58rem}
+.editorial-edition .wedding-film-page .story-page-copy>p:not(.device-eyebrow){display:none}
+.editorial-edition .wedding-film-page .story-page-copy h3{margin-bottom:0}
+.editorial-edition .wedding-film-page .wedding-motion{width:100%;grid-row:2}
+.editorial-edition .wedding-film-page video{width:100%;max-height:65vh;object-fit:contain}
+.wedding-video-caption{display:none}
+@media(max-width:1100px){.editorial-edition{--rail:120px;--work-gap:1rem}.editorial-edition .editorial-meta{padding-left:19rem}}
+@media(max-width:900px),(max-height:559px){
+ .editorial-edition .story-page-layout{grid-template-columns:1fr}
+ .editorial-edition .story-page-media.image-gallery .image-zoom>img{height:clamp(240px,52vh,560px)}
+ .editorial-edition .device-signature{display:flex;grid-column:1/-1;font-size:.6rem}
+ .editorial-edition .wedding-film-page video{max-height:none}
+}
