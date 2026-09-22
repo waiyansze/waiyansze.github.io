@@ -71,6 +71,9 @@
     help.textContent = index === steps.length - 1 ? '' : 'Scroll or use the arrows to turn the page →';
     const systemPanel = panels[Math.min(index, panels.length - 1)];
     mapStatus.textContent = systemPanel.dataset.label;
+    section.querySelectorAll("[data-ops-view]").forEach(view => {
+      view.hidden = query.matches && Number(view.dataset.opsView) !== Math.min(index, panels.length - 1);
+    });
     const activeSystems = systemPanel.dataset.systems.split(',');
     section.querySelectorAll('[data-node]').forEach(node => node.classList.toggle('is-active', activeSystems.includes(node.dataset.node)));
     section.querySelectorAll('[data-map-step]').forEach(link => {
@@ -129,6 +132,11 @@
     const wasAfter = measured && oldBounds.bottom < 0;
     const oldHeight = section.offsetHeight;
     document.body.classList.toggle('has-work-device', query.matches);
+    section.querySelectorAll("[data-ops-view]").forEach((view, i) => {
+      const target = query.matches ? section.querySelector(".ops-map") : panels[i].querySelector(".device-reading");
+      if (view.parentElement !== target) target.append(view);
+      view.hidden = query.matches && i !== Math.min(Math.max(0, selected), panels.length - 1);
+    });
     steps.forEach(step => step.inert = false);
     chapters.forEach(chapter => chapter.inert = false);
     if (!query.matches) {
