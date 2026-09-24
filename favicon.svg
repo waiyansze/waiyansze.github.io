@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .line { fill: none; stroke: #1c1f1c; stroke-width: 2; stroke-linecap: square; stroke-linejoin: miter; }
+    .eye { fill: #1c1f1c; }
+    @media (prefers-color-scheme: dark) { .line { stroke: #f3f1eb; } .eye { fill: #f3f1eb; } }
+  </style>
+  <!-- An original cat, cool rather than cute: angular head, narrowed eyes, no smile.
+       The nose is a cinnabar seal square. -->
+  <path class="line" d="M5.5 14 V3.5 L12.5 9.5 H19.5 L26.5 3.5 V14 L24.5 22.5 L16 28 L7.5 22.5 Z"/>
+  <path class="eye" d="M9 16.2 L14.2 17.3 L13.4 18.6 Z M23 16.2 L17.8 17.3 L18.6 18.6 Z"/>
+  <rect x="14.9" y="20" width="2.2" height="2.2" fill="#a93a2c"/>
+</svg>
