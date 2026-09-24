@@ -16,7 +16,7 @@
   const next = deck.querySelector('[data-step="1"]');
   const hint = deck.querySelector('[data-scroll-hint]');
   const motionButton = deck.querySelector('[data-motion-toggle]');
-  const desktop = matchMedia('(min-width: 1024px) and (min-height: 780px) and (prefers-reduced-motion: no-preference)');
+  const desktop = matchMedia('(min-width: 1024px) and (min-height: 680px) and (prefers-reduced-motion: no-preference)');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const pad = value => String(value).padStart(2, '0');
@@ -28,6 +28,19 @@
   let resizeFrame = 0;
   let manualMotionPause = false;
   let hasNavigated = false;
+  const pageNav = document.createElement('nav');
+  pageNav.className = 'chapter-pages';
+  pageNav.setAttribute('aria-label', 'Pages in this chapter');
+  counter.after(pageNav);
+  let pageChapter = '';
+
+  function paintProgress(progress) {
+    const position = pinned ? progress : Math.max(0, selected);
+    frames.forEach((frame, i) => {
+      frame.style.setProperty('--page-x', `${(i - position) * 100}%`);
+    });
+    deck.style.setProperty('--read-progress', String(position / (frames.length - 1)));
+  }
 
   // Keep useful old deep links working after the shorter content model.
   const aliases = {
@@ -164,6 +177,22 @@
     const numbers = document.createElement('span');
     numbers.textContent = `${pad(page)} / ${pad(siblings.length)}`;
     counter.append(numbers);
+    if (pageChapter !== chapter) {
+      pageChapter = chapter;
+      pageNav.replaceChildren(...siblings.map((frame, i) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = pad(i + 1);
+        button.dataset.page = frame.id;
+        button.setAttribute('aria-label', `${chapter} ${i + 1}: ${frame.querySelector('h3').textContent}`);
+        button.addEventListener('click', () => go(frames.indexOf(frame)));
+        return button;
+      }));
+    }
+    pageNav.querySelectorAll('button').forEach(button => {
+      if (button.dataset.page === current.id) button.setAttribute('aria-current', 'page');
+      else button.removeAttribute('aria-current');
+    });
     previous.disabled = index === 0;
     next.setAttribute('aria-label', index === frames.length - 1 ? 'Continue to The thread' : 'Next work page');
     hint.hidden = hasNavigated || !pinned;
@@ -175,7 +204,9 @@
     const bounds = deck.getBoundingClientRect();
     deck.classList.toggle('deck-offscreen', bounds.bottom < 0 || bounds.top > innerHeight);
     let index;
-    if (pinned) index = clamp(Math.round((scrollY - origin) / distance), 0, frames.length - 1);
+    const progress = pinned ? clamp((scrollY - origin) / distance, 0, frames.length - 1) : Math.max(0, selected);
+    paintProgress(progress);
+    if (pinned) index = Math.round(progress);
     else index = Math.max(0, selected);
     if (index > 0) hasNavigated = true;
     mark(index);
@@ -193,6 +224,7 @@
     const wasPinned = pinned && before.top <= 90 && before.bottom >= innerHeight - 20;
     const wasAfter = before.bottom < 0;
     const index = Math.max(0, selected);
+    const readingProgress = pinned ? clamp((scrollY - origin) / distance, 0, frames.length - 1) : index;
     const wasReading = before.top < innerHeight * .38 && before.bottom > innerHeight * .38;
     const oldMode = pinned;
     pinned = desktop.matches;
@@ -217,8 +249,9 @@
       origin = deck.getBoundingClientRect().top + scrollY - 86;
     }
     mark(index, true);
+    paintProgress(pinned ? readingProgress : index);
     if (preserve && (wasPinned || (oldMode !== pinned && wasReading))) {
-      if (pinned) window.scrollTo({ top: origin + index * distance, behavior: 'instant' });
+      if (pinned) window.scrollTo({ top: origin + readingProgress * distance, behavior: 'instant' });
       else frames[index].scrollIntoView({ block: 'start', behavior: 'instant' });
     } else if (preserve && wasAfter) {
       window.scrollBy({ top: deck.offsetHeight - oldHeight, behavior: 'instant' });
@@ -239,7 +272,7 @@
     history.pushState(null, '', url.href);
   }
 
-  function go(index, { remember = true, announce = true } = {}) {
+  function go(index, { remember = true, announce = true, animate = true } = {}) {
     if (index >= frames.length) {
       const thread = document.querySelector('#thread');
       thread.scrollIntoView({ block: 'start', behavior: 'instant' });
@@ -251,7 +284,7 @@
     index = clamp(index, 0, frames.length - 1);
     hasNavigated = true;
     const frame = frames[index];
-    if (pinned) window.scrollTo({ top: origin + index * distance, behavior: 'instant' });
+    if (pinned) window.scrollTo({ top: origin + index * distance, behavior: animate && !reducedMotion.matches && !manualMotionPause ? 'smooth' : 'instant' });
     else {
       mark(index, true);
       shell.scrollIntoView({ block: 'start', behavior: 'instant' });
@@ -320,12 +353,12 @@
   reducedMotion.addEventListener('change', syncMotion);
   window.addEventListener('resize', scheduleMeasure, { passive: true });
   window.addEventListener('scroll', scheduleUpdate, { passive: true });
-  window.addEventListener('hashchange', () => route(location.hash, { remember: false }));
-  window.addEventListener('popstate', () => route(location.hash, { remember: false }));
+  window.addEventListener('hashchange', () => route(location.hash, { remember: false, animate: false }));
+  window.addEventListener('popstate', () => route(location.hash, { remember: false, animate: false }));
   deck.addEventListener('load', scheduleMeasure, true);
   deck.querySelector('.page-controls').hidden = false;
   deck.classList.add('is-enhanced', 'is-paged');
   syncMotion();
   measure(false);
-  requestAnimationFrame(() => route(location.hash, { remember: false, announce: false }));
+  requestAnimationFrame(() => route(location.hash, { remember: false, announce: false, animate: false }));
 })();
