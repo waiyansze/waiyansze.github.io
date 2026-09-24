@@ -53,7 +53,9 @@
   deck.querySelectorAll('[data-system]').forEach(button => {
     button.addEventListener('click', () => {
       deck.querySelectorAll('[data-system]').forEach(node => node.setAttribute('aria-pressed', String(node === button)));
-      deck.querySelector('#system-context').textContent = systemContext[button.dataset.system];
+      const context = deck.querySelector('#system-context');
+      context.textContent = systemContext[button.dataset.system];
+      context.dataset.activeSystem = button.dataset.system;
     });
   });
 
@@ -95,7 +97,7 @@
     const enlarge = document.createElement('button');
     enlarge.type = 'button';
     enlarge.className = 'gallery-enlarge';
-    enlarge.textContent = 'Enlarge ↗';
+    enlarge.textContent = '+';
     enlarge.setAttribute('aria-label', 'Enlarge current evidence image');
     if (dialog && typeof dialog.showModal === 'function') {
       controls.append(enlarge);
@@ -149,8 +151,8 @@
     stage.style.setProperty('--enter-x', index < oldIndex ? '-22px' : '22px');
     frames.forEach((frame, i) => {
       frame.classList.toggle('is-current', i === index);
-      frame.inert = pinned && i !== index;
-      if (pinned && i !== index) frame.setAttribute('aria-hidden', 'true');
+      frame.inert = i !== index;
+      if (i !== index) frame.setAttribute('aria-hidden', 'true');
       else frame.removeAttribute('aria-hidden');
       if (pinned && i !== index) frame.querySelectorAll('video').forEach(video => video.pause());
     });
@@ -174,7 +176,7 @@
     deck.classList.toggle('deck-offscreen', bounds.bottom < 0 || bounds.top > innerHeight);
     let index;
     if (pinned) index = clamp(Math.round((scrollY - origin) / distance), 0, frames.length - 1);
-    else index = frames.reduce((last, frame, i) => frame.getBoundingClientRect().top < innerHeight * .38 ? i : last, 0);
+    else index = Math.max(0, selected);
     if (index > 0) hasNavigated = true;
     mark(index);
     if (bounds.bottom < 0 || bounds.top > innerHeight) deck.querySelectorAll('video').forEach(video => { if (!video.paused) video.pause(); });
@@ -250,7 +252,10 @@
     hasNavigated = true;
     const frame = frames[index];
     if (pinned) window.scrollTo({ top: origin + index * distance, behavior: 'instant' });
-    else frame.scrollIntoView({ block: 'start', behavior: 'instant' });
+    else {
+      mark(index, true);
+      shell.scrollIntoView({ block: 'start', behavior: 'instant' });
+    }
     mark(index, true);
     if (remember) rememberFrame(`#${frame.id}`);
     if (announce) {
@@ -286,7 +291,7 @@
   previous.addEventListener('click', () => go(selected - 1));
   next.addEventListener('click', () => go(selected + 1));
   stage.addEventListener('keydown', event => {
-    if (!pinned || event.defaultPrevented || event.target.closest('button, a, video, input, select, textarea, summary, [contenteditable]')) return;
+    if (event.defaultPrevented || event.target.closest('button, a, video, input, select, textarea, summary, [contenteditable]')) return;
     if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
       event.preventDefault();
       go(selected + (event.key === 'ArrowRight' ? 1 : -1));
@@ -319,7 +324,7 @@
   window.addEventListener('popstate', () => route(location.hash, { remember: false }));
   deck.addEventListener('load', scheduleMeasure, true);
   deck.querySelector('.page-controls').hidden = false;
-  deck.classList.add('is-enhanced');
+  deck.classList.add('is-enhanced', 'is-paged');
   syncMotion();
   measure(false);
   requestAnimationFrame(() => route(location.hash, { remember: false, announce: false }));
