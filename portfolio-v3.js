@@ -228,13 +228,22 @@
     if (!resizeFrame) resizeFrame = requestAnimationFrame(() => measure());
   }
 
+  function rememberFrame(hash) {
+    if (location.hash === hash) return;
+    // Preview hosts can inject a cross-origin <base>. History must stay on
+    // the actual page URL, including the preview host's query string.
+    const url = new URL(location.href);
+    url.hash = hash;
+    history.pushState(null, '', url.href);
+  }
+
   function go(index, { remember = true, announce = true } = {}) {
     if (index >= frames.length) {
       const thread = document.querySelector('#thread');
       thread.scrollIntoView({ block: 'start', behavior: 'instant' });
       thread.setAttribute('tabindex', '-1');
       thread.focus({ preventScroll: true });
-      if (remember && location.hash !== '#thread') history.pushState(null, '', '#thread');
+      if (remember) rememberFrame('#thread');
       return;
     }
     index = clamp(index, 0, frames.length - 1);
@@ -243,7 +252,7 @@
     if (pinned) window.scrollTo({ top: origin + index * distance, behavior: 'instant' });
     else frame.scrollIntoView({ block: 'start', behavior: 'instant' });
     mark(index, true);
-    if (remember && location.hash !== `#${frame.id}`) history.pushState(null, '', `#${frame.id}`);
+    if (remember) rememberFrame(`#${frame.id}`);
     if (announce) {
       const heading = frame.querySelector('h3');
       const words = [...heading.childNodes].map(node => node.nodeName === 'BR' ? ' ' : node.textContent).join('');
@@ -263,9 +272,15 @@
 
   document.addEventListener('click', event => {
     if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-    const link = event.target.closest('a[href^="#"]');
+    const link = event.target.closest('a[href]');
     if (!link) return;
-    const hash = link.getAttribute('href');
+    const href = link.getAttribute('href');
+    let hash = href;
+    if (!href.startsWith('#')) {
+      const url = new URL(link.href, location.href);
+      if (url.origin !== location.origin || url.pathname !== location.pathname || url.search !== location.search) return;
+      hash = url.hash;
+    }
     if (route(hash)) event.preventDefault();
   });
   previous.addEventListener('click', () => go(selected - 1));
