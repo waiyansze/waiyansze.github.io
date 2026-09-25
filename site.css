@@ -505,18 +505,20 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 .chip--quiet { background: transparent; border: 1px solid var(--rule-2); color: var(--ink-3); }
 .chip--flag { background: var(--ink); color: var(--sheet); }
 
-/* Diagnosis trace: signal → pattern → scope → contain → resolve */
-.trace { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--wash-line); }
-.trace li { position: relative; display: grid; grid-template-columns: 6.2rem minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 9px 0 9px 20px; border-bottom: 1px solid var(--wash-line); font-size: .875rem; line-height: 1.45; }
-.trace li::before { content: ""; position: absolute; left: 2px; top: 15px; width: 8px; height: 8px; }
+/* Diagnosis trace: a timeline, signal → pattern → scope → contain → resolve.
+   Deliberately a line, not a unit grid, so it doesn't echo Order quality. */
+.trace { position: relative; list-style: none; margin: 0; padding: 2px 0 0; }
+.trace::before { content: ""; position: absolute; left: 5px; top: 20px; bottom: 26px; border-left: 1px solid var(--wash); opacity: .5; }
+.trace li { position: relative; display: grid; grid-template-columns: 6.2rem minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 9px 0 9px 24px; font-size: .875rem; line-height: 1.45; }
+.trace li::before { content: ""; position: absolute; left: 1px; top: 15px; width: 9px; height: 9px; }
 .trace .is-mine::before { background: var(--seal); border-radius: 1px; }
 .trace .is-other { color: var(--ink-3); }
-.trace .is-other::before { border: 1px solid var(--ink-3); border-radius: 50%; }
+.trace .is-other::before { border: 1px solid var(--ink-3); border-radius: 50%; background: var(--wash-3); }
 .trace span { font: 500 .6875rem var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
 .trace b { font: 350 1.5rem/1 var(--serif); letter-spacing: -.02em; margin-right: 2px; }
-.trace-scope { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
-.trace-scope p { flex: 1 1 12rem; }
-.trace .units--row { flex: 0 1 auto; width: min(190px, 100%); gap: 3px; }
+.trace-scope { display: grid; gap: 8px; }
+.split { display: block; width: 100%; max-width: 320px; height: 8px; border: 1px solid var(--ink); border-radius: 2px; background: var(--sheet); overflow: hidden; }
+.split i { display: block; width: var(--p); height: 100%; background: var(--ink); }
 .flow--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
 .flow--5 li { padding: 10px; }
 .flow--5 li:not(:last-child)::after { right: -12px; }
