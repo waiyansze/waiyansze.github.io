@@ -514,11 +514,26 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 .trace .is-mine::before { background: var(--seal); border-radius: 1px; }
 .trace .is-other { color: var(--ink-3); }
 .trace .is-other::before { border: 1px solid var(--ink-3); border-radius: 50%; background: var(--wash-3); }
-.trace span { font: 500 .6875rem var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.trace li > span { font: 500 .6875rem var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
 .trace b { font: 350 1.5rem/1 var(--serif); letter-spacing: -.02em; margin-right: 2px; }
 .trace-scope { display: grid; gap: 8px; }
-.split { display: block; width: 100%; max-width: 320px; height: 8px; border: 1px solid var(--ink); border-radius: 2px; background: var(--sheet); overflow: hidden; }
-.split i { display: block; width: var(--p); height: 100%; background: var(--ink); }
+/* Scope as a share of one month's orders: the full bar is 100%. */
+.share { display: grid; gap: 5px; max-width: 420px; }
+.share-bar { display: flex; height: 16px; border: 1px solid var(--ink); border-radius: 2px; overflow: hidden; background: var(--sheet); }
+.share-bar i { flex: 0 0 var(--w); }
+.sk-inv { background: var(--ink); }
+.sk-aff { background: repeating-linear-gradient(135deg, var(--ink) 0 1.5px, transparent 1.5px 5px); }
+.share-bar .sk-aff { border-right: 1px solid var(--ink); }
+.share-bar .sk-rest { flex: 1 1 auto; }
+.share-scale { position: relative; height: 16px; font-size: .75rem; line-height: 16px; color: var(--ink-3); }
+.share-scale span { position: absolute; top: 0; }
+.share-scale .at-half { left: 50%; transform: translateX(-50%); }
+.share-scale .at-end { right: 0; }
+.share-key { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: .75rem; color: var(--ink-2); }
+.share-key span { display: inline-flex; align-items: center; gap: 6px; }
+.share-key i { display: inline-block; width: 11px; height: 11px; border: 1px solid var(--ink); border-radius: 1px; }
+.share-key .sk-aff { background: repeating-linear-gradient(135deg, var(--ink) 0 1px, transparent 1px 3px); }
+.share-key .sk-rest { background: var(--sheet); }
 .flow--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
 .flow--5 li { padding: 10px; }
 .flow--5 li:not(:last-child)::after { right: -12px; }
