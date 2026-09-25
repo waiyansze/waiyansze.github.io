@@ -2,7 +2,7 @@
   <style>
     .line { fill: none; stroke: #1c1f1c; stroke-width: 2; stroke-linecap: square; stroke-linejoin: miter; }
     .eye { fill: #1c1f1c; }
-    @media (prefers-color-scheme: dark) { .line { stroke: #f3f1eb; } .eye { fill: #f3f1eb; } }
+    @media (prefers-color-scheme: dark) { .line { stroke: #f3f3f1; } .eye { fill: #f3f3f1; } }
   </style>
   <!-- An original cat, cool rather than cute: angular head, narrowed eyes, no smile.
        The nose is a cinnabar seal square. -->
