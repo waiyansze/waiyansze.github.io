@@ -914,50 +914,6 @@
     else { phase = 'draw'; phaseStart = performance.now(); setPaused(false); loop(); }
   }
 
-  /* 12 · The Thread rotator: one step at a time, on a timer the reader controls. */
-  const rotator = document.querySelector('[data-rotator]');
-  if (rotator) {
-    const slides = [...rotator.querySelectorAll('.rotator-slide')];
-    const buttons = [...rotator.querySelectorAll('[data-rotator-go]')];
-    const pause = rotator.querySelector('[data-rotator-pause]');
-    const DWELL = 5200;
-    let index = 0, start = performance.now(), paused = reduceMotion.matches, hover = false, focused = false, inView = false, frame = 0, held = 0;
-    rotator.classList.add('is-rotating');
-    const select = i => {
-      index = (i + slides.length) % slides.length;
-      slides.forEach((s, j) => { s.classList.toggle('is-current', j === index); s.inert = j !== index; });
-      buttons.forEach((b, j) => { if (j === index) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); b.style.setProperty('--fill', j < index ? '1' : '0'); });
-      start = performance.now(); held = 0;
-    };
-    const running = () => !paused && !hover && !focused && inView;
-    const step = now => {
-      frame = 0;
-      if (!running()) return;
-      const p = Math.min(1, (now - start) / DWELL);
-      buttons[index].style.setProperty('--fill', p.toFixed(3));
-      if (p >= 1) select(index + 1);
-      frame = requestAnimationFrame(step);
-    };
-    const resume = () => { if (running() && !frame) { start = performance.now() - held; frame = requestAnimationFrame(step); } };
-    const hold = () => { held = performance.now() - start; };
-    buttons.forEach((b, i) => b.addEventListener('click', () => { select(i); resume(); }));
-    const setPaused = v => {
-      paused = v;
-      pause.textContent = paused ? 'Play' : 'Pause';
-      pause.setAttribute('aria-label', paused ? 'Play the thread' : 'Pause the thread');
-      if (paused) { hold(); } else resume();
-    };
-    pause.addEventListener('click', () => setPaused(!paused));
-    rotator.addEventListener('pointerenter', () => { hover = true; hold(); });
-    rotator.addEventListener('pointerleave', () => { hover = false; resume(); });
-    // Keyboard focus pauses too (a mouse click on a step does not).
-    rotator.addEventListener('focusin', e => { if (e.target.matches(':focus-visible')) { focused = true; hold(); } });
-    rotator.addEventListener('focusout', () => { if (focused) { focused = false; resume(); } });
-    if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { inView = e.isIntersecting; if (inView) resume(); else hold(); }, { threshold: .4 }).observe(rotator);
-    select(0);
-    if (reduceMotion.matches) { setPaused(true); pause.hidden = true; } else setPaused(false);
-  }
-
   /* 10 · Header ------------------------------------------------------------- */
   const header = document.querySelector('.site-header');
   const updateHeader = () => header?.classList.toggle('is-scrolled', scrollY > 8);

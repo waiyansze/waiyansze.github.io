@@ -505,6 +505,28 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 .chip--quiet { background: transparent; border: 1px solid var(--rule-2); color: var(--ink-3); }
 .chip--flag { background: var(--ink); color: var(--sheet); }
 
+/* Diagnosis trace: signal → pattern → scope → contain → resolve */
+.trace { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--wash-line); }
+.trace li { position: relative; display: grid; grid-template-columns: 6.2rem minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 9px 0 9px 20px; border-bottom: 1px solid var(--wash-line); font-size: .875rem; line-height: 1.45; }
+.trace li::before { content: ""; position: absolute; left: 2px; top: 15px; width: 8px; height: 8px; }
+.trace .is-mine::before { background: var(--seal); border-radius: 1px; }
+.trace .is-other { color: var(--ink-3); }
+.trace .is-other::before { border: 1px solid var(--ink-3); border-radius: 50%; }
+.trace span { font: 500 .6875rem var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.trace b { font: 350 1.5rem/1 var(--serif); letter-spacing: -.02em; margin-right: 2px; }
+.trace-scope { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.trace-scope p { flex: 1 1 12rem; }
+.trace .units--row { flex: 0 1 auto; width: min(190px, 100%); gap: 3px; }
+.flow--5 { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+.flow--5 li { padding: 10px; }
+.flow--5 li:not(:last-child)::after { right: -12px; }
+.flow--5 b { font-size: .9375rem; }
+.downstream { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid var(--wash-line); }
+.downstream-title { font: 500 .6875rem var(--sans); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.downstream ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.downstream li { display: grid; grid-template-columns: 5.4rem minmax(0, 1fr); gap: 10px; align-items: baseline; font-size: .8125rem; line-height: 1.4; color: var(--ink-2); }
+.downstream li span { font-weight: 500; color: var(--ink); }
+
 /* Visibility fixes */
 .fix-list li { position: relative; display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: 12px; align-items: baseline; padding: 11px 0 11px 22px; border-bottom: 1px solid var(--wash-line); }
 .fix-list li::before { top: 17px; }
@@ -541,6 +563,9 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
   .sysnode { min-height: 46px; justify-items: start; padding: 8px 12px; }
   .flow { grid-template-columns: 1fr 1fr; gap: 12px 18px; }
   .flow li:nth-child(2)::after { display: none; }
+  .flow--5 { grid-template-columns: 1fr 1fr; }
+  .flow--5 li:nth-child(2n)::after { display: none; }
+  .trace li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .units--grid { grid-template-columns: repeat(10, minmax(0, 1fr)); max-width: 280px; }
   .steps { grid-template-columns: 1fr 1fr; gap: 14px 0; }
   .steps::before { display: none; }
@@ -583,7 +608,7 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
    stays in place like a backdrop while the project cards pass beside it. */
 .digital { display: grid; gap: 40px; padding-top: clamp(72px, 12vh, 136px); }
 .digital-head-inner { display: grid; gap: 18px; align-content: start; }
-.digital-title { font-size: clamp(3.2rem, 1.4rem + 6.2vw, 7.4rem); line-height: .9; letter-spacing: -.035em; font-weight: 340; }
+.digital-title { font-size: clamp(2.6rem, 1.2rem + 3.8vw, 5rem); line-height: .92; letter-spacing: -.035em; font-weight: 340; }
 .digital-title em { font-style: italic; font-weight: 320; color: var(--wash); }
 .digital-lede { max-width: 25rem; color: var(--ink-2); }
 .digital-index { display: none; }
@@ -601,42 +626,32 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
   .digital-index a span { font-size: .75rem; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
   .digital-index a:hover { color: var(--ink); }
   .digital-index a[aria-current] { color: var(--ink); padding-left: 12px; box-shadow: inset 2px 0 0 var(--ink); }
-  .digital-list .site-meta h3 { font-size: clamp(1.8rem, 1.2rem + 1.3vw, 2.5rem); }
+  .digital { grid-template-columns: minmax(0, .72fr) minmax(0, 1.28fr); }
+  .digital-list .site-meta h3 { font-size: clamp(1.5rem, 1.1rem + .8vw, 1.9rem); }
+}
+/* Cards sit beside their screenshot at every width, so the section reads as
+   supporting evidence rather than a second portfolio. */
+.digital-list .sites { gap: clamp(28px, 4vh, 36px) 0; }
+.digital-list .site { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); grid-template-rows: none; grid-row: auto; column-gap: clamp(14px, 2.4vw, 36px); align-items: start; }
+.digital-list .site-shot { margin: 0; }
+@media (max-width: 599px) {
+  .digital-list .site-bar { display: none; }
+  .digital-list .site-meta h3 { font-size: 1.3rem; }
+  .digital-list .site-meta > p:not(.site-role):not(.site-stack) { font-size: .875rem; }
 }
 @media (prefers-reduced-motion: reduce) { .digital-index a { transition: none; } }
 
-/* 11 · Thread: three key points that rotate on their own, Daylight-style.
-   Pauses on hover, on focus, when off screen and with reduced motion. */
-.thread { max-width: var(--max); margin: 0 auto; padding: clamp(72px, 12vh, 136px) var(--gutter); border-top: 1px solid var(--rule-2); }
-.rotator { display: grid; gap: clamp(20px, 3vh, 32px); }
-.rotator-stage { display: grid; gap: 48px; }
-.rotator-slide { display: grid; gap: 22px; align-content: start; }
-.slide-no { font: 500 .75rem var(--sans); letter-spacing: .1em; color: var(--ink-3); font-variant-numeric: tabular-nums; }
-.rotator-slide h2 { font-size: clamp(2.8rem, 1.2rem + 6vw, 6.4rem); line-height: .95; letter-spacing: -.03em; font-weight: 340; }
-.slide-points { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--rule-2); max-width: 46rem; }
-.slide-points li { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 16px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--rule); font: 400 clamp(1.1rem, .95rem + .6vw, 1.45rem)/1.3 var(--serif); }
-.slide-points span { font: 500 .6875rem var(--sans); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
-.rotator-controls { display: none; }
-.is-rotating .rotator-stage { display: grid; gap: 0; }
-.is-rotating .rotator-slide { grid-area: 1 / 1; visibility: hidden; opacity: 0; transition: opacity .6s var(--ease), visibility 0s .6s; }
-.is-rotating .rotator-slide.is-current { visibility: visible; opacity: 1; transition: opacity .6s var(--ease); }
-.is-rotating .rotator-slide.is-current h2, .is-rotating .rotator-slide.is-current li { animation: slide-settle .7s var(--ease) both; }
-.is-rotating .rotator-slide.is-current li:nth-child(2) { animation-delay: .08s; }
-.is-rotating .rotator-slide.is-current li:nth-child(3) { animation-delay: .16s; }
-@keyframes slide-settle { from { opacity: 0; filter: blur(4px); transform: translateY(10px); } to { opacity: 1; filter: none; transform: none; } }
-.is-rotating .rotator-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 26px; }
-.rotator-controls button { position: relative; padding: 10px 0 12px; border: 0; background: none; cursor: pointer; font-size: .9375rem; color: var(--ink-3); min-width: 7.5rem; text-align: left; }
-.rotator-controls button i { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--rule); overflow: hidden; }
-.rotator-controls button i::after { content: ""; position: absolute; inset: 0; background: var(--ink); transform: scaleX(var(--fill, 0)); transform-origin: left; }
-.rotator-controls button[aria-current] { color: var(--ink); }
-.rotator-controls .rotator-pause { min-width: 0; margin-left: auto; font-size: .8125rem; text-decoration: underline; text-underline-offset: 3px; }
-@media (min-width: 960px) {
-  .rotator-slide { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: clamp(40px, 6vw, 96px); align-items: end; }
-  .slide-no { grid-column: 1 / -1; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .is-rotating .rotator-slide, .is-rotating .rotator-slide.is-current { transition: none; }
-  .is-rotating .rotator-slide.is-current h2, .is-rotating .rotator-slide.is-current li { animation: none; }
+/* 11 · Thread: how I work, in three lines. Static on purpose: the cases carry the proof. */
+.thread { max-width: var(--max); margin: 0 auto; padding: clamp(64px, 10vh, 112px) var(--gutter); border-top: 1px solid var(--rule-2); display: grid; gap: clamp(24px, 4vh, 40px); }
+.thread-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--rule-2); }
+.thread-steps li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 4px 12px; padding: 20px 0; border-bottom: 1px solid var(--rule); }
+.thread-steps span { grid-row: 1 / 3; padding-top: .7em; font: 500 .75rem var(--sans); letter-spacing: .1em; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.thread-steps h3 { font-size: clamp(1.9rem, 1.2rem + 2.4vw, 3.2rem); line-height: 1.02; letter-spacing: -.02em; font-weight: 340; }
+.thread-steps p { color: var(--ink-2); max-width: 30rem; }
+@media (min-width: 900px) {
+  .thread-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(24px, 3vw, 48px); border-top: 0; }
+  .thread-steps li { grid-template-columns: minmax(0, 1fr); align-content: start; padding: 18px 0 0; border-top: 1px solid var(--rule-2); border-bottom: 0; }
+  .thread-steps span { grid-row: auto; padding-top: 0; }
 }
 
 /* 12 · Contact + footer ------------------------------------------------------ */
@@ -743,7 +758,7 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
    Uses scroll-driven animations only where supported; otherwise nothing moves. */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .section-head, .digital-head-inner, .site, .earlier, .rotator, .contact > * {
+    .section-head, .digital-head-inner, .site, .earlier, .thread-steps, .contact > * {
       animation: flow-in linear both;
       animation-timeline: view();
       animation-range: entry 0% entry 55%;
