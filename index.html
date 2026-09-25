@@ -119,39 +119,48 @@
                 </div>
               </section>
 
-              <section class="page" id="pricing-case" data-short="AI workflow" aria-labelledby="pricing-title">
+              <section class="page" id="pricing-case" data-short="AI controls" aria-labelledby="pricing-title">
                 <div class="page-media">
-                  <div class="graphic workflow">
+                  <div class="graphic controls">
                     <div class="graphic-head">
-                      <p class="graphic-kicker">Controlled AI workflow</p>
+                      <p class="graphic-kicker">Two agents, one control pattern</p>
                       <p class="seal-key"><i></i>Designed by me</p>
                     </div>
-                    <ol class="flow flow--5">
-                      <li><b>Signed agreement</b><small>Key-account prices in</small></li>
-                      <li class="is-mine"><b>Copilot agent</b><small>Updates the pricing workbook</small></li>
-                      <li class="is-mine"><b>Validation</b><small>Exceptions flagged, change logged</small></li>
-                      <li class="is-mine"><b>My approval</b><small>Nothing moves without sign-off</small></li>
-                      <li><b>Upload</b><small>Adobe Commerce team</small></li>
-                    </ol>
-                    <table class="workbook">
-                      <caption>Rules the agent follows <span>Illustrative</span></caption>
-                      <tbody>
-                        <tr><th scope="row">Agreed SKU price</th><td><span class="chip">Updated</span></td></tr>
-                        <tr><th scope="row">Unrelated data</th><td><span class="chip chip--quiet">Preserved</span></td></tr>
-                        <tr class="is-flagged"><th scope="row">Unmatched SKU</th><td><span class="chip chip--flag">Flagged</span></td></tr>
-                      </tbody>
-                    </table>
-                    <p class="graphic-note">Outputs: updated workbook · exception report · summary and change log</p>
+                    <div class="lane">
+                      <p class="lane-name">Key Account Pricing</p>
+                      <ol class="flow flow--5">
+                        <li><b>Price lists</b><small>Key-account PDFs</small></li>
+                        <li class="is-mine"><b>Rules</b><small>Freight and FX confirmed each run</small></li>
+                        <li class="is-mine"><b>Exceptions</b><small>Unmatched SKUs, duplicates</small></li>
+                        <li class="is-mine"><b>My approval</b><small>Nothing moves without sign-off</small></li>
+                        <li><b>IT upload</b><small>Workbook and change log</small></li>
+                      </ol>
+                    </div>
+                    <div class="lane">
+                      <p class="lane-name">eStore Customer Validator</p>
+                      <ol class="flow flow--5">
+                        <li><b>Customer export</b><small>Every row read</small></li>
+                        <li class="is-mine"><b>Rules</b><small>Price group, store, currency, email</small></li>
+                        <li class="is-mine"><b>Evidence</b><small>Fix only when one answer is proven</small></li>
+                        <li class="is-mine"><b>Manual review</b><small>Unclear cases, never guessed</small></li>
+                        <li><b>Action list</b><small>Reconciled to the source</small></li>
+                      </ol>
+                    </div>
+                    <dl class="run" aria-label="Customer Validator, first run">
+                      <div><dt>First run</dt><dd>5,000+ <small>records</small></dd></div>
+                      <div><dt>Wrong price group</dt><dd>~150</dd></div>
+                      <div><dt>Wrong store</dt><dd>10</dd></div>
+                      <div><dt>Personal email</dt><dd>~50 <small>to review</small></dd></div>
+                    </dl>
                   </div>
                 </div>
                 <div class="page-copy">
-                  <p class="page-eyebrow">AI-enabled workflow</p>
-                  <h3 id="pricing-title">Automate the update. Keep the approval.</h3>
-                  <p>I wrote the workflow from how the systems connect: an agent turns a signed agreement into a validated workbook, and nothing reaches Adobe Commerce until I’ve checked and approved it.</p>
+                  <p class="page-eyebrow">AI-enabled controls</p>
+                  <h3 id="pricing-title">Basic Copilot access. Real controls.</h3>
+                  <p>Bad eStore data shows up as wrong prices, missing products or the wrong currency. With standard Copilot only, no Studio, connectors or APIs, I built two agents that check the data against the rules and change nothing live without review.</p>
                   <dl class="facts">
-                    <div><dt>Owned</dt><dd>Workflow, rules, final approval</dd></div>
-                    <div><dt>Outcome</dt><dd>Used for day-to-day pricing updates</dd></div>
-                    <div><dt>Next</dt><dd>Agents for web-store data updates and validation (in progress)</dd></div>
+                    <div><dt>Owned</dt><dd>Rules, controls, testing, user guide</dd></div>
+                    <div><dt>Handover</dt><dd>Trained my manager to run them</dd></div>
                   </dl>
                 </div>
               </section>
@@ -185,7 +194,7 @@
                   <dl class="facts">
                     <div><dt>Why</dt><dd>Wrong orders push customers back to email ordering: the manual work the eStore is there to remove</dd></div>
                   </dl>
-                  <p class="more-link"><button type="button" data-more-open="systems-more">More detail: System map · Data quality <span aria-hidden="true">→</span></button></p>
+                  <p class="more-link"><button type="button" data-more-open="systems-more">More detail: System map · AI rules · Data quality <span aria-hidden="true">→</span></button></p>
                 </div>
               </section>
 
@@ -454,6 +463,34 @@
             <div><dt>Focus</dt><dd>Order quality · Diagnosis · Workflow</dd></div>
           </dl>
           <p class="page-tip">Select a system on the map to see where my work touches it.</p>
+        </div>
+      </section>
+
+      <section class="more-page" id="controls-detail" aria-labelledby="controls-detail-title">
+        <div class="page-media">
+          <div class="graphic">
+            <div class="graphic-head">
+              <p class="graphic-kicker">Rules the agents follow, for example</p>
+              <p class="seal-key"><i></i>Written by me</p>
+            </div>
+            <ol class="rule-list">
+              <li><span>Currency</span>A GBP price group belongs to a UK or Northern Ireland account; EUR to the Republic of Ireland. Anything else is flagged.</li>
+              <li><span>Evidence</span>A new group is recommended only when exactly one mapped replacement is proven. Otherwise: Manual Review Required.</li>
+              <li><span>Variables</span>Freight and exchange rate are confirmed by a person before every pricing run, because both change.</li>
+              <li><span>Reconcile</span>Every source row ends up processed, excluded, out of scope or in review. Nothing is dropped silently.</li>
+            </ol>
+            <p class="graphic-note">Illustrative wording. Mappings, customers and values stay internal.</p>
+          </div>
+        </div>
+        <div class="page-copy">
+          <p class="page-eyebrow">AI controls · in detail</p>
+          <h3 id="controls-detail-title">A check that runs again beats a one-off clean-up.</h3>
+          <p>The wrong groups and stores came from manual entry, handover gaps and a registration flow that makes mistakes easy. Cleaning them once would not stop them coming back, so I turned the rules into agents that anyone trained can run.</p>
+          <dl class="facts">
+            <div><dt>My role</dt><dd>Problem, rules, controls, testing, user guides, training</dd></div>
+            <div><dt>Boundary</dt><dd>The agents never write to live systems; people make the corrections</dd></div>
+            <div><dt>Tools</dt><dd>Microsoft 365 Copilot Agent Builder, Excel, Word</dd></div>
+          </dl>
         </div>
       </section>
 
