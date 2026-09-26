@@ -680,6 +680,97 @@
       };
       img.src = './assets/hero-flowers-reveal.webp?v=3';
     })();
+    // Space: Ensō House, both floors, from Wai's own plans. Coordinates are in the
+    // plan's pixels (her floor-plan deck, 80 dpi) and mapped into the hero's space;
+    // both stair cores end at the right wall, so the two floors line up at the stair.
+    const gf = ([x, y]) => [12 + (x - 4) * .13793, 22 + (y - 5) * .13578];
+    const lg = ([x, y]) => [88 - (526 - x) * .13793, 22 + (y - 4) * .13578];
+    const pr = (f, x0, y0, x1, y1) => rect(x0, y0, x1, y1).map(f);          // a rectangle in plan pixels
+    const treads = (f, x0, x1, y0, y1, n, across) => {                       // stair treads, as one line
+      const pts = [];
+      for (let i = 0; i <= n; i++) {
+        if (across) { const y = y0 + (y1 - y0) * i / n; pts.push(i % 2 ? [x1, y] : [x0, y], i % 2 ? [x0, y] : [x1, y]); }
+        else { const x = x0 + (x1 - x0) * i / n; pts.push(i % 2 ? [x, y1] : [x, y0], i % 2 ? [x, y0] : [x, y1]); }
+      }
+      return pts.map(f);
+    };
+    const GF = {
+      label: 'G / F',
+      strokes: [
+        [[4, 245], [4, 440], [432, 440], [432, 445], [555, 445], [555, 5], [4, 5], [4, 155]].map(gf),  // walls, open at the entrance
+        [[133, 5], [133, 440]].map(gf),                                                              // offices' wall
+        [[48, 150], [133, 150], [133, 180], ...treads(p => p, 133, 76, 180, 245, 5).slice(1), [76, 245], [133, 245], [133, 272], [48, 272]].map(gf), // entrance steps
+        [[555, 253], [432, 253], [432, 445]].map(gf),                                               // stair core
+        [...treads(p => p, 450, 496, 269, 307, 4), ...treads(p => p, 496, 540, 307, 401, 6, true)].map(gf), // the stair down
+        pr(gf, 251, 178, 300, 278),                                                                  // gallery table
+        pr(gf, 175, 25, 430, 102),                                                                   // lighting tracks
+        pr(gf, 165, 314, 394, 388),
+        pr(gf, 173, 118, 191, 152),                                                                  // columns
+        pr(gf, 173, 270, 191, 310),
+        pr(gf, 360, 115, 378, 152),
+        pr(gf, 360, 271, 378, 305)
+      ],
+      // Flat tones, as in Systems: the gallery table is the hub.
+      fills: [
+        [4, 5, 133, 150, TONES.dynamics], [4, 272, 133, 440, TONES.dynamics],                        // offices
+        [4, 150, 133, 272, TONES.servicenow],                                                        // entrance
+        [433, 130, 548, 250, TONES.dynamics], [432, 253, 555, 445, TONES.servicenow],                // lobby, stair core
+        [251, 178, 300, 278, TONES.hub],
+        [173, 118, 191, 152, TONES.sap], [173, 270, 191, 310, TONES.sap], [360, 115, 378, 152, TONES.sap], [360, 271, 378, 305, TONES.sap]
+      ].map(([x0, y0, x1, y1, c]) => [...gf([x0, y0]), ...gf([x1, y1]), c]),
+      // In at the front steps, one lap of the gallery, through the lobby, down the stair.
+      route: [[-40, 200], [4, 200], [48, 213], [133, 213], [160, 225], [190, 300], [240, 352], [380, 352], [412, 300],
+        [410, 160], [380, 66], [200, 62], [152, 110], [158, 165], [240, 162], [340, 165], [420, 192], [470, 205], [492, 238],
+        [492, 262], [472, 278], [472, 289], [519, 289], [519, 397]].map(gf),
+      notes: [
+        { at: gf([4, 200]), side: 'left', y: 34, mine: true, title: 'Idea to opening', text: '3.5 months, within the agreed budget.' },
+        { at: gf([555, 60]), side: 'right', y: 30, title: 'The room', text: '3,000 sq ft creative space next to Tate Modern.' }
+      ]
+    };
+    const LG = {
+      label: 'LG / F',
+      strokes: [
+        pr(lg, 4, 4, 526, 443),                                                                      // walls
+        pr(lg, 4, 172, 128, 262),                                                                    // kitchen
+        [[286, 443], [286, 270], [374, 270], [374, 443]].map(lg),                                    // WCs
+        [[526, 256], [418, 256], [418, 443]].map(lg),                                               // stair core
+        treads(lg, 430, 480, 279, 383, 8, true),                                                     // the stair up
+        [[526, 321], [484, 321], [484, 443]].map(lg),                                               // accessible WC
+        [[166, 116], [188, 116], [188, 138], [223, 138], [223, 167], [185, 167], [185, 155], [166, 155], [166, 116]].map(lg), // plinths
+        [[344, 116], [367, 116], [367, 157], [348, 157], [348, 167], [313, 167], [313, 138], [344, 138], [344, 116]].map(lg),
+        pr(lg, 166, 270, 189, 309),
+        pr(lg, 28, 323, 245, 389),                                                                   // workshop tracks
+        [[50, 65], [470, 65]].map(lg),                                                               // lighting tracks
+        [[160, 218], [270, 218]].map(lg)
+      ],
+      fills: [
+        [4, 172, 128, 262, TONES.dynamics], [286, 270, 374, 443, TONES.dynamics], [484, 321, 526, 443, TONES.dynamics],
+        [418, 256, 526, 443, TONES.servicenow],
+        [45, 336, 228, 376, TONES.copilot],                                                          // workshop tables
+        [166, 116, 188, 155, TONES.sap], [185, 138, 223, 167, TONES.sap], [344, 116, 367, 157, TONES.sap], [313, 138, 348, 167, TONES.sap],
+        [166, 270, 189, 309, TONES.sap]
+      ].map(([x0, y0, x1, y1, c]) => [...lg([x0, y0]), ...lg([x1, y1]), c]),
+      // Up the lower flight to the core's north door, a lap of the workshop tables,
+      // and to rest between the plinths.
+      route: [[454, 383], [454, 285], [455, 256], [455, 228], [330, 238], [262, 300], [255, 404], [14, 406], [14, 306],
+        [258, 306], [262, 240], [245, 190], [285, 150]].map(lg),
+      notes: [
+        { at: lg([136, 356]), side: 'left', y: 62, title: 'Then', text: '50+ programmes in 15 months.' }
+      ]
+    };
+    [GF, LG].forEach(fl => { fl.strokes = fl.strokes.map(resample); });   // same point count as Systems, so they morph
+    // The walk: its length, and where the dot is after d units of it.
+    const pathLen = r => r.slice(1).reduce((s, p, i) => s + Math.hypot(p[0] - r[i][0], p[1] - r[i][1]), 0);
+    const pathAt = (r, d, trail) => {
+      for (let i = 1; i < r.length; i++) {
+        const L = Math.hypot(r[i][0] - r[i - 1][0], r[i][1] - r[i - 1][1]);
+        if (d <= L) { const t = L ? d / L : 0, p = [r[i - 1][0] + (r[i][0] - r[i - 1][0]) * t, r[i - 1][1] + (r[i][1] - r[i - 1][1]) * t]; if (trail) trail.push(p); return p; }
+        d -= L; if (trail) trail.push(r[i]);
+      }
+      return r[r.length - 1];
+    };
+    const WALK = .05;                                         // units per ms
+    const WALK_GF = pathLen(GF.route) / WALK, STAIR = 1300, WALK_LG = pathLen(LG.route) / WALK, REST = 1600;
     // Systems and Space share twelve strokes, so each line has somewhere to go
     // when one morphs into the other. Order follows the site: Systems → Space → Flowers.
     // Systems geometry. Dynamics, SAP and ServiceNow sit on one ring around
@@ -738,29 +829,15 @@
           ['SAP ERP', SYS.sap[0], SYS.sap[1] + 14, 0, 3], ['ServiceNow', SYS.sn[0], SYS.sn[1] + 10.5, 0, 4]],
         hold: 6200, text: 'Orders and pricing moving through connected systems.', href: '#systems-case', flow: true
       },
-      { // Space: Ensō House ground floor, from Wai's own plan, with the track lighting.
-        strokes: [
-          [[80.9, 81.2], [72, 81.2], [72, 80.5], [69.9, 80.5], [69.9, 79.1], [33.5, 79.1], [33.5, 80.5], [12, 80.5], [12, 22], [88, 22], [88, 81.2], [84, 81.2], [84, 87.4], ...arc(84, 81.2, 6.2, Math.PI / 2, Math.PI, 10)],
-          [[12, 41.6], [30, 41.6], [30, 57.6], [12, 57.6]],                            // stair and WC core
-          zigzag(21.5, 29, 45, 54.2, 4),                                               // stair treads
-          [[72, 81.2], [72, 56], [88, 56]],                                            // entrance stair hall
-          [[88, 39.4], [72, 39.4], [72, 54.4], [88, 54.4]],                            // side room
-          zigzag(74.5, 85.5, 59, 76.5, 5),                                             // entrance stair treads
-          rect(35.5, 37.2, 37.8, 41.8),                                                // columns
-          rect(61.6, 36.6, 63.9, 41.8),
-          rect(35.5, 58, 37.8, 63.2),
-          rect(61.6, 58, 63.9, 62.6),
-          rect(22, 26, 69, 33.5),                                                      // lighting track
-          rect(27, 65.5, 66, 74)                                                       // lighting track
-        ],
-        seal: [80, 76.5],
-        labels: [],
-        notes: [
-          { at: [12, 30], side: 'left', y: 30, title: 'The room', text: '3,000 sq ft creative space next to Tate Modern.' },
-          { at: [36.6, 60.6], side: 'left', y: 50, title: 'Then', text: '50+ programmes in 15 months.' },
-          { at: [80, 76.5], side: 'right', y: 46, mine: true, title: 'Idea to opening', text: '3.5 months, within the agreed budget.' }
-        ],
-        hold: 3800, text: 'Plan, flow and use of a room.', href: '#enso-case'
+      { // Space: Ensō House, from Wai's own plans. A red dot takes the visitor's route:
+        // in at the front steps, a lap of the gallery, down the stair; the ground floor
+        // lifts away and the lower ground floor settles in under it; a lap of the
+        // workshop tables. The dot is the seal: here the judgement is the flow.
+        space: true, floor: 0,
+        strokes: GF.strokes, fills: GF.fills, notes: GF.notes,
+        labels: [[GF.label, 16, 88, 1]],
+        seal: GF.route[0], sealDot: true,
+        hold: WALK_GF + STAIR + WALK_LG + REST, text: 'Plan, flow and use of a room.', href: '#enso-case'
       },
       { // Flowers: Wai's own sketch, drawn again in the order she made it (from
         // the time-lapse): vessel and stand first, the branch in one upward gesture,
@@ -874,6 +951,57 @@
       ctx.globalAlpha = 1;
     }
 
+    // Flat tones under a plan (rooms, cores, plinths), like the Systems discs.
+    function drawFills(fills, alpha, k) {
+      if (!fills || alpha <= 0) return;
+      fills.forEach(([x0, y0, x1, y1, c]) => { ctx.globalAlpha = alpha; ctx.fillStyle = c; ctx.fillRect(x0 * k, y0 * k, (x1 - x0) * k, (y1 - y0) * k); });
+      ctx.globalAlpha = 1;
+    }
+    // One floor of Ensō House: tones, lines and its label, scaled about the stair.
+    function drawFloor(fl, alpha, scale, k) {
+      if (alpha <= 0) return;
+      const [cx, cy] = gf([500, 340]);
+      ctx.save();
+      ctx.translate(cx * k, cy * k); ctx.scale(scale, scale); ctx.translate(-cx * k, -cy * k);
+      drawFills(fl.fills, alpha, k);
+      ctx.globalAlpha = alpha; ctx.strokeStyle = INK;
+      fl.strokes.forEach(st => { ctx.beginPath(); st.forEach(([x, y], i) => i ? ctx.lineTo(x * k, y * k) : ctx.moveTo(x * k, y * k)); ctx.stroke(); });
+      ctx.restore(); ctx.globalAlpha = 1;
+      drawDetails({ labels: [[fl.label, 16, 88, 1]] }, alpha);
+    }
+    // The walk through both floors, from `w` ms into the hold. Returns the dot.
+    function drawWalk(w, k) {
+      const S = states[1];
+      const trail = (r, d) => { const pts = []; const p = pathAt(r, d, pts); pts.push(p); return { p, pts }; };
+      const drawTrail = (pts, alpha) => {
+        ctx.globalAlpha = alpha * .5; ctx.strokeStyle = SEAL; ctx.lineWidth = Math.max(1, size * .0026); ctx.setLineDash([size * .006, size * .008]);
+        ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x * k, y * k) : ctx.moveTo(x * k, y * k)); ctx.stroke();
+        ctx.setLineDash([]); ctx.globalAlpha = 1; ctx.lineWidth = Math.max(1.2, size * .0034);
+      };
+      if (reduceMotion.matches) {                             // still: the ground floor and the whole route to the stair
+        drawFloor(GF, 1, 1, k); const t = trail(GF.route, Infinity); drawTrail(t.pts, 1);
+        drawDetails({ labels: [['↓ LG / F', 83, 88, 1]] }, 1);
+        return t.p;
+      }
+      if (w < WALK_GF) {
+        drawFloor(GF, 1, 1, k); const t = trail(GF.route, w * WALK); drawTrail(t.pts, 1); return t.p;
+      }
+      if (w < WALK_GF + STAIR) {                              // down the stair: G/F lifts away, LG/F settles in
+        const s = ease(clamp01((w - WALK_GF) / STAIR));
+        drawFloor(LG, s, .94 + .06 * s, k);
+        drawFloor(GF, 1 - s, 1 + .08 * s, k);
+        drawTrail(GF.route, 1 - s);
+        const a = GF.route[GF.route.length - 1], b = LG.route[0];
+        return [a[0] + (b[0] - a[0]) * s, a[1] + (b[1] - a[1]) * s];
+      }
+      if (S.floor !== 1) {                                    // now downstairs: its lines and notes take over
+        S.floor = 1; S.strokes = LG.strokes; S.fills = LG.fills; S.notes = LG.notes; S.labels = [[LG.label, 16, 88, 1]];
+        renderNotes(S);
+      }
+      drawFloor(LG, 1, 1, k);
+      const t = trail(LG.route, (w - WALK_GF - STAIR) * WALK); drawTrail(t.pts, 1); return t.p;
+    }
+
     function strokePath(points, count, k) {
       ctx.beginPath();
       for (let i = 0; i < count; i++) { const [x, y] = points[i]; i ? ctx.lineTo(x * k, y * k) : ctx.moveTo(x * k, y * k); }
@@ -890,7 +1018,7 @@
       ctx.lineCap = 'round'; ctx.lineJoin = 'round';
       ctx.strokeStyle = INK;
       ctx.lineWidth = Math.max(1.2, size * .0034);
-      let sealT = 1, sealScale = 1, flowAlpha = 1;
+      let sealT = 1, sealScale = 1, flowAlpha = 1, walkAt = null;
       const building = phase === 'draw' || (phase === 'morph' && (B.enter === 'build' || A.reveal));
 
       if (building) {
@@ -904,12 +1032,16 @@
         } else {
           sealT = 1; sealScale = clamp01((p - .9) / .1);
         }
-        if (phase === 'morph') drawDiscs(A, 1 - clamp01(p / fadeBy));
+        if (phase === 'morph') { drawDiscs(A, 1 - clamp01(p / fadeBy)); drawFills(A.fills, 1 - clamp01(p / fadeBy), k); }
+        drawFills(B.fills, clamp01((p - .5) / .5), k);
         drawDiscs(B, 1, p);
         if (B.reveal) drawReveal(p, 1, k);
         B.strokes.forEach((st, s) => { const r = progress(B, s, p); if (r > 0) strokePath(st, Math.max(2, Math.round(N * ease(r))), k); });
         drawDetails(B, 1, p);
         flowAlpha = 0;
+      } else if (B.space && phase === 'hold') {
+        walkAt = drawWalk(now - phaseStart, k);
+        flowAlpha = 0; sealT = 1;
       } else if (B.reveal) {
         // Holding the sketch (or shown still, with reduced motion).
         drawReveal(1, 1, k);
@@ -917,8 +1049,10 @@
         sealT = 1; flowAlpha = 0;
       } else {
         const t = phase === 'morph' ? ease(clamp01(elapsed / MORPH)) : 1;
-        if (phase === 'morph') { drawDiscs(A, 1 - clamp01(elapsed / (MORPH * .4))); drawDiscs(B, clamp01((elapsed - MORPH * .6) / (MORPH * .4))); }
-        else drawDiscs(B, 1);
+        if (phase === 'morph') {
+          drawDiscs(A, 1 - clamp01(elapsed / (MORPH * .4))); drawDiscs(B, clamp01((elapsed - MORPH * .6) / (MORPH * .4)));
+          drawFills(A.fills, 1 - clamp01(elapsed / (MORPH * .4)), k); drawFills(B.fills, clamp01((elapsed - MORPH * .6) / (MORPH * .4)), k);
+        } else drawDiscs(B, 1);
         for (let s = 0; s < B.strokes.length; s++) {
           const P = A.strokes[s], Q = B.strokes[s];
           ctx.globalAlpha = emph(s);
@@ -943,11 +1077,17 @@
       if (B.flow && flowAlpha > 0) pulse = drawFlow(now, flowAlpha, k);
 
       // The seal: where the judgement happens.
+      if (walkAt) states[1].seal = walkAt;                      // the dot is where the seal is
       const S0 = A.seal, S1 = B.seal;
       const sx = (S0[0] + (S1[0] - S0[0]) * sealT) * k, sy = (S0[1] + (S1[1] - S0[1]) * sealT) * k;
       const sealSize = size * .034 * sealScale;
       const sealAlpha = B.flow ? emph(7) : 1;   // on Systems the seal sits on the SAP hairline
-      if (sealSize > 0) { ctx.globalAlpha = sealAlpha; ctx.fillStyle = SEAL; ctx.fillRect(sx - sealSize / 2, sy - sealSize / 2, sealSize, sealSize); ctx.globalAlpha = 1; }
+      if (sealSize > 0) {
+        ctx.globalAlpha = sealAlpha; ctx.fillStyle = SEAL;
+        if (B.sealDot) { ctx.beginPath(); ctx.arc(sx, sy, sealSize * .42, 0, Math.PI * 2); ctx.fill(); }
+        else ctx.fillRect(sx - sealSize / 2, sy - sealSize / 2, sealSize, sealSize);
+        ctx.globalAlpha = 1;
+      }
       if (pulse > 0) {
         ctx.strokeStyle = SEAL; ctx.globalAlpha = pulse * sealAlpha; ctx.lineWidth = Math.max(1, size * .0025);
         const r = size * (.028 + .03 * (1 - pulse));
@@ -1180,8 +1320,13 @@
     }
     addEventListener('resize', () => { clearTimeout(notesTimer); notesTimer = setTimeout(() => renderNotes(states[to]), 150); });
 
+    function resetSpace() {
+      const S = states[1];
+      Object.assign(S, { floor: 0, strokes: GF.strokes, fills: GF.fills, notes: GF.notes, labels: [[GF.label, 16, 88, 1]], seal: GF.route[0] });
+    }
     function show(index, instant) {
       from = instant ? index : to; to = index;
+      if (index === 1) resetSpace();
       hovering = false; hoverNode = null; hoverTarget = 0; hoverMix = 0;
       phase = instant || reduceMotion.matches ? 'hold' : 'morph';
       phaseStart = performance.now();
@@ -1203,7 +1348,7 @@
       else if (phase === 'morph' && elapsed >= enterTime(states[to])) { from = to; phase = 'hold'; phaseStart = now; }
       else if (phase === 'hold' && elapsed >= states[to].hold && auto && !paused && !inside) { show((to + 1) % states.length); return; }
       render(now);
-      if (visible && !paused && (phase !== 'hold' || auto || states[to].flow || hoverMix !== hoverTarget)) raf = requestAnimationFrame(tick);
+      if (visible && !paused && (phase !== 'hold' || auto || states[to].flow || states[to].space || hoverMix !== hoverTarget)) raf = requestAnimationFrame(tick);
     }
     function loop() { if (!raf && visible) { lastFrame = 0; raf = requestAnimationFrame(tick); } }
 
