@@ -809,23 +809,23 @@
         buildTime: 2800,
         discs: [[50, 50, HUB_R, TONES.hub, 0], [...SYS.cop, TONES.copilot, 1], [...SYS.dyn, TONES.dynamics, 2], [...SYS.sap, TONES.sap, 3], [...SYS.sn, TONES.servicenow, 4]],
         inkLabels: true,
-        seal: mid(hair(SYS.sap)),                                                      // my check, on the way in from SAP
+        seal: mid(hair(SYS.sap)),                                                      // my check, between Adobe Commerce and SAP
         marks: [[SYS.cop[0] + 4.6, SYS.cop[1] - 4.6]],                                     // the agent is mine
         notes: [
-          { at: [50 + RING * Math.cos(245 * deg), 50 + RING * Math.sin(245 * deg)], side: 'left', y: 34, title: 'Connected', text: 'The systems also talk to each other, not only through Adobe Commerce.' },
-          { at: [86, 15], fs: 20, side: 'right', y: 20, mine: true, title: 'My agent', text: 'A Copilot agent I built. Nothing goes in without my approval.' },
-          { at: mid(hair(SYS.sap)), side: 'right', y: 35, mine: true, title: 'My check', text: 'About 1 in 10 orders corrected before processing.' }
+          { at: [50 + RING * Math.cos(245 * deg), 50 + RING * Math.sin(245 * deg)], side: 'left', y: 34, title: 'Where systems disagree', text: 'Traced back to the source.' },
+          { at: [86, 15], fs: 20, side: 'right', y: 20, mine: true, title: 'AI, with sign-off', text: 'Copilot to cut manual work.' },
+          { at: mid(hair(SYS.sap)), side: 'right', y: 35, mine: true, title: 'Order accuracy', text: '1 in 10 corrected before processing.' }
         ],
         // Pointing at a system brings forward what it is linked to (stroke indices
         // as above: discs 0–4, hairlines 5–8, ring arcs 9–11) and its note, if any.
         nodes: [
-          { at: [50, 50], r: HUB_R, keep: [0, 1, 2, 3, 4, 5, 6, 7, 8], note: -1, label: 'Adobe Commerce · linked to all four' },
-          { at: SYS.cop, r: SYS.cop[2], keep: [0, 1, 5], note: 1, label: 'Into Adobe Commerce, after my approval' },
-          { at: SYS.dyn, r: SYS.dyn[2], keep: [0, 2, 3, 4, 6, 9, 11], note: 0, label: 'Dynamics 365 · Adobe Commerce, SAP, ServiceNow' },
-          { at: SYS.sap, r: SYS.sap[2], self: 3, below: true, keep: [0, 2, 3, 4, 7, 9, 10], note: 2, label: 'SAP ERP · Adobe Commerce, Dynamics, ServiceNow' },
-          { at: SYS.sn, r: SYS.sn[2], self: 4, below: true, keep: [0, 2, 3, 4, 8, 10, 11], note: 0, label: 'ServiceNow · Adobe Commerce, Dynamics, SAP' }
+          { at: [50, 50], r: HUB_R, keep: [0, 1, 2, 3, 4, 5, 6, 7, 8], note: -1, label: 'Adobe Commerce · B2B storefront' },
+          { at: SYS.cop, r: SYS.cop[2], keep: [0, 1, 5], note: 1, label: 'Copilot agents · Data validation and updates' },
+          { at: SYS.dyn, r: SYS.dyn[2], keep: [0, 2, 3, 4, 6, 9, 11], note: 0, label: 'Dynamics 365 · Customer records' },
+          { at: SYS.sap, r: SYS.sap[2], self: 3, below: true, keep: [0, 2, 3, 4, 7, 9, 10], note: 2, label: 'SAP ERP · Orders and invoicing' },
+          { at: SYS.sn, r: SYS.sn[2], self: 4, below: true, keep: [0, 2, 3, 4, 8, 10, 11], note: 0, label: 'ServiceNow · Incidents and requests' }
         ],
-        labels: [['Adobe Commerce', 50, 50.4, 0, 0, 1], ['Copilot agent', SYS.cop[0], SYS.cop[1] + 10.5, 0, 1], ['Dynamics 365', SYS.dyn[0], SYS.dyn[1] + 13.5, 0, 2],
+        labels: [['Adobe Commerce', 50, 50.4, 0, 0, 1], ['Copilot agents', SYS.cop[0], SYS.cop[1] + 10.5, 0, 1], ['Dynamics 365', SYS.dyn[0], SYS.dyn[1] + 13.5, 0, 2],
           ['SAP ERP', SYS.sap[0], SYS.sap[1] + 14, 0, 3], ['ServiceNow', SYS.sn[0], SYS.sn[1] + 10.5, 0, 4]],
         hold: 6200, text: 'Orders and pricing moving through connected systems.', href: '#systems-case', flow: true
       },
