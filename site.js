@@ -545,8 +545,9 @@
 
   /* 11 · Hero motion ---------------------------------------------------------
      Twelve strokes in every state, in the site's order: Systems, Space, Flowers.
-     Systems draws itself, then runs: orders pass my check; a Copilot agent's
-     price drafts wait for human review before reaching Adobe Commerce. The
+     Systems draws itself as a hub: everything points into Adobe Commerce,
+     SAP traffic passes my check, and the Copilot agent's price drafts wait
+     for review before they go in. The
      lines then morph into the Ensō House plan, and the arrangement is built
      up the way it is made: basin, kenzan, shin, soe, hikae, then details.
      The cinnabar seal sits where the judgement happens in each. */
@@ -612,30 +613,28 @@
     const dir = (deg, len) => [BASE[0] + len * Math.sin(deg * Math.PI / 180), BASE[1] - len * Math.cos(deg * Math.PI / 180)];
     const kenzan = [[41, 72.4], [41, 70.4], [51, 70.4], [51, 72.4], [41, 72.4], [41, 70.4], ...zigzag(41.8, 50.2, 68.6, 70.4, 8)];
     const states = [
-      { // Systems: orders moving through four connected systems past my check;
-        // above them, a Copilot agent I built prepares price updates for human review.
+      { // Systems: Adobe Commerce is the door everything passes through. Customer
+        // data, ERP, service tickets and the Copilot agent I built all point into it.
         strokes: [
-          [[30, 36], [38, 36]],                                                        // Dynamics → Commerce
-          rrect(18, 36, 24, 12, 2.4),                                                  // Dynamics 365
-          rrect(50, 36, 24, 12, 2.4),                                                  // Adobe Commerce
-          rrect(82, 36, 24, 12, 2.4),                                                  // SAP ERP
-          [[62, 36], [70, 36]],                                                        // Commerce → check → SAP
-          [[66, 37], [66, 66]],                                                        // escalation
-          rrect(66, 72, 26, 12, 2.4),                                                  // ServiceNow
-          [[79, 72], [91, 72], [91, 42]],                                              // back into SAP
-          [[67.6, 33.8], [70, 36], [67.6, 38.2]],                                      // arrow into SAP
-          [[35.6, 33.8], [38, 36], [35.6, 38.2]],                                      // arrow into Commerce
-          rrect(50, 12, 26, 10, 2.4),                                                  // Copilot agent
-          [[50, 17], [50, 29.6], [48.2, 27.6], [50, 29.6], [51.8, 27.6]]               // price updates into Commerce
+          ellipse(50, 50, 14, 14),                                                     // Adobe Commerce (hub)
+          ellipse(50, 17, 8, 8),                                                       // Copilot agent
+          ellipse(17, 50, 8, 8),                                                       // Dynamics 365
+          ellipse(83, 50, 8, 8),                                                       // SAP ERP
+          ellipse(50, 83, 8, 8),                                                       // ServiceNow
+          [[50, 25], [50, 33.5], [48, 31.3], [50, 33.5], [52, 31.3]],                  // agent → hub
+          [[25, 50], [33.5, 50], [31.3, 48], [33.5, 50], [31.3, 52]],                  // Dynamics → hub
+          [[75, 50], [66.5, 50], [68.7, 48], [66.5, 50], [68.7, 52]],                  // SAP → hub
+          [[50, 75], [50, 66.5], [48, 68.7], [50, 66.5], [52, 68.7]],                  // ServiceNow → hub
+          ellipse(50, 50, 16.5, 16.5),                                                 // outer ring of the hub
+          ellipse(50, 50, 14, 14),                                                     // (spare lines settle on the hub)
+          ellipse(50, 50, 16.5, 16.5)
         ],
-        build: [[.14, .3], [0, .22], [.22, .44], [.5, .7], [.44, .56], [.62, .76], [.7, .88], [.8, .95], [.54, .62], [.26, .34], [.34, .56], [.5, .64]],
+        build: [[0, .22], [.3, .46], [.22, .38], [.26, .42], [.34, .5], [.62, .76], [.5, .64], [.54, .68], [.58, .72], [.12, .3], [0, .22], [.12, .3]],
         buildTime: 2600,
-        seal: [66, 36],
-        marks: [[62.4, 7.6]],                                                          // "built by me" corner seal
-        labels: [['Copilot agent', 50, 12.4, 0, 10], ['drafts price updates', 24.5, 12.4, 1, 10], ['human review', 61, 23, 1, 11],
-          ['Dynamics 365', 18, 36.4, 0, 1], ['Adobe Commerce', 50, 36.4, 0, 2], ['SAP ERP', 82, 36.4, 0, 3], ['ServiceNow', 66, 72.4, 0, 6],
-          ['customer data', 18, 46.5, 1, 1], ['order placed', 50, 46.5, 1, 2], ['invoicing', 82, 46.5, 1, 3], ['my check', 66, 29, 1, 4], ['escalate', 60, 55, 1, 5],
-          ['about 1 in 10 orders corrected at the check', 50, 91, 1]],
+        seal: [70.75, 50],                                                             // my check, on the way in from SAP
+        marks: [[55.7, 11.3]],                                                         // the agent is mine
+        icons: [['store', 50, 45.5, 0], ['spark', 50, 17, 1], ['person', 17, 50, 2], ['ledger', 83, 50, 3], ['ticket', 50, 83, 4]],
+        labels: [['Adobe Commerce', 50, 56.5, 0, 0], ['Copilot agent', 50, 5, 0, 1], ['Dynamics 365', 17, 62, 0, 2], ['SAP ERP', 83, 62, 0, 3], ['ServiceNow', 50, 95, 0, 4]],
         hold: 6200, text: 'Orders and pricing moving through connected systems.', href: '#systems-case', flow: true
       },
       { // Space: Ensō House ground floor, from Wai's own plan, with the track lighting.
@@ -716,6 +715,13 @@
         ctx.fillStyle = SEAL;
         state.marks.forEach(([x, y]) => ctx.fillRect(x * u - size * .011, y * u - size * .011, size * .022, size * .022));
       }
+      if (state.icons) {
+        ctx.strokeStyle = INK; ctx.lineWidth = Math.max(1, size * .0028);
+        state.icons.forEach(([type, x, y, stroke]) => {
+          ctx.globalAlpha = alpha * progress(state, stroke, p);
+          drawIcon(type, x * u, y * u, u);
+        });
+      }
       state.labels.forEach(([t, x, y, minor, stroke]) => {
         const a = stroke === undefined ? clamp01((p - .85) / .15) : progress(state, stroke, p);
         ctx.globalAlpha = alpha * a;
@@ -724,6 +730,31 @@
         ctx.fillText(t, x * u, y * u);
       });
       ctx.globalAlpha = 1;
+    }
+
+    // Small line icons, drawn in the same ink as the strokes.
+    function drawIcon(type, cx, cy, u) {
+      const P = (x, y) => [cx + x * u, cy + y * u];
+      ctx.beginPath();
+      if (type === 'store') {                       // shop front: awning and door
+        const pts = [[-5.5, -1], [-4.5, -4.5], [4.5, -4.5], [5.5, -1], [-5.5, -1]];
+        pts.forEach(([x, y], i) => i ? ctx.lineTo(...P(x, y)) : ctx.moveTo(...P(x, y)));
+        ctx.moveTo(...P(-4.5, -1)); ctx.lineTo(...P(-4.5, 4.5)); ctx.lineTo(...P(4.5, 4.5)); ctx.lineTo(...P(4.5, -1));
+        ctx.moveTo(...P(-1.2, 4.5)); ctx.lineTo(...P(-1.2, 1.5)); ctx.lineTo(...P(1.2, 1.5)); ctx.lineTo(...P(1.2, 4.5));
+      } else if (type === 'spark') {                // assistant: a four-point spark
+        ctx.moveTo(...P(0, -4));
+        ctx.quadraticCurveTo(...P(0, 0), ...P(4, 0)); ctx.quadraticCurveTo(...P(0, 0), ...P(0, 4));
+        ctx.quadraticCurveTo(...P(0, 0), ...P(-4, 0)); ctx.quadraticCurveTo(...P(0, 0), ...P(0, -4));
+      } else if (type === 'person') {               // customer data
+        ctx.arc(cx, cy - 1.6 * u, 1.7 * u, 0, Math.PI * 2);
+        ctx.moveTo(...P(-3.4, 4)); ctx.quadraticCurveTo(...P(0, -1.2), ...P(3.4, 4));
+      } else if (type === 'ledger') {               // ERP: a ledger
+        [[-3.6, -3.2, 3.6, -3.2], [-3.6, 0, 3.6, 0], [-3.6, 3.2, 1.5, 3.2]].forEach(([x0, y0, x1, y1]) => { ctx.moveTo(...P(x0, y0)); ctx.lineTo(...P(x1, y1)); });
+      } else if (type === 'ticket') {               // service: a message
+        const pts = [[-4, -3.2], [4, -3.2], [4, 2], [0.4, 2], [-1.8, 4.2], [-1.8, 2], [-4, 2], [-4, -3.2]];
+        pts.forEach(([x, y], i) => i ? ctx.lineTo(...P(x, y)) : ctx.moveTo(...P(x, y)));
+      }
+      ctx.stroke();
     }
 
     function strokePath(points, count, k) {
@@ -778,8 +809,7 @@
         sealT = t;
       }
 
-      // Systems running: orders travel left to right; about 1 in 10 waits at the
-      // check to be corrected; now and then one is escalated to ServiceNow.
+      // Systems running: records flow along the spokes into Adobe Commerce.
       let pulse = 0;
       if (B.flow && flowAlpha > 0) pulse = drawFlow(now, flowAlpha, k);
 
@@ -795,59 +825,46 @@
       }
     }
 
-    // One order every 0.42s along the main route. Its path depends on its number,
-    // so the pattern repeats calmly. Price updates drop from the agent every 1.9s.
-    const SPAWN = 420, SPEED = 0.0145; // units per ms
-    const mainRoute = [[30, 36], [38, 36], [62, 36], [66, 36], [70, 36], [82, 36]];
-    const escalateRoute = [[30, 36], [38, 36], [62, 36], [66, 36], [66, 66], [79, 72], [91, 72], [91, 42], [86, 36]];
-    const along = (route, dist) => {
-      for (let i = 1; i < route.length; i++) {
-        const seg = Math.hypot(route[i][0] - route[i - 1][0], route[i][1] - route[i - 1][1]);
-        if (dist <= seg) { const t = dist / seg; return [route[i - 1][0] + (route[i][0] - route[i - 1][0]) * t, route[i - 1][1] + (route[i][1] - route[i - 1][1]) * t]; }
-        dist -= seg;
-      }
-      return null;
+    // Traffic into the hub: records arrive from Dynamics, SAP and ServiceNow in
+    // turn; about 1 in 3 from SAP waits at my check. The agent's price drafts
+    // arrive hollow, pause for review and are filled in once approved.
+    const SPOKES = [[[25, 50], [33.5, 50]], [[75, 50], [66.5, 50]], [[50, 75], [50, 66.5]]];
+    const SPAWN = 520, SPEED = 0.0065; // units per ms
+    const CHECK_AT = 4.25;             // the seal sits halfway along the SAP spoke
+    const along = ([a, b], d) => {
+      const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+      if (d > len) return null;
+      const t = d / len; return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
     };
-    const lengthOf = route => route.slice(1).reduce((n, p, i) => n + Math.hypot(p[0] - route[i][0], p[1] - route[i][1]), 0);
-    const toCheck = lengthOf(mainRoute.slice(0, 4));
-    const inBox = ([x, y]) => (y > 30 && y < 42 && ((x > 6 && x < 30) || (x > 38 && x < 62) || (x > 70 && x < 94))) || (y > 66 && y < 78 && x > 53 && x < 79);
     function drawFlow(now, alpha, k) {
       if (alpha <= 0) return 0;
       const t0 = now - flowStart;
       let pulse = 0;
       ctx.fillStyle = INK;
-      const first = Math.max(0, Math.floor((t0 - 9000) / SPAWN));
-      for (let n = first; n * SPAWN <= t0; n++) {
-        const age = t0 - n * SPAWN;
-        const escalate = n % 23 === 11, corrected = !escalate && n % 10 === 3;
-        const route = escalate ? escalateRoute : mainRoute;
+      for (let n = Math.max(0, Math.floor((t0 - 5000) / SPAWN)); n * SPAWN <= t0; n++) {
+        const spoke = n % 3, age = t0 - n * SPAWN;
         let dist = age * SPEED;
-        if (corrected && dist > toCheck) {            // held at the check, then released
-          const HOLD_AT_CHECK = 1100;
-          const waited = (dist - toCheck) / SPEED;
-          if (waited < HOLD_AT_CHECK) { dist = toCheck; pulse = Math.max(pulse, 1 - waited / HOLD_AT_CHECK); }
-          else dist = toCheck + (waited - HOLD_AT_CHECK) * SPEED;
+        if (spoke === 1 && Math.floor(n / 3) % 3 === 1 && dist > CHECK_AT) {   // held at the check
+          const HOLD = 1100, waited = (dist - CHECK_AT) / SPEED;
+          if (waited < HOLD) { dist = CHECK_AT; pulse = Math.max(pulse, 1 - waited / HOLD); }
+          else dist = CHECK_AT + (waited - HOLD) * SPEED;
         }
-        const p = along(route, dist);
-        if (!p || inBox(p)) continue;
-        ctx.globalAlpha = alpha * (escalate ? .85 : 1);
-        ctx.beginPath(); ctx.arc(p[0] * k, p[1] * k, Math.max(2, size * .0065), 0, Math.PI * 2);
-        if (escalate) { ctx.lineWidth = Math.max(1, size * .0024); ctx.strokeStyle = INK; ctx.stroke(); } else ctx.fill();
+        const p = along(SPOKES[spoke], dist);
+        if (!p) continue;
+        ctx.globalAlpha = alpha;
+        ctx.beginPath(); ctx.arc(p[0] * k, p[1] * k, Math.max(2, size * .0065), 0, Math.PI * 2); ctx.fill();
       }
-      // Price updates: agent → human review (a short pause) → Adobe Commerce.
-      const PRICE_EVERY = 1900, REVIEW = 700, DOWN = 0.012;
-      for (let n = Math.max(0, Math.floor((t0 - 4000) / PRICE_EVERY)); n * PRICE_EVERY <= t0; n++) {
+      const PRICE_EVERY = 2200, REVIEW = 800, DOWN = 0.006, TOP = 25, REVIEW_Y = 29.2, END = 33;
+      for (let n = Math.max(0, Math.floor((t0 - 5000) / PRICE_EVERY)); n * PRICE_EVERY <= t0; n++) {
         const age = t0 - n * PRICE_EVERY;
-        let y = 17.6 + age * DOWN, approved = false, reviewing = 0;
-        const reviewY = 22.4;
-        if (y > reviewY) {
-          const waited = (y - reviewY) / DOWN;
-          if (waited < REVIEW) { y = reviewY; reviewing = waited / REVIEW; approved = reviewing > .55; }
-          else { y = reviewY + (waited - REVIEW) * DOWN; approved = true; }
+        let y = TOP + age * DOWN, approved = false, reviewing = 0;
+        if (y > REVIEW_Y) {
+          const waited = (y - REVIEW_Y) / DOWN;
+          if (waited < REVIEW) { y = REVIEW_Y; reviewing = waited / REVIEW; approved = reviewing > .55; }
+          else { y = REVIEW_Y + (waited - REVIEW) * DOWN; approved = true; }
         }
-        if (y > 28.4) continue;
-        // A draft arrives hollow; it is filled in only once a person has approved it.
-        const sq = Math.max(7, size * .019), x = 50 * k - sq / 2, top = y * k - sq / 2;
+        if (y > END) continue;
+        const sq = Math.max(7, size * .017), x = 50 * k - sq / 2, top = y * k - sq / 2;
         ctx.globalAlpha = alpha;
         ctx.fillStyle = ctx.strokeStyle = WASH;
         ctx.lineWidth = Math.max(1.2, size * .0026);
@@ -868,8 +885,8 @@
       phaseStart = performance.now();
       if (states[index].flow && from !== index) flowStart = phaseStart + (states[index].enter === 'build' ? states[index].buildTime : 0);
       stepButtons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === index)));
-      text.textContent = states[index].text;
-      link.setAttribute('href', states[index].href);
+      if (text) text.textContent = states[index].text;
+      if (link) link.setAttribute('href', states[index].href);
       if (phase === 'hold') { from = index; render(phaseStart); }
       loop();
     }
@@ -906,6 +923,11 @@
       setPaused(!paused);
       if (!paused) auto = true;
     });
+    // Hovering the drawing holds it still, so it can be looked at; leaving resumes.
+    let hoverHeld = false;
+    const canvasBox = figure.querySelector('.motion-canvas');
+    canvasBox.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse' && !paused) { hoverHeld = true; setPaused(true); } });
+    canvasBox.addEventListener('pointerleave', () => { if (hoverHeld) { hoverHeld = false; setPaused(false); } });
     if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) loop(); }).observe(figure);
     addEventListener('resize', resize);
     document.fonts?.ready.then(() => render(performance.now()));

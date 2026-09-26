@@ -144,31 +144,30 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 380; font-optica
   display: grid; gap: clamp(40px, 6vw, 96px);
 }
 .hero h1 {
-  margin-top: 18px;
-  font-size: clamp(2.6rem, 1.2rem + 4.3vw, 5rem);
-  line-height: .98; letter-spacing: -.024em; font-weight: 350;
+  margin-top: 16px;
+  font-size: clamp(2.4rem, 1.3rem + 3vw, 3.9rem);
+  line-height: 1; letter-spacing: -.024em; font-weight: 350;
 }
-.hero h1 em { font-style: italic; font-weight: 320; color: var(--ink-2); }
-.lede { max-width: 35rem; margin-top: 26px; font-size: clamp(1rem, .94rem + .3vw, 1.1875rem); line-height: 1.6; color: var(--ink-2); }
+.hero h1 em { display: block; margin-top: .3em; font-size: .52em; line-height: 1.15; letter-spacing: -.01em; font-style: italic; font-weight: 320; color: var(--ink-2); }
+.lede { max-width: 33rem; margin-top: 22px; font-size: clamp(1rem, .95rem + .2vw, 1.125rem); line-height: 1.6; color: var(--ink-2); }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; margin-top: 34px; }
 
 @media (min-width: 960px) {
-  .hero { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); align-items: center; }
+  .hero { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); align-items: center; }
 }
 
 /* Hero motion: one set of lines, three mediums. */
 .motion { display: grid; gap: 18px; min-width: 0; }
-.motion-canvas { position: relative; width: 100%; aspect-ratio: 1 / 1; max-height: min(62vh, 560px); max-width: min(62vh, 560px); justify-self: center; }
+.motion-canvas { position: relative; width: 100%; aspect-ratio: 1 / 1; max-height: min(72vh, 680px); max-width: min(72vh, 680px); justify-self: center; }
 .motion-canvas canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.motion-caption { display: grid; gap: 12px; border-top: 1px solid var(--rule-2); padding-top: 14px; }
+.motion-caption { position: relative; display: grid; gap: 12px; border-top: 1px solid var(--rule-2); padding-top: 10px; }
 .motion-steps { display: flex; flex-wrap: wrap; gap: 4px 22px; align-items: center; }
 .motion-steps button { padding: 6px 0; border: 0; background: none; cursor: pointer; font-size: .9375rem; color: var(--ink-3); display: inline-flex; gap: 8px; align-items: baseline; transition: color .2s; }
 .motion-steps button span { font-size: .75rem; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
 .motion-steps button[aria-pressed="true"] { color: var(--ink); box-shadow: inset 0 -1px 0 var(--ink); }
+/* The pause control stays for keyboard users (it appears on focus); with a mouse, hovering the drawing pauses it. */
 .motion-steps .motion-pause { margin-left: auto; font-size: .8125rem; text-decoration: underline; text-underline-offset: 3px; box-shadow: none !important; }
-.motion-line { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 20px; font: 400 1.125rem/1.35 var(--serif); }
-.motion-line a { font: 400 .875rem var(--sans); text-decoration: none; border-bottom: 1px solid var(--rule-2); padding-bottom: 2px; align-self: center; }
-.motion-line a:hover { border-color: var(--ink); }
+.motion-steps .motion-pause:not(:focus-visible) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* 5 · Section heads --------------------------------------------------------- */
 .section-head {
