@@ -612,32 +612,46 @@
     const BASE = [46, 69];
     const dir = (deg, len) => [BASE[0] + len * Math.sin(deg * Math.PI / 180), BASE[1] - len * Math.cos(deg * Math.PI / 180)];
     const kenzan = [[41, 72.4], [41, 70.4], [51, 70.4], [51, 72.4], [41, 72.4], [41, 70.4], ...zigzag(41.8, 50.2, 68.6, 70.4, 8)];
-    // A hairline from a disc's edge to the edge of the Adobe Commerce disc (50, 50, r 17).
-    const hair = (x, y, r) => {
-      const dx = 50 - x, dy = 50 - y, d = Math.hypot(dx, dy);
-      return [[x + dx / d * r, y + dy / d * r], [50 - dx / d * 17, 50 - dy / d * 17]];
+    // Systems geometry. Dynamics, SAP and ServiceNow sit on one ring around
+    // Adobe Commerce: they also talk to each other directly. The Copilot agent
+    // (mine) sits outside the ring and connects only to Adobe Commerce.
+    const RING = 36, HUB_R = 15, SYS = {
+      cop: [86, 15, 6.5],
+      dyn: [50 + RING * Math.cos(200 * Math.PI / 180), 50 + RING * Math.sin(200 * Math.PI / 180), 9.5],
+      sap: [50 + RING * Math.cos(20 * Math.PI / 180), 50 + RING * Math.sin(20 * Math.PI / 180), 10],
+      sn: [50 + RING * Math.cos(115 * Math.PI / 180), 50 + RING * Math.sin(115 * Math.PI / 180), 6.5]
     };
+    // A hairline from a disc's edge to the edge of the Adobe Commerce disc.
+    const hair = ([x, y, r]) => {
+      const dx = 50 - x, dy = 50 - y, d = Math.hypot(dx, dy);
+      return [[x + dx / d * r, y + dy / d * r], [50 - dx / d * HUB_R, 50 - dy / d * HUB_R]];
+    };
+    // An arc of the ring between two discs, trimmed at their edges (angles in degrees).
+    const deg = Math.PI / 180;
+    const ringArc = (a0, r0, a1, r1) => arc(50, 50, RING, a0 * deg + r0 / RING, a1 * deg - r1 / RING, 40);
+    const PEER = [ringArc(200, SYS.dyn[2], 380, SYS.sap[2]), ringArc(20, SYS.sap[2], 115, SYS.sn[2]), ringArc(115, SYS.sn[2], 200, SYS.dyn[2])];
+    const mid = ([a, b]) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
     const states = [
       { // Systems, drawn flat: Adobe Commerce is the large black disc everything
         // radiates from; the other systems are solid grey discs of different sizes,
         // joined by hairlines. Seal red is the only colour: my check and my agent.
         strokes: [
-          ellipse(50, 50, 17, 17),                                                     // Adobe Commerce
-          ellipse(76, 18, 7.5, 7.5),                                                   // Copilot agent
-          ellipse(18, 32, 11, 11),                                                     // Dynamics 365
-          ellipse(84, 70, 12, 12),                                                     // SAP ERP
-          ellipse(27, 80, 7, 7),                                                       // ServiceNow
-          hair(76, 18, 7.5), hair(18, 32, 11), hair(84, 70, 12), hair(27, 80, 7),      // hairlines, edge to edge
-          hair(7, 62, 1.3), hair(93, 36, 1.7), hair(60, 94, 1.1)                       // other sources
+          ellipse(50, 50, HUB_R, HUB_R),                                               // Adobe Commerce
+          ellipse(SYS.cop[0], SYS.cop[1], SYS.cop[2], SYS.cop[2]),                     // Copilot agent
+          ellipse(SYS.dyn[0], SYS.dyn[1], SYS.dyn[2], SYS.dyn[2]),                     // Dynamics 365
+          ellipse(SYS.sap[0], SYS.sap[1], SYS.sap[2], SYS.sap[2]),                     // SAP ERP
+          ellipse(SYS.sn[0], SYS.sn[1], SYS.sn[2], SYS.sn[2]),                         // ServiceNow
+          hair(SYS.cop), hair(SYS.dyn), hair(SYS.sap), hair(SYS.sn),                   // into Adobe Commerce
+          ...PEER                                                                      // and to each other
         ],
         build: [[.14, .3], [.56, .66], [.36, .48], [.42, .54], [.5, .6], [.3, .5], [.22, .42], [.26, .46], [.34, .54], [.6, .8], [.64, .84], [.68, .88]],
         buildTime: 2800,
-        discs: [[50, 50, 17, '#1c1f1c', 0], [76, 18, 7.5, '#8e928d', 1], [18, 32, 11, '#dcdedb', 2], [84, 70, 12, '#4a4e4a', 3], [27, 80, 7, '#b6b9b5', 4],
-          [7, 62, 1.3, '#1c1f1c', 9], [93, 36, 1.7, '#1c1f1c', 10], [60, 94, 1.1, '#1c1f1c', 11]],
+        discs: [[50, 50, HUB_R, '#1c1f1c', 0], [...SYS.cop, '#8e928d', 1], [...SYS.dyn, '#dcdedb', 2], [...SYS.sap, '#4a4e4a', 3], [...SYS.sn, '#b6b9b5', 4]],
         inkLabels: true,
-        seal: [69.2, 61.3],                                                            // my check, on the way in from SAP
-        marks: [[81.5, 12.5]],                                                         // the agent is mine
-        labels: [['Adobe Commerce', 50, 50.4, 0, 0, 1], ['Copilot agent', 76, 29.5, 0, 1], ['Dynamics 365', 18, 47, 0, 2], ['SAP ERP', 84, 86.5, 0, 3], ['ServiceNow', 27, 91, 0, 4]],
+        seal: mid(hair(SYS.sap)),                                                      // my check, on the way in from SAP
+        marks: [[SYS.cop[0] + 4.6, SYS.cop[1] - 4.6]],                                     // the agent is mine
+        labels: [['Adobe Commerce', 50, 50.4, 0, 0, 1], ['Copilot agent', SYS.cop[0], SYS.cop[1] + 10.5, 0, 1], ['Dynamics 365', SYS.dyn[0], SYS.dyn[1] + 13.5, 0, 2],
+          ['SAP ERP', SYS.sap[0], SYS.sap[1] + 14, 0, 3], ['ServiceNow', SYS.sn[0], SYS.sn[1] + 10.5, 0, 4]],
         hold: 6200, text: 'Orders and pricing moving through connected systems.', href: '#systems-case', flow: true
       },
       { // Space: Ensō House ground floor, from Wai's own plan, with the track lighting.
@@ -723,6 +737,7 @@
         ctx.globalAlpha = alpha * a;
         ctx.font = minor ? `400 ${small}px "IBM Plex Sans", Helvetica, Arial, sans-serif` : `500 ${px}px "IBM Plex Sans", Helvetica, Arial, sans-serif`;
         ctx.fillStyle = light ? PAPER : minor ? INK3 : state.inkLabels ? INK : WASH;
+        if (state.inkLabels && !light) { ctx.strokeStyle = PAPER; ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.strokeText(t, x * u, y * u); }
         ctx.fillText(t, x * u, y * u);
       });
       ctx.globalAlpha = 1;
@@ -817,14 +832,10 @@
 
     // Traffic into the hub: records leave Dynamics, SAP and ServiceNow and travel
     // the hairline into Adobe Commerce; about 1 in 3 from SAP waits at my check.
+    // Between them, records also move round the ring without Adobe Commerce.
     // The agent's price drafts arrive hollow, pause for review and are filled in.
-    const HUB = [50, 50, 17];
-    const spoke = ([x, y, r]) => {
-      const dx = HUB[0] - x, dy = HUB[1] - y, d = Math.hypot(dx, dy);
-      return [[x + dx / d * r, y + dy / d * r], [HUB[0] - dx / d * HUB[2], HUB[1] - dy / d * HUB[2]]];
-    };
-    const SPOKES = [spoke([18, 32, 11]), spoke([84, 70, 12]), spoke([27, 80, 7])];
-    const AGENT = spoke([76, 18, 7.5]);
+    const SPOKES = [hair(SYS.dyn), hair(SYS.sap), hair(SYS.sn)];
+    const AGENT = hair(SYS.cop);
     const SPAWN = 560, SPEED = 0.0075; // units per ms
     const segLen = ([a, b]) => Math.hypot(b[0] - a[0], b[1] - a[1]);
     const CHECK_AT = segLen(SPOKES[1]) / 2;
@@ -851,6 +862,19 @@
         ctx.fillStyle = INK;
         ctx.beginPath(); ctx.arc(p[0] * k, p[1] * k, Math.max(2.2, size * .0075), 0, Math.PI * 2); ctx.fill();
       }
+      // Peer traffic: the systems also exchange records directly, round the ring.
+      ctx.fillStyle = INK3;
+      PEER.forEach((route, i) => {
+        const PEER_EVERY = 1700, V = 0.00045;                                   // share of the arc per ms
+        for (let n = Math.max(0, Math.floor((t0 - 3000) / PEER_EVERY)); n * PEER_EVERY <= t0; n++) {
+          let f = (t0 - n * PEER_EVERY - i * 500) * V;
+          if (f < 0 || f > 1) continue;
+          if (n % 2) f = 1 - f;                                                  // both directions
+          const q = route[Math.min(route.length - 1, Math.round(f * (route.length - 1)))];
+          ctx.globalAlpha = alpha * .9;
+          ctx.beginPath(); ctx.arc(q[0] * k, q[1] * k, Math.max(1.8, size * .006), 0, Math.PI * 2); ctx.fill();
+        }
+      });
       const PRICE_EVERY = 2400, REVIEW = 800, len = segLen(AGENT), mid = len / 2, V = 0.006;
       for (let n = Math.max(0, Math.floor((t0 - 6000) / PRICE_EVERY)); n * PRICE_EVERY <= t0; n++) {
         let d = (t0 - n * PRICE_EVERY) * V, approved = false, reviewing = 0;
