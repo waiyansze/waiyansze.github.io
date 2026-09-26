@@ -225,26 +225,48 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 380; font-optica
 
 /* Notes: a marker on the drawing, a fine elbow line, a short text outside the drawing. */
 .motion-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
-.motion-lines polyline { fill: none; stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; animation: note-line .6s var(--ease) both; }
+.motion-lines polyline { fill: none; stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; animation: note-line .6s var(--ease) backwards; }
 .motion-notes { position: absolute; inset: 0; pointer-events: none; }
-.note { position: absolute; width: 13rem; font-size: .8125rem; line-height: 1.4; color: var(--ink); animation: note-fade .6s var(--ease) .35s both; }
+.note { position: absolute; width: 13rem; font-size: .8125rem; line-height: 1.4; color: var(--ink); animation: note-fade .6s var(--ease) .35s backwards; }
 .note--left { text-align: right; }
 .note b { display: block; margin-bottom: 2px; font-weight: 500; font-size: .6875rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
-.note-mark { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 1px solid var(--ink); background: var(--paper); animation: note-fade .4s var(--ease) both; }
+.note-mark { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 1px solid var(--ink); background: var(--paper); animation: note-fade .4s var(--ease) backwards; }
 .note-mark::after { content: ""; position: absolute; inset: 3px; background: var(--ink); }
 .note-mark.is-mine::after { background: var(--seal); }
-/* A soft focus frame drifts from note to note, like looking closely. */
+/* The viewfinder: four corner marks frame one thing at a time. Left alone it moves
+   from note to note; pointing snaps it to the nearest system and names its links. */
 .motion-focus {
-  position: absolute; width: 17%; aspect-ratio: 1; margin: -8.5% 0 0 -8.5%; left: 50%; top: 50%;
-  border: 1px solid var(--rule-2); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
-  transition: left 1.4s var(--ease), top 1.4s var(--ease), opacity .6s; pointer-events: none;
+  --fs: 11%; --c: var(--ink); --l: 11px; --w: 1.5px;
+  position: absolute; left: 50%; top: 50%; width: var(--fs); aspect-ratio: 1; translate: -50% -50%;
+  background:
+    linear-gradient(var(--c), var(--c)) 0 0 / var(--l) var(--w), linear-gradient(var(--c), var(--c)) 0 0 / var(--w) var(--l),
+    linear-gradient(var(--c), var(--c)) 100% 0 / var(--l) var(--w), linear-gradient(var(--c), var(--c)) 100% 0 / var(--w) var(--l),
+    linear-gradient(var(--c), var(--c)) 0 100% / var(--l) var(--w), linear-gradient(var(--c), var(--c)) 0 100% / var(--w) var(--l),
+    linear-gradient(var(--c), var(--c)) 100% 100% / var(--l) var(--w), linear-gradient(var(--c), var(--c)) 100% 100% / var(--w) var(--l);
+  background-repeat: no-repeat;
+  opacity: 0; pointer-events: none;
+  transition: left .8s var(--ease), top .8s var(--ease), width .8s var(--ease), opacity .4s;
 }
+.motion-focus.is-on { opacity: 1; }
+.motion-focus.is-hover { transition-duration: .35s, .35s, .35s, .2s; }
+.motion-focus::after {
+  content: attr(data-label); position: absolute; left: 0; bottom: calc(100% + 8px); padding: 1px 4px;
+  white-space: nowrap; background: var(--paper); color: var(--ink); font: 500 .75rem/1.3 var(--sans);
+  opacity: 0; transition: opacity .25s;
+}
+.motion-focus.is-flip::after { left: auto; right: 0; }
+.motion-focus.is-below::after { bottom: auto; top: calc(100% + 4px); }
+.motion-focus.is-hover:not([data-label=""])::after { opacity: 1; }
+/* The framed note stays in full ink; the others step back. */
+.note, .note-mark, .motion-lines polyline { transition: opacity .35s; }
+.motion-notes.has-active .note:not(.is-active), .motion-notes.has-active .note-mark:not(.is-active) { opacity: .38; }
+.motion-lines.has-active polyline:not(.is-active) { opacity: .3; }
 @keyframes note-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 @keyframes note-line { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
   .note, .note-mark, .notes-list li { animation: none; }
   .motion-lines polyline { animation: none; }
-  .motion-focus { display: none !important; }
+  .motion-focus, .motion-focus::after, .note, .note-mark, .motion-lines polyline { transition: none; }
 }
 
 /* 5 · Section heads --------------------------------------------------------- */

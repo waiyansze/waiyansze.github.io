@@ -657,8 +657,17 @@
         marks: [[SYS.cop[0] + 4.6, SYS.cop[1] - 4.6]],                                     // the agent is mine
         notes: [
           { at: [50 + RING * Math.cos(245 * deg), 50 + RING * Math.sin(245 * deg)], side: 'left', y: 34, title: 'Connected', text: 'The systems also talk to each other, not only through Adobe Commerce.' },
-          { at: [86, 15], side: 'right', y: 20, mine: true, title: 'My agent', text: 'A Copilot agent I built. Nothing goes in without my approval.' },
+          { at: [86, 15], fs: 20, side: 'right', y: 20, mine: true, title: 'My agent', text: 'A Copilot agent I built. Nothing goes in without my approval.' },
           { at: mid(hair(SYS.sap)), side: 'right', y: 44, mine: true, title: 'My check', text: 'About 1 in 10 orders corrected before processing.' }
+        ],
+        // Pointing at a system brings forward what it is linked to (stroke indices
+        // as above: discs 0–4, hairlines 5–8, ring arcs 9–11) and its note, if any.
+        nodes: [
+          { at: [50, 50], r: HUB_R, keep: [0, 1, 2, 3, 4, 5, 6, 7, 8], note: -1, label: 'Adobe Commerce · linked to all four' },
+          { at: SYS.cop, r: SYS.cop[2], keep: [0, 1, 5], note: 1, label: 'Into Adobe Commerce, after my approval' },
+          { at: SYS.dyn, r: SYS.dyn[2], keep: [0, 2, 3, 4, 6, 9, 11], note: 0, label: 'Dynamics 365 · Adobe Commerce, SAP, ServiceNow' },
+          { at: SYS.sap, r: SYS.sap[2], self: 3, below: true, keep: [0, 2, 3, 4, 7, 9, 10], note: 2, label: 'SAP ERP · Adobe Commerce, Dynamics, ServiceNow' },
+          { at: SYS.sn, r: SYS.sn[2], self: 4, below: true, keep: [0, 2, 3, 4, 8, 10, 11], note: 0, label: 'ServiceNow · Adobe Commerce, Dynamics, SAP' }
         ],
         labels: [['Adobe Commerce', 50, 50.4, 0, 0, 1], ['Copilot agent', SYS.cop[0], SYS.cop[1] + 10.5, 0, 1], ['Dynamics 365', SYS.dyn[0], SYS.dyn[1] + 13.5, 0, 2],
           ['SAP ERP', SYS.sap[0], SYS.sap[1] + 14, 0, 3], ['ServiceNow', SYS.sn[0], SYS.sn[1] + 10.5, 0, 4]],
@@ -725,6 +734,12 @@
     const progress = (state, s, p) => { const [a, b] = state.build ? state.build[s] : [0, 1]; return clamp01((p - a) / (b - a)); };
     const enterTime = st => st.enter === 'build' ? st.buildTime : MORPH;
     let from = 0, to = 0, phaseStart = 0, flowStart = 0, phase = 'draw', paused = reduceMotion.matches, auto = true, visible = true, raf = 0, size = 0, dpr = 1;
+    // Pointing: the system under the pointer keeps full ink, the rest fade back.
+    let inside = false, hovering = false, hoverNode = null, hoverMix = 0, hoverTarget = 0, lastFrame = 0;
+    const emph = s => {
+      if (phase !== 'hold' || !hoverNode || !hoverNode.keep || hoverMix <= 0) return 1;
+      return hoverNode.keep.includes(s) ? 1 : 1 - hoverMix * .84;
+    };
 
     function resize() {
       const r = canvas.getBoundingClientRect();
@@ -747,13 +762,14 @@
         state.dots.forEach(([x, y]) => { ctx.beginPath(); ctx.arc(x * u, y * u, size * .0085, 0, Math.PI * 2); ctx.stroke(); });
       }
       if (state.marks) {
-        ctx.globalAlpha = alpha * clamp01((p - .6) / .2);
+        ctx.globalAlpha = alpha * clamp01((p - .6) / .2) * emph(1);
         ctx.fillStyle = SEAL;
         state.marks.forEach(([x, y]) => ctx.fillRect(x * u - size * .011, y * u - size * .011, size * .022, size * .022));
       }
       state.labels.forEach(([t, x, y, minor, stroke, light]) => {
         const a = stroke === undefined ? clamp01((p - .85) / .15) : progress(state, stroke, p);
-        ctx.globalAlpha = alpha * a;
+        const named = phase === 'hold' && hoverNode?.below && hoverNode.self === stroke ? 1 - hoverMix : 1;   // the frame's label takes its place
+        ctx.globalAlpha = alpha * a * emph(stroke ?? 0) * named;
         ctx.font = minor ? `400 ${small}px "IBM Plex Sans", Helvetica, Arial, sans-serif` : `500 ${px}px "IBM Plex Sans", Helvetica, Arial, sans-serif`;
         ctx.fillStyle = light ? PAPER : minor ? INK3 : state.inkLabels ? INK : WASH;
         if (state.inkLabels && !light) { ctx.strokeStyle = PAPER; ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.strokeText(t, x * u, y * u); }
@@ -770,7 +786,7 @@
       state.discs.forEach(([x, y, r, color, stroke]) => {
         const g = progress(state, stroke, p);
         if (g <= 0) return;
-        ctx.globalAlpha = alpha;
+        ctx.globalAlpha = alpha * emph(stroke);
         ctx.fillStyle = color;
         ctx.beginPath(); ctx.arc(x * u, y * u, Math.max(0, r * u * backOut(g)), 0, Math.PI * 2); ctx.fill();
       });
@@ -818,6 +834,7 @@
         else drawDiscs(B, 1);
         for (let s = 0; s < B.strokes.length; s++) {
           const P = A.strokes[s], Q = B.strokes[s];
+          ctx.globalAlpha = emph(s);
           ctx.beginPath();
           for (let i = 0; i < N; i++) {
             const x = (P[i][0] + (Q[i][0] - P[i][0]) * t) * k, y = (P[i][1] + (Q[i][1] - P[i][1]) * t) * k;
@@ -825,6 +842,7 @@
           }
           ctx.stroke();
         }
+        ctx.globalAlpha = 1;
         if (phase === 'morph') {
           drawDetails(A, 1 - clamp01(elapsed / (MORPH * .35)));
           flowAlpha = clamp01((elapsed - MORPH * .7) / (MORPH * .3));
@@ -841,9 +859,10 @@
       const S0 = A.seal, S1 = B.seal;
       const sx = (S0[0] + (S1[0] - S0[0]) * sealT) * k, sy = (S0[1] + (S1[1] - S0[1]) * sealT) * k;
       const sealSize = size * .034 * sealScale;
-      if (sealSize > 0) { ctx.fillStyle = SEAL; ctx.fillRect(sx - sealSize / 2, sy - sealSize / 2, sealSize, sealSize); }
+      const sealAlpha = B.flow ? emph(7) : 1;   // on Systems the seal sits on the SAP hairline
+      if (sealSize > 0) { ctx.globalAlpha = sealAlpha; ctx.fillStyle = SEAL; ctx.fillRect(sx - sealSize / 2, sy - sealSize / 2, sealSize, sealSize); ctx.globalAlpha = 1; }
       if (pulse > 0) {
-        ctx.strokeStyle = SEAL; ctx.globalAlpha = pulse; ctx.lineWidth = Math.max(1, size * .0025);
+        ctx.strokeStyle = SEAL; ctx.globalAlpha = pulse * sealAlpha; ctx.lineWidth = Math.max(1, size * .0025);
         const r = size * (.028 + .03 * (1 - pulse));
         ctx.strokeRect(sx - r, sy - r, r * 2, r * 2); ctx.globalAlpha = 1;
       }
@@ -877,7 +896,7 @@
         }
         const p = along(SPOKES[which], dist);
         if (!p) continue;
-        ctx.globalAlpha = alpha;
+        ctx.globalAlpha = alpha * emph(6 + which);
         ctx.fillStyle = INK;
         ctx.beginPath(); ctx.arc(p[0] * k, p[1] * k, Math.max(2.2, size * .0075), 0, Math.PI * 2); ctx.fill();
       }
@@ -890,7 +909,7 @@
           if (f < 0 || f > 1) continue;
           if (n % 2) f = 1 - f;                                                  // both directions
           const q = route[Math.min(route.length - 1, Math.round(f * (route.length - 1)))];
-          ctx.globalAlpha = alpha * .9;
+          ctx.globalAlpha = alpha * .9 * emph(9 + i);
           ctx.beginPath(); ctx.arc(q[0] * k, q[1] * k, Math.max(1.8, size * .006), 0, Math.PI * 2); ctx.fill();
         }
       });
@@ -905,13 +924,13 @@
         const p = along(AGENT, d);
         if (!p) continue;
         const sq = Math.max(7, size * .017), x = p[0] * k - sq / 2, top = p[1] * k - sq / 2;
-        ctx.globalAlpha = alpha;
+        ctx.globalAlpha = alpha * emph(5);
         ctx.fillStyle = ctx.strokeStyle = INK;
         ctx.lineWidth = Math.max(1.2, size * .0026);
         if (approved) ctx.fillRect(x, top, sq, sq); else { ctx.fillStyle = PAPER; ctx.fillRect(x, top, sq, sq); ctx.strokeRect(x, top, sq, sq); }
         if (reviewing) {
           const grow = sq * (.5 + reviewing * .7);
-          ctx.globalAlpha = alpha * (1 - reviewing) * .8;
+          ctx.globalAlpha = alpha * (1 - reviewing) * .8 * emph(5);
           ctx.strokeRect(x - grow / 2, top - grow / 2, sq + grow, sq + grow);
         }
       }
@@ -921,9 +940,41 @@
 
     // Notes: real text beside the drawing, joined to it by fine elbow lines.
     const SVGNS = 'http://www.w3.org/2000/svg';
-    let notesTimer = 0, focusTimer = 0;
+    let notesTimer = 0, focusTimer = 0, noteEls = [];
+    // The viewfinder: four corner marks that frame one thing at a time.
+    function placeFocus(target, label) {
+      if (!focusBox) return;
+      const [x, y] = target.at;
+      const moved = focusBox.style.left !== x + '%' || focusBox.style.top !== y + '%';
+      focusBox.style.left = x + '%'; focusBox.style.top = y + '%';
+      focusBox.style.setProperty('--fs', (target.fs || (target.r ? 2 * target.r + 7 : 11)) + '%');
+      focusBox.dataset.label = label || '';
+      focusBox.classList.toggle('is-flip', x > 55);
+      focusBox.classList.toggle('is-below', !!target.below);
+      focusBox.classList.toggle('is-hover', hovering);
+      focusBox.classList.add('is-on');
+      // Once it arrives, it closes in slightly, like a lens finding focus.
+      if (moved && !reduceMotion.matches && focusBox.animate) {
+        focusBox.animate([{ scale: '1.18', opacity: .5 }, { scale: '1', opacity: 1 }],
+          { duration: 420, delay: hovering ? 260 : 820, easing: 'cubic-bezier(.2,.7,.2,1)', fill: 'backwards' });
+      }
+    }
+    function activateNote(i) {
+      noteEls.forEach((els, j) => els.forEach(el => el.classList.toggle('is-active', j === i)));
+      notesBox?.classList.toggle('has-active', i >= 0 && i < noteEls.length);
+      linesBox?.classList.toggle('has-active', i >= 0 && i < noteEls.length);
+    }
+    function idleFocus() {
+      clearInterval(focusTimer);
+      const notes = states[to].notes || [];
+      if (!focusBox || !notes.length || reduceMotion.matches || !noteEls.length) return;
+      let i = 0;
+      const move = () => { const n = i % notes.length; placeFocus(notes[n]); activateNote(n); i++; };
+      move(); focusTimer = setInterval(() => { if (!paused && !hovering) move(); }, 2600);
+    }
     function renderNotes(state) {
       clearTimeout(notesTimer); clearInterval(focusTimer);
+      noteEls = [];
       if (notesBox) notesBox.replaceChildren();
       if (linesBox) linesBox.replaceChildren();
       if (notesList) notesList.replaceChildren();
@@ -955,24 +1006,61 @@
         if (left) note.style.right = (100 - edge) + '%'; else note.style.left = edge + '%';
         note.innerHTML = `<b>${n.title}</b>${n.text}`;
         notesBox.append(mark, note);
+        noteEls.push([line, mark, note]);
       });
-      // The focus frame drifts from one noted point to the next.
-      if (focusBox && notes.length && !reduceMotion.matches) {
-        let i = 0;
-        const move = () => { const [x, y] = notes[i % notes.length].at; focusBox.style.left = x + '%'; focusBox.style.top = y + '%'; i++; };
-        move(); focusTimer = setInterval(() => { if (!paused) move(); }, 2600);
-      }
+      // Left alone, the frame moves from one note to the next; pointing takes over.
+      if (hovering && hoverNode) { placeFocus(hoverNode, hoverNode.label); activateNote(hoverNode.note); }
+      else idleFocus();
     }
     function queueNotes(state, delay) {
-      clearTimeout(notesTimer);
-      if (notesBox) notesBox.replaceChildren();
-      if (linesBox) linesBox.replaceChildren();
+      clearTimeout(notesTimer); clearInterval(focusTimer);
+      noteEls = [];
+      focusBox?.classList.remove('is-on');
+      if (notesBox) { notesBox.replaceChildren(); notesBox.classList.remove('has-active'); }
+      if (linesBox) { linesBox.replaceChildren(); linesBox.classList.remove('has-active'); }
       notesTimer = setTimeout(() => renderNotes(state), delay);
+    }
+
+    // Pointing at the drawing (mouse only, and only where the notes sit beside it):
+    // the frame snaps to the nearest system, its links stay dark, the rest fade.
+    function kick() {
+      if (paused || reduceMotion.matches || !visible) { hoverMix = hoverTarget; render(paused ? pausedAt : performance.now()); }
+      else loop();
+    }
+    function nearestNode(e) {
+      const r = canvas.getBoundingClientRect();
+      const x = (e.clientX - r.left - (r.width - size) / 2) / size * 100;
+      const y = (e.clientY - r.top - (r.height - size) / 2) / size * 100;
+      const st = states[to];
+      const nodes = st.nodes || (st.notes || []).map((n, i) => ({ at: n.at, fs: n.fs, r: 0, note: i }));
+      let best = null, bestD = Infinity;
+      nodes.forEach(n => { const d = Math.hypot(x - n.at[0], y - n.at[1]) - (n.r || 0); if (d < bestD) { bestD = d; best = n; } });
+      return best;
+    }
+    function pointAt(e) {
+      if (e.pointerType !== 'mouse' || !focusBox || !focusBox.offsetParent || phase !== 'hold' || !noteEls.length) return;
+      const node = nearestNode(e);
+      if (!node || (node === hoverNode && hoverTarget === 1)) return;
+      hovering = true; hoverNode = node; hoverTarget = 1;
+      clearInterval(focusTimer);
+      placeFocus(node, node.label);
+      activateNote(node.note);
+      kick();
+    }
+    function leave() {
+      if (inside && phase === 'hold') phaseStart = performance.now();   // a full look before it moves on
+      inside = false;
+      if (!hovering) return;
+      hovering = false; hoverTarget = 0;
+      focusBox?.classList.remove('is-hover');
+      idleFocus();
+      kick();
     }
     addEventListener('resize', () => { clearTimeout(notesTimer); notesTimer = setTimeout(() => renderNotes(states[to]), 150); });
 
     function show(index, instant) {
       from = instant ? index : to; to = index;
+      hovering = false; hoverNode = null; hoverTarget = 0; hoverMix = 0;
       phase = instant || reduceMotion.matches ? 'hold' : 'morph';
       phaseStart = performance.now();
       if (states[index].flow && from !== index) flowStart = phaseStart + (states[index].enter === 'build' ? states[index].buildTime : 0);
@@ -986,14 +1074,16 @@
 
     function tick(now) {
       raf = 0;
+      const dt = lastFrame ? now - lastFrame : 0; lastFrame = now;
+      if (hoverMix !== hoverTarget) hoverMix = hoverTarget > hoverMix ? Math.min(1, hoverMix + dt / 260) : Math.max(0, hoverMix - dt / 380);
       const elapsed = now - phaseStart;
       if (phase === 'draw' && elapsed >= states[to].buildTime) { phase = 'hold'; phaseStart = now; flowStart = now; }
       else if (phase === 'morph' && elapsed >= enterTime(states[to])) { from = to; phase = 'hold'; phaseStart = now; }
-      else if (phase === 'hold' && elapsed >= states[to].hold && auto && !paused) { show((to + 1) % states.length); return; }
+      else if (phase === 'hold' && elapsed >= states[to].hold && auto && !paused && !inside) { show((to + 1) % states.length); return; }
       render(now);
-      if (visible && !paused && (phase !== 'hold' || auto || states[to].flow)) raf = requestAnimationFrame(tick);
+      if (visible && !paused && (phase !== 'hold' || auto || states[to].flow || hoverMix !== hoverTarget)) raf = requestAnimationFrame(tick);
     }
-    function loop() { if (!raf && visible) raf = requestAnimationFrame(tick); }
+    function loop() { if (!raf && visible) { lastFrame = 0; raf = requestAnimationFrame(tick); } }
 
     // Choosing a medium stops the automatic sequence but keeps that drawing alive.
     stepButtons.forEach((b, i) => b.addEventListener('click', () => {
@@ -1016,11 +1106,12 @@
       setPaused(!paused);
       if (!paused) auto = true;
     });
-    // Hovering the drawing holds it still, so it can be looked at; leaving resumes.
-    let hoverHeld = false;
+    // Pointing at the drawing holds the current medium (it won't move on) and
+    // shows what connects to what; leaving hands the frame back to the notes.
     const canvasBox = figure.querySelector('.motion-canvas');
-    canvasBox.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse' && !paused) { hoverHeld = true; setPaused(true); } });
-    canvasBox.addEventListener('pointerleave', () => { if (hoverHeld) { hoverHeld = false; setPaused(false); } });
+    canvasBox.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') inside = true; });
+    canvasBox.addEventListener('pointermove', pointAt);
+    canvasBox.addEventListener('pointerleave', leave);
     if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) loop(); }).observe(figure);
     addEventListener('resize', resize);
     document.fonts?.ready.then(() => render(performance.now()));
