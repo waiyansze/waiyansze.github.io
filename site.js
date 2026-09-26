@@ -658,7 +658,7 @@
         notes: [
           { at: [50 + RING * Math.cos(245 * deg), 50 + RING * Math.sin(245 * deg)], side: 'left', y: 34, title: 'Connected', text: 'The systems also talk to each other, not only through Adobe Commerce.' },
           { at: [86, 15], fs: 20, side: 'right', y: 20, mine: true, title: 'My agent', text: 'A Copilot agent I built. Nothing goes in without my approval.' },
-          { at: mid(hair(SYS.sap)), side: 'right', y: 44, mine: true, title: 'My check', text: 'About 1 in 10 orders corrected before processing.' }
+          { at: mid(hair(SYS.sap)), side: 'right', y: 35, mine: true, title: 'My check', text: 'About 1 in 10 orders corrected before processing.' }
         ],
         // Pointing at a system brings forward what it is linked to (stroke indices
         // as above: discs 0–4, hairlines 5–8, ring arcs 9–11) and its note, if any.
