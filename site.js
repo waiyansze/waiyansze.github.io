@@ -545,9 +545,9 @@
 
   /* 11 · Hero motion ---------------------------------------------------------
      Twelve strokes in every state, in the site's order: Systems, Space, Flowers.
-     Systems draws itself as a hub: everything points into Adobe Commerce,
-     SAP traffic passes my check, and the Copilot agent's price drafts wait
-     for review before they go in. The
+     Systems is drawn flat: Adobe Commerce is the large black disc, the other
+     systems are grey discs joined by hairlines. SAP traffic passes my check,
+     and the Copilot agent's price drafts wait for review before they go in. The
      lines then morph into the Ensō House plan, and the arrangement is built
      up the way it is made: basin, kenzan, shin, soe, hikae, then details.
      The cinnabar seal sits where the judgement happens in each. */
@@ -612,29 +612,32 @@
     const BASE = [46, 69];
     const dir = (deg, len) => [BASE[0] + len * Math.sin(deg * Math.PI / 180), BASE[1] - len * Math.cos(deg * Math.PI / 180)];
     const kenzan = [[41, 72.4], [41, 70.4], [51, 70.4], [51, 72.4], [41, 72.4], [41, 70.4], ...zigzag(41.8, 50.2, 68.6, 70.4, 8)];
+    // A hairline from a disc's edge to the edge of the Adobe Commerce disc (50, 50, r 17).
+    const hair = (x, y, r) => {
+      const dx = 50 - x, dy = 50 - y, d = Math.hypot(dx, dy);
+      return [[x + dx / d * r, y + dy / d * r], [50 - dx / d * 17, 50 - dy / d * 17]];
+    };
     const states = [
-      { // Systems: Adobe Commerce is the door everything passes through. Customer
-        // data, ERP, service tickets and the Copilot agent I built all point into it.
+      { // Systems, drawn flat: Adobe Commerce is the large black disc everything
+        // radiates from; the other systems are solid grey discs of different sizes,
+        // joined by hairlines. Seal red is the only colour: my check and my agent.
         strokes: [
-          ellipse(50, 50, 14, 14),                                                     // Adobe Commerce (hub)
-          ellipse(50, 17, 8, 8),                                                       // Copilot agent
-          ellipse(17, 50, 8, 8),                                                       // Dynamics 365
-          ellipse(83, 50, 8, 8),                                                       // SAP ERP
-          ellipse(50, 83, 8, 8),                                                       // ServiceNow
-          [[50, 25], [50, 33.5], [48, 31.3], [50, 33.5], [52, 31.3]],                  // agent → hub
-          [[25, 50], [33.5, 50], [31.3, 48], [33.5, 50], [31.3, 52]],                  // Dynamics → hub
-          [[75, 50], [66.5, 50], [68.7, 48], [66.5, 50], [68.7, 52]],                  // SAP → hub
-          [[50, 75], [50, 66.5], [48, 68.7], [50, 66.5], [52, 68.7]],                  // ServiceNow → hub
-          ellipse(50, 50, 16.5, 16.5),                                                 // outer ring of the hub
-          ellipse(50, 50, 14, 14),                                                     // (spare lines settle on the hub)
-          ellipse(50, 50, 16.5, 16.5)
+          ellipse(50, 50, 17, 17),                                                     // Adobe Commerce
+          ellipse(76, 18, 7.5, 7.5),                                                   // Copilot agent
+          ellipse(18, 32, 11, 11),                                                     // Dynamics 365
+          ellipse(84, 70, 12, 12),                                                     // SAP ERP
+          ellipse(27, 80, 7, 7),                                                       // ServiceNow
+          hair(76, 18, 7.5), hair(18, 32, 11), hair(84, 70, 12), hair(27, 80, 7),      // hairlines, edge to edge
+          hair(7, 62, 1.3), hair(93, 36, 1.7), hair(60, 94, 1.1)                       // other sources
         ],
-        build: [[0, .22], [.3, .46], [.22, .38], [.26, .42], [.34, .5], [.62, .76], [.5, .64], [.54, .68], [.58, .72], [.12, .3], [0, .22], [.12, .3]],
-        buildTime: 2600,
-        seal: [70.75, 50],                                                             // my check, on the way in from SAP
-        marks: [[55.7, 11.3]],                                                         // the agent is mine
-        icons: [['store', 50, 45.5, 0], ['spark', 50, 17, 1], ['person', 17, 50, 2], ['ledger', 83, 50, 3], ['ticket', 50, 83, 4]],
-        labels: [['Adobe Commerce', 50, 56.5, 0, 0], ['Copilot agent', 50, 5, 0, 1], ['Dynamics 365', 17, 62, 0, 2], ['SAP ERP', 83, 62, 0, 3], ['ServiceNow', 50, 95, 0, 4]],
+        build: [[.14, .3], [.56, .66], [.36, .48], [.42, .54], [.5, .6], [.3, .5], [.22, .42], [.26, .46], [.34, .54], [.6, .8], [.64, .84], [.68, .88]],
+        buildTime: 2800,
+        discs: [[50, 50, 17, '#1c1f1c', 0], [76, 18, 7.5, '#8e928d', 1], [18, 32, 11, '#dcdedb', 2], [84, 70, 12, '#4a4e4a', 3], [27, 80, 7, '#b6b9b5', 4],
+          [7, 62, 1.3, '#1c1f1c', 9], [93, 36, 1.7, '#1c1f1c', 10], [60, 94, 1.1, '#1c1f1c', 11]],
+        inkLabels: true,
+        seal: [69.2, 61.3],                                                            // my check, on the way in from SAP
+        marks: [[81.5, 12.5]],                                                         // the agent is mine
+        labels: [['Adobe Commerce', 50, 50.4, 0, 0, 1], ['Copilot agent', 76, 29.5, 0, 1], ['Dynamics 365', 18, 47, 0, 2], ['SAP ERP', 84, 86.5, 0, 3], ['ServiceNow', 27, 91, 0, 4]],
         hold: 6200, text: 'Orders and pricing moving through connected systems.', href: '#systems-case', flow: true
       },
       { // Space: Ensō House ground floor, from Wai's own plan, with the track lighting.
@@ -715,46 +718,29 @@
         ctx.fillStyle = SEAL;
         state.marks.forEach(([x, y]) => ctx.fillRect(x * u - size * .011, y * u - size * .011, size * .022, size * .022));
       }
-      if (state.icons) {
-        ctx.strokeStyle = INK; ctx.lineWidth = Math.max(1, size * .0028);
-        state.icons.forEach(([type, x, y, stroke]) => {
-          ctx.globalAlpha = alpha * progress(state, stroke, p);
-          drawIcon(type, x * u, y * u, u);
-        });
-      }
-      state.labels.forEach(([t, x, y, minor, stroke]) => {
+      state.labels.forEach(([t, x, y, minor, stroke, light]) => {
         const a = stroke === undefined ? clamp01((p - .85) / .15) : progress(state, stroke, p);
         ctx.globalAlpha = alpha * a;
         ctx.font = minor ? `400 ${small}px "IBM Plex Sans", Helvetica, Arial, sans-serif` : `500 ${px}px "IBM Plex Sans", Helvetica, Arial, sans-serif`;
-        ctx.fillStyle = minor ? INK3 : WASH;
+        ctx.fillStyle = light ? PAPER : minor ? INK3 : state.inkLabels ? INK : WASH;
         ctx.fillText(t, x * u, y * u);
       });
       ctx.globalAlpha = 1;
     }
 
-    // Small line icons, drawn in the same ink as the strokes.
-    function drawIcon(type, cx, cy, u) {
-      const P = (x, y) => [cx + x * u, cy + y * u];
-      ctx.beginPath();
-      if (type === 'store') {                       // shop front: awning and door
-        const pts = [[-5.5, -1], [-4.5, -4.5], [4.5, -4.5], [5.5, -1], [-5.5, -1]];
-        pts.forEach(([x, y], i) => i ? ctx.lineTo(...P(x, y)) : ctx.moveTo(...P(x, y)));
-        ctx.moveTo(...P(-4.5, -1)); ctx.lineTo(...P(-4.5, 4.5)); ctx.lineTo(...P(4.5, 4.5)); ctx.lineTo(...P(4.5, -1));
-        ctx.moveTo(...P(-1.2, 4.5)); ctx.lineTo(...P(-1.2, 1.5)); ctx.lineTo(...P(1.2, 1.5)); ctx.lineTo(...P(1.2, 4.5));
-      } else if (type === 'spark') {                // assistant: a four-point spark
-        ctx.moveTo(...P(0, -4));
-        ctx.quadraticCurveTo(...P(0, 0), ...P(4, 0)); ctx.quadraticCurveTo(...P(0, 0), ...P(0, 4));
-        ctx.quadraticCurveTo(...P(0, 0), ...P(-4, 0)); ctx.quadraticCurveTo(...P(0, 0), ...P(0, -4));
-      } else if (type === 'person') {               // customer data
-        ctx.arc(cx, cy - 1.6 * u, 1.7 * u, 0, Math.PI * 2);
-        ctx.moveTo(...P(-3.4, 4)); ctx.quadraticCurveTo(...P(0, -1.2), ...P(3.4, 4));
-      } else if (type === 'ledger') {               // ERP: a ledger
-        [[-3.6, -3.2, 3.6, -3.2], [-3.6, 0, 3.6, 0], [-3.6, 3.2, 1.5, 3.2]].forEach(([x0, y0, x1, y1]) => { ctx.moveTo(...P(x0, y0)); ctx.lineTo(...P(x1, y1)); });
-      } else if (type === 'ticket') {               // service: a message
-        const pts = [[-4, -3.2], [4, -3.2], [4, 2], [0.4, 2], [-1.8, 4.2], [-1.8, 2], [-4, 2], [-4, -3.2]];
-        pts.forEach(([x, y], i) => i ? ctx.lineTo(...P(x, y)) : ctx.moveTo(...P(x, y)));
-      }
-      ctx.stroke();
+    // Flat discs: each grows in with its outline, and fades out as the lines move on.
+    const backOut = t => { const c = 1.6; return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2); };
+    function drawDiscs(state, alpha, p = 1) {
+      if (!state.discs || alpha <= 0) return;
+      const u = size / 100;
+      state.discs.forEach(([x, y, r, color, stroke]) => {
+        const g = progress(state, stroke, p);
+        if (g <= 0) return;
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = color;
+        ctx.beginPath(); ctx.arc(x * u, y * u, Math.max(0, r * u * backOut(g)), 0, Math.PI * 2); ctx.fill();
+      });
+      ctx.globalAlpha = 1;
     }
 
     function strokePath(points, count, k) {
@@ -787,11 +773,15 @@
         } else {
           sealT = 1; sealScale = clamp01((p - .9) / .1);
         }
+        if (phase === 'morph') drawDiscs(A, 1 - clamp01(p / .14));
+        drawDiscs(B, 1, p);
         B.strokes.forEach((st, s) => { const r = progress(B, s, p); if (r > 0) strokePath(st, Math.max(2, Math.round(N * ease(r))), k); });
         drawDetails(B, 1, p);
         flowAlpha = 0;
       } else {
         const t = phase === 'morph' ? ease(clamp01(elapsed / MORPH)) : 1;
+        if (phase === 'morph') { drawDiscs(A, 1 - clamp01(elapsed / (MORPH * .4))); drawDiscs(B, clamp01((elapsed - MORPH * .6) / (MORPH * .4))); }
+        else drawDiscs(B, 1);
         for (let s = 0; s < B.strokes.length; s++) {
           const P = A.strokes[s], Q = B.strokes[s];
           ctx.beginPath();
@@ -825,14 +815,21 @@
       }
     }
 
-    // Traffic into the hub: records arrive from Dynamics, SAP and ServiceNow in
-    // turn; about 1 in 3 from SAP waits at my check. The agent's price drafts
-    // arrive hollow, pause for review and are filled in once approved.
-    const SPOKES = [[[25, 50], [33.5, 50]], [[75, 50], [66.5, 50]], [[50, 75], [50, 66.5]]];
-    const SPAWN = 520, SPEED = 0.0065; // units per ms
-    const CHECK_AT = 4.25;             // the seal sits halfway along the SAP spoke
+    // Traffic into the hub: records leave Dynamics, SAP and ServiceNow and travel
+    // the hairline into Adobe Commerce; about 1 in 3 from SAP waits at my check.
+    // The agent's price drafts arrive hollow, pause for review and are filled in.
+    const HUB = [50, 50, 17];
+    const spoke = ([x, y, r]) => {
+      const dx = HUB[0] - x, dy = HUB[1] - y, d = Math.hypot(dx, dy);
+      return [[x + dx / d * r, y + dy / d * r], [HUB[0] - dx / d * HUB[2], HUB[1] - dy / d * HUB[2]]];
+    };
+    const SPOKES = [spoke([18, 32, 11]), spoke([84, 70, 12]), spoke([27, 80, 7])];
+    const AGENT = spoke([76, 18, 7.5]);
+    const SPAWN = 560, SPEED = 0.0075; // units per ms
+    const segLen = ([a, b]) => Math.hypot(b[0] - a[0], b[1] - a[1]);
+    const CHECK_AT = segLen(SPOKES[1]) / 2;
     const along = ([a, b], d) => {
-      const len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+      const len = segLen([a, b]);
       if (d > len) return null;
       const t = d / len; return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
     };
@@ -840,33 +837,33 @@
       if (alpha <= 0) return 0;
       const t0 = now - flowStart;
       let pulse = 0;
-      ctx.fillStyle = INK;
-      for (let n = Math.max(0, Math.floor((t0 - 5000) / SPAWN)); n * SPAWN <= t0; n++) {
-        const spoke = n % 3, age = t0 - n * SPAWN;
+      for (let n = Math.max(0, Math.floor((t0 - 6000) / SPAWN)); n * SPAWN <= t0; n++) {
+        const which = n % 3, age = t0 - n * SPAWN;
         let dist = age * SPEED;
-        if (spoke === 1 && Math.floor(n / 3) % 3 === 1 && dist > CHECK_AT) {   // held at the check
+        if (which === 1 && Math.floor(n / 3) % 3 === 1 && dist > CHECK_AT) {   // held at the check
           const HOLD = 1100, waited = (dist - CHECK_AT) / SPEED;
           if (waited < HOLD) { dist = CHECK_AT; pulse = Math.max(pulse, 1 - waited / HOLD); }
           else dist = CHECK_AT + (waited - HOLD) * SPEED;
         }
-        const p = along(SPOKES[spoke], dist);
+        const p = along(SPOKES[which], dist);
         if (!p) continue;
         ctx.globalAlpha = alpha;
-        ctx.beginPath(); ctx.arc(p[0] * k, p[1] * k, Math.max(2, size * .0065), 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = INK;
+        ctx.beginPath(); ctx.arc(p[0] * k, p[1] * k, Math.max(2.2, size * .0075), 0, Math.PI * 2); ctx.fill();
       }
-      const PRICE_EVERY = 2200, REVIEW = 800, DOWN = 0.006, TOP = 25, REVIEW_Y = 29.2, END = 33;
-      for (let n = Math.max(0, Math.floor((t0 - 5000) / PRICE_EVERY)); n * PRICE_EVERY <= t0; n++) {
-        const age = t0 - n * PRICE_EVERY;
-        let y = TOP + age * DOWN, approved = false, reviewing = 0;
-        if (y > REVIEW_Y) {
-          const waited = (y - REVIEW_Y) / DOWN;
-          if (waited < REVIEW) { y = REVIEW_Y; reviewing = waited / REVIEW; approved = reviewing > .55; }
-          else { y = REVIEW_Y + (waited - REVIEW) * DOWN; approved = true; }
+      const PRICE_EVERY = 2400, REVIEW = 800, len = segLen(AGENT), mid = len / 2, V = 0.006;
+      for (let n = Math.max(0, Math.floor((t0 - 6000) / PRICE_EVERY)); n * PRICE_EVERY <= t0; n++) {
+        let d = (t0 - n * PRICE_EVERY) * V, approved = false, reviewing = 0;
+        if (d > mid) {
+          const waited = (d - mid) / V;
+          if (waited < REVIEW) { d = mid; reviewing = waited / REVIEW; approved = reviewing > .55; }
+          else { d = mid + (waited - REVIEW) * V; approved = true; }
         }
-        if (y > END) continue;
-        const sq = Math.max(7, size * .017), x = 50 * k - sq / 2, top = y * k - sq / 2;
+        const p = along(AGENT, d);
+        if (!p) continue;
+        const sq = Math.max(7, size * .017), x = p[0] * k - sq / 2, top = p[1] * k - sq / 2;
         ctx.globalAlpha = alpha;
-        ctx.fillStyle = ctx.strokeStyle = WASH;
+        ctx.fillStyle = ctx.strokeStyle = INK;
         ctx.lineWidth = Math.max(1.2, size * .0026);
         if (approved) ctx.fillRect(x, top, sq, sq); else { ctx.fillStyle = PAPER; ctx.fillRect(x, top, sq, sq); ctx.strokeRect(x, top, sq, sq); }
         if (reviewing) {
