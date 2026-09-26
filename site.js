@@ -723,8 +723,8 @@
         [410, 160], [380, 66], [200, 62], [152, 110], [158, 165], [240, 162], [340, 165], [420, 192], [470, 205], [492, 238],
         [492, 262], [472, 278], [472, 289], [519, 289], [519, 397]].map(gf),
       notes: [
-        { at: gf([4, 200]), side: 'left', y: 34, mine: true, title: 'Idea to opening', text: '3.5 months, within the agreed budget.' },
-        { at: gf([555, 60]), side: 'right', y: 30, title: 'The room', text: '3,000 sq ft creative space next to Tate Modern.' }
+        { at: gf([4, 200]), side: 'left', y: 34, mine: true, title: 'Lease to launch', text: '3.5 months, within the agreed budget.' },
+        { at: gf([555, 60]), side: 'right', y: 30, title: 'Ensō House', text: 'A 3,000 sq ft creative space next to Tate Modern.' }
       ]
     };
     const LG = {
@@ -755,7 +755,7 @@
       route: [[454, 383], [454, 285], [455, 256], [455, 228], [330, 238], [262, 300], [255, 404], [14, 406], [14, 306],
         [258, 306], [262, 240], [245, 190], [285, 150]].map(lg),
       notes: [
-        { at: lg([136, 356]), side: 'left', y: 62, title: 'Then', text: '50+ programmes in 15 months.' }
+        { at: lg([136, 356]), side: 'left', y: 62, title: 'Beyond the launch', text: '50+ programmes in 15 months.' }
       ]
     };
     [GF, LG].forEach(fl => { fl.strokes = fl.strokes.map(resample); });   // same point count as Systems, so they morph
@@ -850,8 +850,8 @@
         seal: [51.2, 62.9],                                                          // open paper in the vessel mouth, beside the trunk
         labels: [],
         notes: [
-          { at: [51.2, 62.9], side: 'left', y: 44, mine: true, title: 'Seven years', text: 'My own floral studio: briefs, budgets and installations.' },
-          { at: [58.6, 45.3], side: 'right', y: 34, title: 'Balance', text: 'Line, balance and placement, set out in a costed proposal first.' }
+          { at: [51.2, 62.9], side: 'left', y: 44, mine: true, title: 'Seven years', text: 'My own studio, brief to installation.' },
+          { at: [58.6, 45.3], side: 'right', y: 34, title: 'Sogetsu ikebana', text: 'Line and balance, costed before it is built.' }
         ],
         hold: 4600, text: 'Line, balance and placement.', href: '#creative-case'
       }
