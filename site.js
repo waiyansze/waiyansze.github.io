@@ -588,7 +588,7 @@
      systems are grey discs joined by hairlines. SAP traffic passes my check,
      and the Copilot agent's price drafts wait for review before they go in. The
      lines then morph into the Ensō House plan, then dissolve: the arrangement
-     is Wai's own ink sketch, drawn stroke by stroke in the order it was made.
+     is Wai's own ink sketch, revealed in the order she drew it (from its time-lapse).
      The cinnabar seal sits where the judgement happens in each. */
   const motion = document.querySelector('[data-motion]');
   if (motion) initMotion(motion);
@@ -643,19 +643,30 @@
     const zigzag = (x0, x1, y0, y1, steps) => {
       const pts = []; for (let i = 0; i <= steps; i++) { const x = x0 + (x1 - x0) * i / steps; pts.push(i % 2 ? [x, y1] : [x, y0], i % 2 ? [x, y0] : [x, y1]); } return pts;
     };
-    // The Flowers drawing: Wai's sketch as [x, y, width] points (see hero-sketch.js),
-    // with the moment in the build (0–1) when each stroke starts and finishes.
-    const HAND_TIMING = {
-      stand: [0, .12], leg: [.07, .18], vessel: [.14, .27], vessel2: [.21, .29], knot: [.28, .37],
-      trunk: [.36, .64], trunk2: [.58, .7], twig: [.66, .74], twig2: [.7, .8], spray: [.74, .8],
-      spray2: [.77, .84], tip: [.8, .86], rose: [.83, .92], stem: [.88, .96], bud: [.93, .99]
-    };
-    const SKETCH = window.HERO_SKETCH || {};
-    const HAND = Object.keys(HAND_TIMING).filter(name => SKETCH[name]).map(name => {
-      const f = SKETCH[name], pts = [];
-      for (let i = 0; i < f.length; i += 3) pts.push([f[i] / 10, f[i + 1] / 10, f[i + 2] / 100]);
-      return { pts, at: HAND_TIMING[name] };
-    });
+    // The Flowers drawing is Wai's own sketch, revealed in the order she drew it.
+    // assets/hero-flowers-reveal.webp (built by tools/build-hero-reveal.py from the
+    // sketch and its Procreate time-lapse): red = when each pixel was drawn (1–255),
+    // green = how much ink it holds. The drawing sits in the hero's 100 × 100 space.
+    const REVEAL = { x: 4, y: 7.9, w: 92, ready: false };
+    (() => {
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = () => {
+        const w = img.naturalWidth, h = img.naturalHeight;
+        const c = document.createElement('canvas'); c.width = w; c.height = h;
+        const cx = c.getContext('2d', { willReadFrequently: true });
+        cx.drawImage(img, 0, 0);
+        const src = cx.getImageData(0, 0, w, h).data;
+        const n = w * h, time = new Uint8Array(n), ink = new Uint8Array(n);
+        for (let i = 0; i < n; i++) { time[i] = src[i * 4]; ink[i] = src[i * 4 + 1]; }
+        const out = cx.createImageData(w, h);
+        const rgb = (INK.match(/[0-9a-f]{2}/gi) || ['1c', '1f', '1c']).map(v => parseInt(v, 16));
+        for (let i = 0; i < n; i++) { out.data[i * 4] = rgb[0]; out.data[i * 4 + 1] = rgb[1]; out.data[i * 4 + 2] = rgb[2]; }
+        Object.assign(REVEAL, { canvas: c, ctx: cx, out, time, ink, h: REVEAL.w * h / w, drawnAt: -1, ready: true });
+        render(performance.now());
+      };
+      img.src = './assets/hero-flowers-reveal.webp?v=1';
+    })();
     // Systems and Space share twelve strokes, so each line has somewhere to go
     // when one morphs into the other. Order follows the site: Systems → Space → Flowers.
     // Systems geometry. Dynamics, SAP and ServiceNow sit on one ring around
@@ -738,32 +749,30 @@
         ],
         hold: 3800, text: 'Plan, flow and use of a room.', href: '#enso-case'
       },
-      { // Flowers: traced from Wai's own ink sketch (hero-sketch.js), drawn in the
-        // order it was made. The stand and vessel are ruled and slow; the branch is
-        // one long gesture; the blossoms, rose and side stem are quick marks.
+      { // Flowers: Wai's own sketch, drawn again in the order she made it (from
+        // the time-lapse): vessel and stand first, the branch in one upward gesture,
+        // leaves and blossoms, the rose and side stem, then the hatching and the mat.
         // Controlled first, then spontaneous: the same judgement, a looser hand.
-        hand: true,
-        strokes: HAND.map(h => h.pts),
+        reveal: true,
+        strokes: [],
         enter: 'build',
-        build: HAND.map(h => h.at),
-        buildTime: 5600,
-        seal: [44.7, 68.7],                                                          // where the branch is set into the vessel
+        buildTime: 6400,
+        seal: [45.9, 54.7],                                                          // where the branch is set into the vessel
         labels: [],
         notes: [
-          { at: [44.7, 68.7], side: 'left', y: 48, mine: true, title: 'Seven years', text: 'My own floral studio: briefs, budgets and installations.' },
-          { at: [57.7, 61.3], side: 'right', y: 40, title: 'Balance', text: 'Line, balance and placement, set out in a costed proposal first.' }
+          { at: [45.9, 54.7], side: 'left', y: 44, mine: true, title: 'Seven years', text: 'My own floral studio: briefs, budgets and installations.' },
+          { at: [58.6, 45.3], side: 'right', y: 34, title: 'Balance', text: 'Line, balance and placement, set out in a costed proposal first.' }
         ],
         hold: 4600, text: 'Line, balance and placement.', href: '#creative-case'
       }
-    ].map(st => st.hand ? st : ({ ...st, strokes: st.strokes.map(resample) }));
+    ].map(st => st.reveal ? st : ({ ...st, strokes: st.strokes.map(resample) }));
 
     const MORPH = 1600;
     const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     const clamp01 = v => Math.max(0, Math.min(1, v));
-    const easeOut = t => 1 - Math.pow(1 - t, 2);            // a brush starts quickly and settles
     const progress = (state, s, p) => { const [a, b] = state.build ? state.build[s] : [0, 1]; return clamp01((p - a) / (b - a)); };
     // The sketch can't morph into a diagram: leaving it, the next drawing is built fresh.
-    const enterTime = (st, prev = states[from]) => st.enter === 'build' || prev.hand ? st.buildTime : MORPH;
+    const enterTime = (st, prev = states[from]) => st.enter === 'build' || prev.reveal ? st.buildTime : MORPH;
     let from = 0, to = 0, phaseStart = 0, flowStart = 0, phase = 'draw', paused = reduceMotion.matches, auto = true, visible = true, raf = 0, size = 0, dpr = 1;
     // Pointing: the system under the pointer keeps full ink, the rest fade back.
     let inside = false, hovering = false, hoverNode = null, hoverMix = 0, hoverTarget = 0, lastFrame = 0;
@@ -824,44 +833,24 @@
       ctx.globalAlpha = 1;
     }
 
-    // A brush line: each run of pen-down points becomes a filled outline whose
-    // width follows the sketch, with round ends. `count` may be fractional so the
-    // tip moves smoothly while it is being drawn.
-    function handStroke(points, count, k) {
-      const n = Math.min(points.length, Math.floor(count)), f = count - n;
-      const pts = points.slice(0, n);
-      if (f > 0 && n > 0 && n < points.length) {
-        const a = points[n - 1], b = points[n];
-        pts.push([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f]);
-      }
-      const minW = .9 / k;                                    // never thinner than ~0.9px
-      let run = [];
-      const flush = () => {
-        if (run.length > 1) {
-          const L = [], R = [];
-          run.forEach((p, i) => {
-            const a = run[Math.max(0, i - 1)], b = run[Math.min(run.length - 1, i + 1)];
-            let nx = -(b[1] - a[1]), ny = b[0] - a[0]; const d = Math.hypot(nx, ny) || 1; nx /= d; ny /= d;
-            const h = Math.max(minW, p[2] * HAND_WEIGHT) / 2;
-            L.push([(p[0] + nx * h) * k, (p[1] + ny * h) * k]); R.push([(p[0] - nx * h) * k, (p[1] - ny * h) * k]);
-          });
-          ctx.beginPath();
-          L.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
-          for (let i = R.length - 1; i >= 0; i--) ctx.lineTo(R[i][0], R[i][1]);
-          ctx.closePath(); ctx.fill();
-          [run[0], run[run.length - 1]].forEach(p => {
-            ctx.beginPath(); ctx.arc(p[0] * k, p[1] * k, Math.max(minW, p[2] * HAND_WEIGHT) / 2 * k, 0, Math.PI * 2); ctx.fill();
-          });
+    // Reveal the sketch up to `p` (0–1 of the build). Ink arrives with a short soft
+    // edge, like a wet line settling. Once complete it is cached and just redrawn.
+    const easeInOutSine = t => -(Math.cos(Math.PI * t) - 1) / 2;
+    function drawReveal(p, alpha, k) {
+      if (!REVEAL.ready || alpha <= 0) return;
+      const R = REVEAL, clock = 1 + easeInOutSine(clamp01(p)) * 262;   // runs a little past 255 so the last marks settle
+      if (R.drawnAt !== clock) {
+        const { time, ink, out } = R, d = out.data, SOFT = 7;
+        for (let i = 0, n = time.length; i < n; i++) {
+          const t = time[i];
+          d[i * 4 + 3] = t && clock > t ? (clock - t >= SOFT ? ink[i] : ink[i] * (clock - t) / SOFT) : 0;
         }
-        run = [];
-      };
-      pts.forEach(p => { if (p[2] > 0) run.push(p); else flush(); });
-      flush();
-    }
-    const HAND_WEIGHT = .85;                                  // the sketch, slightly lightened for the screen
-    function drawStroke(state, points, count, k) {
-      if (state.hand) { ctx.fillStyle = INK; handStroke(points, count, k); }
-      else strokePath(points, Math.round(count), k);
+        R.ctx.putImageData(out, 0, 0);
+        R.drawnAt = clock;
+      }
+      ctx.globalAlpha = alpha;
+      ctx.drawImage(R.canvas, R.x * k, R.y * k, R.w * k, R.h * k);
+      ctx.globalAlpha = 1;
     }
 
     function strokePath(points, count, k) {
@@ -881,14 +870,14 @@
       ctx.strokeStyle = INK;
       ctx.lineWidth = Math.max(1.2, size * .0034);
       let sealT = 1, sealScale = 1, flowAlpha = 1;
-      const building = phase === 'draw' || (phase === 'morph' && (B.enter === 'build' || A.hand));
+      const building = phase === 'draw' || (phase === 'morph' && (B.enter === 'build' || A.reveal));
 
       if (building) {
         // Previous drawing (if any) dissolves, then each stroke is drawn in its turn.
-        const p = clamp01(elapsed / B.buildTime), fadeBy = A.hand ? .2 : .14;
+        const p = clamp01(elapsed / B.buildTime), fadeBy = A.reveal ? .2 : .14;
         if (phase === 'morph') {
           ctx.globalAlpha = 1 - clamp01(p / fadeBy);
-          if (ctx.globalAlpha > 0) { A.strokes.forEach(st => drawStroke(A, st, st.length, k)); drawDetails(A, ctx.globalAlpha); }
+          if (ctx.globalAlpha > 0) { if (A.reveal) drawReveal(1, ctx.globalAlpha, k); A.strokes.forEach(st => strokePath(st, N, k)); drawDetails(A, ctx.globalAlpha); }
           ctx.globalAlpha = 1;
           sealT = ease(clamp01(p / .3));
         } else {
@@ -896,12 +885,13 @@
         }
         if (phase === 'morph') drawDiscs(A, 1 - clamp01(p / fadeBy));
         drawDiscs(B, 1, p);
-        B.strokes.forEach((st, s) => { const r = progress(B, s, p); if (r > 0) drawStroke(B, st, Math.max(2, st.length * (B.hand ? easeOut(r) : ease(r))), k); });
+        if (B.reveal) drawReveal(p, 1, k);
+        B.strokes.forEach((st, s) => { const r = progress(B, s, p); if (r > 0) strokePath(st, Math.max(2, Math.round(N * ease(r))), k); });
         drawDetails(B, 1, p);
         flowAlpha = 0;
-      } else if (B.hand) {
+      } else if (B.reveal) {
         // Holding the sketch (or shown still, with reduced motion).
-        B.strokes.forEach(st => drawStroke(B, st, st.length, k));
+        drawReveal(1, 1, k);
         drawDetails(B, 1);
         sealT = 1; flowAlpha = 0;
       } else {
