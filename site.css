@@ -137,37 +137,115 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 380; font-optica
 .site-nav a { font-size: .875rem; color: var(--ink-2); text-decoration: none; padding: 8px 0; transition: color .2s; }
 .site-nav a:hover { color: var(--ink); }
 
-/* 4 · Hero ------------------------------------------------------------------ */
+/* 4 · Hero ------------------------------------------------------------------
+   Like an annotated drawing: the tagline top left, the drawing in the middle
+   with notes on fine elbow lines, the three threads bottom left (they switch
+   the drawing), and a short intro bottom right. Phones stack it. */
 .hero {
-  max-width: var(--max); margin: 0 auto;
-  padding: calc(var(--header-h) + clamp(40px, 9vh, 112px)) var(--gutter) clamp(48px, 8vh, 96px);
-  display: grid; gap: clamp(40px, 6vw, 96px);
+  position: relative;
+  padding: calc(var(--header-h) + 28px) var(--gutter) 40px;
+  display: grid; gap: 28px;
+  grid-template-areas: "head" "motion" "threads" "intro";
 }
-.hero h1 {
-  margin-top: 16px;
-  font-size: clamp(2.4rem, 1.3rem + 3vw, 3.9rem);
-  line-height: 1; letter-spacing: -.024em; font-weight: 350;
-}
-.hero h1 em { display: block; margin-top: .3em; font-size: .52em; line-height: 1.15; letter-spacing: -.01em; font-style: italic; font-weight: 320; color: var(--ink-2); }
-.lede { max-width: 33rem; margin-top: 22px; font-size: clamp(1rem, .95rem + .2vw, 1.125rem); line-height: 1.6; color: var(--ink-2); }
-.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; margin-top: 34px; }
-
-@media (min-width: 960px) {
-  .hero { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); align-items: center; }
-}
-
-/* Hero motion: one set of lines, three mediums. */
-.motion { display: grid; gap: 18px; min-width: 0; }
-.motion-canvas { position: relative; width: 100%; aspect-ratio: 1 / 1; max-height: min(72vh, 680px); max-width: min(72vh, 680px); justify-self: center; }
+.hero-head { grid-area: head; position: relative; z-index: 2; }
+.hero h1 { margin-top: 14px; font-size: clamp(2.5rem, 1.4rem + 3.6vw, 4.6rem); line-height: .98; letter-spacing: -.028em; font-weight: 350; }
+.hero-line { max-width: 30rem; margin-top: 18px; font-size: clamp(1rem, .95rem + .2vw, 1.125rem); line-height: 1.55; color: var(--ink-2); }
+.motion { grid-area: motion; min-width: 0; margin: 0; }
+.motion-canvas { position: relative; width: 100%; max-width: 560px; aspect-ratio: 1 / 1; margin: 0 auto; }
 .motion-canvas canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-.motion-caption { position: relative; display: grid; gap: 12px; border-top: 1px solid var(--rule-2); padding-top: 10px; }
-.motion-steps { display: flex; flex-wrap: wrap; gap: 4px 22px; align-items: center; }
-.motion-steps button { padding: 6px 0; border: 0; background: none; cursor: pointer; font-size: .9375rem; color: var(--ink-3); display: inline-flex; gap: 8px; align-items: baseline; transition: color .2s; }
-.motion-steps button span { font-size: .75rem; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
-.motion-steps button[aria-pressed="true"] { color: var(--ink); box-shadow: inset 0 -1px 0 var(--ink); }
+.motion-lines, .motion-notes, .motion-focus { display: none; }
+.notes-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; border-top: 1px solid var(--rule); padding-top: 12px; }
+.notes-list li { position: relative; padding-left: 18px; font-size: .875rem; line-height: 1.45; color: var(--ink-2); animation: note-fade .5s var(--ease) both; }
+.notes-list li::before { content: ""; position: absolute; left: 0; top: 7px; width: 7px; height: 7px; border: 1px solid var(--ink); }
+.notes-list li.is-mine::before { background: var(--seal); border-color: var(--seal); }
+
+.hero-threads { grid-area: threads; }
+.threads-title { font: 500 .8125rem var(--sans); letter-spacing: .02em; }
+.threads { position: relative; display: grid; margin-top: 10px; border-top: 1px solid var(--ink); max-width: 26rem; }
+.threads button {
+  display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: 0 8px; align-items: baseline;
+  padding: 10px 0; border: 0; border-bottom: 1px solid var(--rule-2); background: none; text-align: left; cursor: pointer; color: var(--ink-3);
+  transition: color .2s;
+}
+.threads button span { font-size: .75rem; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
+.threads button b { font-weight: 500; font-size: .9375rem; }
+.threads button small { grid-column: 2; font-size: .75rem; line-height: 1.4; }
+.threads button:hover, .threads button[aria-pressed="true"] { color: var(--ink); }
+.threads button[aria-pressed="true"] { box-shadow: inset 3px 0 0 var(--ink); padding-left: 12px; }
 /* The pause control stays for keyboard users (it appears on focus); with a mouse, hovering the drawing pauses it. */
-.motion-steps .motion-pause { margin-left: auto; font-size: .8125rem; text-decoration: underline; text-underline-offset: 3px; box-shadow: none !important; }
-.motion-steps .motion-pause:not(:focus-visible) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.threads .motion-pause { display: block; justify-self: start; padding: 8px 0; border: 0; font-size: .8125rem; text-decoration: underline; text-underline-offset: 3px; }
+.threads .motion-pause:not(:focus-visible) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+.hero-intro { grid-area: intro; max-width: 26rem; padding: 16px 18px 18px; border: 1px solid var(--ink); display: grid; gap: 10px; font-size: .9375rem; line-height: 1.55; color: var(--ink-2); }
+.intro-tag { justify-self: start; margin: -29px 0 0 -19px; padding: 2px 10px; background: var(--ink); color: var(--paper); font: 500 .8125rem var(--sans); }
+.intro-names { font-size: .8125rem; color: var(--ink-3); }
+.intro-names span { margin-right: 6px; font-weight: 500; color: var(--ink-2); }
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 24px; margin-top: 6px; }
+
+/* Tablets and short wide screens: threads and intro side by side under the drawing. */
+@media (min-width: 720px) {
+  .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "head head" "motion motion" "threads intro"; column-gap: 40px; }
+  .hero-intro { justify-self: end; align-self: start; margin-top: 30px; }
+}
+
+/* Wide and tall enough: the annotated-drawing layout. */
+@media (min-width: 1100px) and (min-height: 680px) {
+  .hero {
+    min-height: 100svh; gap: 0 28px;
+    padding: calc(var(--header-h) + 22px) var(--gutter) 28px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    grid-template-areas: "head head ." ". motion ." "threads motion intro";
+    background:
+      linear-gradient(var(--rule), var(--rule)) calc(var(--gutter) + (100% - 2 * var(--gutter)) * .278) 0 / 1px 100% no-repeat,
+      linear-gradient(var(--rule), var(--rule)) calc(var(--gutter) + (100% - 2 * var(--gutter)) * .722) 0 / 1px 100% no-repeat;
+  }
+  .hero-head { max-width: 48rem; }
+  .motion { grid-row: 1 / 4; align-self: end; }
+  .motion-canvas { max-width: min(100%, calc(100svh - 240px)); }
+  .hero-line { max-width: 24rem; }
+  .motion-lines, .motion-notes, .motion-focus { display: block; }
+  .notes-list { display: none; }
+  .hero-threads, .hero-intro { align-self: end; }
+  .hero-intro { justify-self: end; margin-top: 0; }
+}
+
+/* Laptop heights: tighten everything around the drawing so notes keep clear space. */
+@media (min-width: 1100px) and (min-height: 680px) and (max-height: 859px) {
+  .hero h1 { font-size: clamp(2.4rem, 1.2rem + 2.6vw, 3.4rem); margin-top: 10px; }
+  .hero-line { margin-top: 12px; font-size: .9375rem; max-width: 21rem; }
+  .threads button { padding: 7px 0; }
+  .threads button small { display: none; }
+  .hero-intro { gap: 6px; padding: 12px 14px 14px; font-size: .8125rem; line-height: 1.5; max-width: 22rem; }
+  .intro-tag { margin: -25px 0 0 -15px; }
+  .intro-names { display: none; }
+  .hero-actions .button { min-height: 40px; padding: 0 16px; font-size: .875rem; }
+  .motion-canvas { max-width: min(100%, calc(100svh - 200px)); }
+}
+
+/* Notes: a marker on the drawing, a fine elbow line, a short text outside the drawing. */
+.motion-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.motion-lines polyline { fill: none; stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; animation: note-line .6s var(--ease) both; }
+.motion-notes { position: absolute; inset: 0; pointer-events: none; }
+.note { position: absolute; width: 13rem; font-size: .8125rem; line-height: 1.4; color: var(--ink); animation: note-fade .6s var(--ease) .35s both; }
+.note--left { text-align: right; }
+.note b { display: block; margin-bottom: 2px; font-weight: 500; font-size: .6875rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.note-mark { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border: 1px solid var(--ink); background: var(--paper); animation: note-fade .4s var(--ease) both; }
+.note-mark::after { content: ""; position: absolute; inset: 3px; background: var(--ink); }
+.note-mark.is-mine::after { background: var(--seal); }
+/* A soft focus frame drifts from note to note, like looking closely. */
+.motion-focus {
+  position: absolute; width: 17%; aspect-ratio: 1; margin: -8.5% 0 0 -8.5%; left: 50%; top: 50%;
+  border: 1px solid var(--rule-2); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  transition: left 1.4s var(--ease), top 1.4s var(--ease), opacity .6s; pointer-events: none;
+}
+@keyframes note-fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+@keyframes note-line { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .note, .note-mark, .notes-list li { animation: none; }
+  .motion-lines polyline { animation: none; }
+  .motion-focus { display: none !important; }
+}
 
 /* 5 · Section heads --------------------------------------------------------- */
 .section-head {

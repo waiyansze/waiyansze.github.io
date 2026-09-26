@@ -557,8 +557,13 @@
   function initMotion(figure) {
     const canvas = figure.querySelector('canvas');
     const ctx = canvas.getContext('2d');
-    const stepButtons = [...figure.querySelectorAll('[data-motion-step]')];
-    const pauseButton = figure.querySelector('[data-motion-pause]');
+    const hero = figure.closest('.hero') || document;
+    const stepButtons = [...hero.querySelectorAll('[data-motion-step]')];
+    const pauseButton = hero.querySelector('[data-motion-pause]');
+    const notesBox = figure.querySelector('[data-motion-notes]');
+    const linesBox = figure.querySelector('[data-motion-lines]');
+    const notesList = figure.querySelector('[data-motion-notes-list]');
+    const focusBox = figure.querySelector('[data-motion-focus]');
     const text = figure.querySelector('[data-motion-text]');
     const link = figure.querySelector('[data-motion-link]');
     const N = 80;
@@ -650,6 +655,11 @@
         inkLabels: true,
         seal: mid(hair(SYS.sap)),                                                      // my check, on the way in from SAP
         marks: [[SYS.cop[0] + 4.6, SYS.cop[1] - 4.6]],                                     // the agent is mine
+        notes: [
+          { at: [50 + RING * Math.cos(245 * deg), 50 + RING * Math.sin(245 * deg)], side: 'left', y: 34, title: 'Connected', text: 'The systems also talk to each other, not only through Adobe Commerce.' },
+          { at: [86, 15], side: 'right', y: 20, mine: true, title: 'My agent', text: 'A Copilot agent I built. Nothing goes in without my approval.' },
+          { at: mid(hair(SYS.sap)), side: 'right', y: 44, mine: true, title: 'My check', text: 'About 1 in 10 orders corrected before processing.' }
+        ],
         labels: [['Adobe Commerce', 50, 50.4, 0, 0, 1], ['Copilot agent', SYS.cop[0], SYS.cop[1] + 10.5, 0, 1], ['Dynamics 365', SYS.dyn[0], SYS.dyn[1] + 13.5, 0, 2],
           ['SAP ERP', SYS.sap[0], SYS.sap[1] + 14, 0, 3], ['ServiceNow', SYS.sn[0], SYS.sn[1] + 10.5, 0, 4]],
         hold: 6200, text: 'Orders and pricing moving through connected systems.', href: '#systems-case', flow: true
@@ -670,7 +680,12 @@
           rect(27, 65.5, 66, 74)                                                       // lighting track
         ],
         seal: [80, 76.5],
-        labels: [['3,000 sq ft creative space', 50, 11], ['next to Tate Modern', 50, 16, 1]],
+        labels: [],
+        notes: [
+          { at: [12, 30], side: 'left', y: 30, title: 'The room', text: '3,000 sq ft creative space next to Tate Modern.' },
+          { at: [36.6, 60.6], side: 'left', y: 50, title: 'Then', text: '50+ programmes in 15 months.' },
+          { at: [80, 76.5], side: 'right', y: 46, mine: true, title: 'Idea to opening', text: '3.5 months, within the agreed budget.' }
+        ],
         hold: 3800, text: 'Plan, flow and use of a room.', href: '#enso-case'
       },
       { // Flowers: a slanting moribana from Wai's notebook, built up in the order
@@ -695,6 +710,10 @@
         dotsAt: .9,
         seal: BASE,
         dots: [[21.6, 43.6], [18.3, 41.1], [24.2, 46.9], [19.7, 44.8], [17.4, 39.6], [52.6, 43.6], [54.2, 39.2], [53.9, 36.6], [51.3, 47.3], [66.2, 63.3], [69.4, 61.9]],
+        notes: [
+          { at: [46, 69], side: 'left', y: 48, mine: true, title: 'Seven years', text: 'My own floral studio: briefs, budgets and installations.' },
+          { at: [52, 64.8], side: 'right', y: 40, title: 'Balance', text: 'Line, balance and placement, set out in a costed proposal first.' }
+        ],
         labels: [['moribana', 46, 91, 0, 0], ['kenzan', 57, 76.5, 1, 2], ['shin 45°', 11, 33, 0, 3], ['soe 15°', 60, 31, 0, 4], ['hikae 75°', 80, 57, 0, 5]],
         hold: 4200, text: 'Line, balance and placement.', href: '#creative-case'
       }
@@ -900,12 +919,65 @@
       return pulse * alpha;
     }
 
+    // Notes: real text beside the drawing, joined to it by fine elbow lines.
+    const SVGNS = 'http://www.w3.org/2000/svg';
+    let notesTimer = 0, focusTimer = 0;
+    function renderNotes(state) {
+      clearTimeout(notesTimer); clearInterval(focusTimer);
+      if (notesBox) notesBox.replaceChildren();
+      if (linesBox) linesBox.replaceChildren();
+      if (notesList) notesList.replaceChildren();
+      const notes = state.notes || [];
+      notes.forEach(n => {
+        if (!notesList) return;
+        const li = document.createElement('li');
+        if (n.mine) li.className = 'is-mine';
+        li.innerHTML = `<b>${n.title}.</b> ${n.text}`;
+        notesList.append(li);
+      });
+      if (!notesBox || !linesBox) return;
+      const width = canvas.getBoundingClientRect().width || 1;
+      const W = 208 / width * 100;                  // a note is 13rem wide, in % of the drawing
+      notes.forEach(n => {
+        const [ax, ay] = n.at, left = n.side === 'left';
+        const edge = left ? -3 : 103, outer = left ? edge - W : edge + W;
+        const knee = edge + (ax - edge) * .55;
+        const line = document.createElementNS(SVGNS, 'polyline');
+        line.setAttribute('points', `${outer},${n.y} ${edge},${n.y} ${knee},${ay} ${ax + (left ? -1.8 : 1.8)},${ay}`);
+        line.setAttribute('pathLength', '1');
+        linesBox.append(line);
+        const mark = document.createElement('span');
+        mark.className = 'note-mark' + (n.mine ? ' is-mine' : '');
+        mark.style.left = ax + '%'; mark.style.top = ay + '%';
+        const note = document.createElement('p');
+        note.className = 'note note--' + n.side;
+        note.style.bottom = `calc(${100 - n.y}% + 6px)`;
+        if (left) note.style.right = (100 - edge) + '%'; else note.style.left = edge + '%';
+        note.innerHTML = `<b>${n.title}</b>${n.text}`;
+        notesBox.append(mark, note);
+      });
+      // The focus frame drifts from one noted point to the next.
+      if (focusBox && notes.length && !reduceMotion.matches) {
+        let i = 0;
+        const move = () => { const [x, y] = notes[i % notes.length].at; focusBox.style.left = x + '%'; focusBox.style.top = y + '%'; i++; };
+        move(); focusTimer = setInterval(() => { if (!paused) move(); }, 2600);
+      }
+    }
+    function queueNotes(state, delay) {
+      clearTimeout(notesTimer);
+      if (notesBox) notesBox.replaceChildren();
+      if (linesBox) linesBox.replaceChildren();
+      notesTimer = setTimeout(() => renderNotes(state), delay);
+    }
+    addEventListener('resize', () => { clearTimeout(notesTimer); notesTimer = setTimeout(() => renderNotes(states[to]), 150); });
+
     function show(index, instant) {
       from = instant ? index : to; to = index;
       phase = instant || reduceMotion.matches ? 'hold' : 'morph';
       phaseStart = performance.now();
       if (states[index].flow && from !== index) flowStart = phaseStart + (states[index].enter === 'build' ? states[index].buildTime : 0);
       stepButtons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === index)));
+      queueNotes(states[index], instant || reduceMotion.matches ? 0 : enterTime(states[index]) * .7);
       if (text) text.textContent = states[index].text;
       if (link) link.setAttribute('href', states[index].href);
       if (phase === 'hold') { from = index; render(phaseStart); }
@@ -954,7 +1026,7 @@
     document.fonts?.ready.then(() => render(performance.now()));
     resize();
     if (reduceMotion.matches) { setPaused(true); show(0, true); pauseButton.hidden = true; }
-    else { phase = 'draw'; phaseStart = performance.now(); setPaused(false); loop(); }
+    else { phase = 'draw'; phaseStart = performance.now(); setPaused(false); loop(); queueNotes(states[0], states[0].buildTime * .7); }
   }
 
   /* 10 · Header ------------------------------------------------------------- */
