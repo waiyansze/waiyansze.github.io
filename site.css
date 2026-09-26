@@ -169,7 +169,6 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 380; font-optica
 }
 .threads button span { font-size: .75rem; letter-spacing: .06em; font-variant-numeric: tabular-nums; }
 .threads button b { font-weight: 500; font-size: .9375rem; }
-.threads button small { grid-column: 2; font-size: .75rem; line-height: 1.4; }
 .threads button:hover, .threads button[aria-pressed="true"] { color: var(--ink); }
 .threads button[aria-pressed="true"] { box-shadow: inset 3px 0 0 var(--ink); padding-left: 12px; }
 /* The pause control stays for keyboard users (it appears on focus); with a mouse, hovering the drawing pauses it. */
@@ -215,7 +214,6 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 380; font-optica
   .hero h1 { font-size: clamp(2.4rem, 1.2rem + 2.6vw, 3.4rem); margin-top: 10px; }
   .hero-line { margin-top: 12px; font-size: .9375rem; max-width: 21rem; }
   .threads button { padding: 7px 0; }
-  .threads button small { display: none; }
   .hero-intro { gap: 6px; padding: 12px 14px 14px; font-size: .8125rem; line-height: 1.5; max-width: 22rem; }
   .intro-tag { margin: -25px 0 0 -15px; }
   .intro-names { display: none; }
