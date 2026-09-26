@@ -583,12 +583,12 @@
   }
 
   /* 11 · Hero motion ---------------------------------------------------------
-     Twelve strokes in every state, in the site's order: Systems, Space, Flowers.
+     Three drawings, in the site's order: Systems, Space, Flowers.
      Systems is drawn flat: Adobe Commerce is the large black disc, the other
      systems are grey discs joined by hairlines. SAP traffic passes my check,
      and the Copilot agent's price drafts wait for review before they go in. The
-     lines then morph into the Ensō House plan, and the arrangement is built
-     up the way it is made: basin, kenzan, shin, soe, hikae, then details.
+     lines then morph into the Ensō House plan, then dissolve: the arrangement
+     is Wai's own ink sketch, drawn stroke by stroke in the order it was made.
      The cinnabar seal sits where the judgement happens in each. */
   const motion = document.querySelector('[data-motion]');
   if (motion) initMotion(motion);
@@ -615,10 +615,6 @@
 
     // Geometry helpers in a 100 × 100 space.
     const line = (a, b) => [a, b];
-    const quad = (p0, c, p1, n = 24) => Array.from({ length: n + 1 }, (_, i) => {
-      const t = i / n, u = 1 - t;
-      return [u * u * p0[0] + 2 * u * t * c[0] + t * t * p1[0], u * u * p0[1] + 2 * u * t * c[1] + t * t * p1[1]];
-    });
     const arc = (cx, cy, r, a0, a1, n = 32) => Array.from({ length: n + 1 }, (_, i) => {
       const a = a0 + (a1 - a0) * i / n; return [cx + r * Math.cos(a), cy + r * Math.sin(a)];
     });
@@ -641,21 +637,27 @@
       return out;
     };
 
-    const spiral = (cx, cy, r, turns = 2.3, n = 60) => Array.from({ length: n + 1 }, (_, i) => {
-      const t = i / n, a = t * turns * Math.PI * 2 - Math.PI / 2, rr = r * (1 - .82 * t);
-      return [cx + rr * Math.cos(a), cy + rr * Math.sin(a)];
-    });
     const ellipse = (cx, cy, rx, ry, n = 48) => Array.from({ length: n + 1 }, (_, i) => {
       const a = i / n * Math.PI * 2; return [cx + rx * Math.cos(a), cy + ry * Math.sin(a)];
     });
     const zigzag = (x0, x1, y0, y1, steps) => {
       const pts = []; for (let i = 0; i <= steps; i++) { const x = x0 + (x1 - x0) * i / steps; pts.push(i % 2 ? [x, y1] : [x, y0], i % 2 ? [x, y0] : [x, y1]); } return pts;
     };
-    // Twelve strokes in every state, so each line always has somewhere to go.
-    // Order follows the site: Systems (now) → Space → Flowers.
-    const BASE = [46, 69];
-    const dir = (deg, len) => [BASE[0] + len * Math.sin(deg * Math.PI / 180), BASE[1] - len * Math.cos(deg * Math.PI / 180)];
-    const kenzan = [[41, 72.4], [41, 70.4], [51, 70.4], [51, 72.4], [41, 72.4], [41, 70.4], ...zigzag(41.8, 50.2, 68.6, 70.4, 8)];
+    // The Flowers drawing: Wai's sketch as [x, y, width] points (see hero-sketch.js),
+    // with the moment in the build (0–1) when each stroke starts and finishes.
+    const HAND_TIMING = {
+      stand: [0, .12], leg: [.07, .18], vessel: [.14, .27], vessel2: [.21, .29], knot: [.28, .37],
+      trunk: [.36, .64], trunk2: [.58, .7], twig: [.66, .74], twig2: [.7, .8], spray: [.74, .8],
+      spray2: [.77, .84], tip: [.8, .86], rose: [.83, .92], stem: [.88, .96], bud: [.93, .99]
+    };
+    const SKETCH = window.HERO_SKETCH || {};
+    const HAND = Object.keys(HAND_TIMING).filter(name => SKETCH[name]).map(name => {
+      const f = SKETCH[name], pts = [];
+      for (let i = 0; i < f.length; i += 3) pts.push([f[i] / 10, f[i + 1] / 10, f[i + 2] / 100]);
+      return { pts, at: HAND_TIMING[name] };
+    });
+    // Systems and Space share twelve strokes, so each line has somewhere to go
+    // when one morphs into the other. Order follows the site: Systems → Space → Flowers.
     // Systems geometry. Dynamics, SAP and ServiceNow sit on one ring around
     // Adobe Commerce: they also talk to each other directly. The Copilot agent
     // (mine) sits outside the ring and connects only to Adobe Commerce.
@@ -736,42 +738,32 @@
         ],
         hold: 3800, text: 'Plan, flow and use of a room.', href: '#enso-case'
       },
-      { // Flowers: a slanting moribana from Wai's notebook, built up in the order
-        // it is made: basin, kenzan, shin 45°, soe 15°, hikae 75°, then the details.
-        strokes: [
-          ellipse(46, 74, 23, 4.6),                                                    // basin rim
-          [[23, 74], [24, 79], ...quad([24, 79], [46, 84.5], [68, 79], 20), [69, 74]], // basin wall
-          kenzan,                                                                      // kenzan
-          quad(BASE, [30, 57], dir(-45, 44)),                                          // shin
-          quad(BASE, [48, 51], dir(15, 34)),                                           // soe
-          quad(BASE, [62, 63], dir(75, 25)),                                           // hikae
-          [[46, 69], [46, 50]],                                                        // vertical reference
-          arc(BASE[0], BASE[1], 13, -Math.PI / 2, -Math.PI * .75, 20),                 // the 45° being measured
-          quad([28.7, 53.7], [22, 50], [20.5, 43], 12),                                // twig growing from shin
-          spiral(40.2, 66.4, 4.4),                                                     // ranunculus
-          spiral(52, 64.8, 3.6),                                                       // ranunculus
-          spiral(46.4, 62.8, 2.6)                                                      // ranunculus
-        ],
+      { // Flowers: traced from Wai's own ink sketch (hero-sketch.js), drawn in the
+        // order it was made. The stand and vessel are ruled and slow; the branch is
+        // one long gesture; the blossoms, rose and side stem are quick marks.
+        // Controlled first, then spontaneous: the same judgement, a looser hand.
+        hand: true,
+        strokes: HAND.map(h => h.pts),
         enter: 'build',
-        build: [[.04, .2], [.08, .24], [.22, .34], [.34, .5], [.48, .62], [.6, .74], [.36, .44], [.4, .5], [.74, .84], [.8, .9], [.84, .94], [.88, .98]],
-        buildTime: 4200,
-        dotsAt: .9,
-        seal: BASE,
-        dots: [[21.6, 43.6], [18.3, 41.1], [24.2, 46.9], [19.7, 44.8], [17.4, 39.6], [52.6, 43.6], [54.2, 39.2], [53.9, 36.6], [51.3, 47.3], [66.2, 63.3], [69.4, 61.9]],
+        build: HAND.map(h => h.at),
+        buildTime: 5600,
+        seal: [44.7, 68.7],                                                          // where the branch is set into the vessel
+        labels: [],
         notes: [
-          { at: [46, 69], side: 'left', y: 48, mine: true, title: 'Seven years', text: 'My own floral studio: briefs, budgets and installations.' },
-          { at: [52, 64.8], side: 'right', y: 40, title: 'Balance', text: 'Line, balance and placement, set out in a costed proposal first.' }
+          { at: [44.7, 68.7], side: 'left', y: 48, mine: true, title: 'Seven years', text: 'My own floral studio: briefs, budgets and installations.' },
+          { at: [57.7, 61.3], side: 'right', y: 40, title: 'Balance', text: 'Line, balance and placement, set out in a costed proposal first.' }
         ],
-        labels: [['moribana', 46, 91, 0, 0], ['kenzan', 57, 76.5, 1, 2], ['shin 45°', 11, 33, 0, 3], ['soe 15°', 60, 31, 0, 4], ['hikae 75°', 80, 57, 0, 5]],
-        hold: 4200, text: 'Line, balance and placement.', href: '#creative-case'
+        hold: 4600, text: 'Line, balance and placement.', href: '#creative-case'
       }
-    ].map(st => ({ ...st, strokes: st.strokes.map(resample) }));
+    ].map(st => st.hand ? st : ({ ...st, strokes: st.strokes.map(resample) }));
 
     const MORPH = 1600;
     const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     const clamp01 = v => Math.max(0, Math.min(1, v));
+    const easeOut = t => 1 - Math.pow(1 - t, 2);            // a brush starts quickly and settles
     const progress = (state, s, p) => { const [a, b] = state.build ? state.build[s] : [0, 1]; return clamp01((p - a) / (b - a)); };
-    const enterTime = st => st.enter === 'build' ? st.buildTime : MORPH;
+    // The sketch can't morph into a diagram: leaving it, the next drawing is built fresh.
+    const enterTime = (st, prev = states[from]) => st.enter === 'build' || prev.hand ? st.buildTime : MORPH;
     let from = 0, to = 0, phaseStart = 0, flowStart = 0, phase = 'draw', paused = reduceMotion.matches, auto = true, visible = true, raf = 0, size = 0, dpr = 1;
     // Pointing: the system under the pointer keeps full ink, the rest fade back.
     let inside = false, hovering = false, hoverNode = null, hoverMix = 0, hoverTarget = 0, lastFrame = 0;
@@ -832,6 +824,46 @@
       ctx.globalAlpha = 1;
     }
 
+    // A brush line: each run of pen-down points becomes a filled outline whose
+    // width follows the sketch, with round ends. `count` may be fractional so the
+    // tip moves smoothly while it is being drawn.
+    function handStroke(points, count, k) {
+      const n = Math.min(points.length, Math.floor(count)), f = count - n;
+      const pts = points.slice(0, n);
+      if (f > 0 && n > 0 && n < points.length) {
+        const a = points[n - 1], b = points[n];
+        pts.push([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f]);
+      }
+      const minW = .9 / k;                                    // never thinner than ~0.9px
+      let run = [];
+      const flush = () => {
+        if (run.length > 1) {
+          const L = [], R = [];
+          run.forEach((p, i) => {
+            const a = run[Math.max(0, i - 1)], b = run[Math.min(run.length - 1, i + 1)];
+            let nx = -(b[1] - a[1]), ny = b[0] - a[0]; const d = Math.hypot(nx, ny) || 1; nx /= d; ny /= d;
+            const h = Math.max(minW, p[2] * HAND_WEIGHT) / 2;
+            L.push([(p[0] + nx * h) * k, (p[1] + ny * h) * k]); R.push([(p[0] - nx * h) * k, (p[1] - ny * h) * k]);
+          });
+          ctx.beginPath();
+          L.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
+          for (let i = R.length - 1; i >= 0; i--) ctx.lineTo(R[i][0], R[i][1]);
+          ctx.closePath(); ctx.fill();
+          [run[0], run[run.length - 1]].forEach(p => {
+            ctx.beginPath(); ctx.arc(p[0] * k, p[1] * k, Math.max(minW, p[2] * HAND_WEIGHT) / 2 * k, 0, Math.PI * 2); ctx.fill();
+          });
+        }
+        run = [];
+      };
+      pts.forEach(p => { if (p[2] > 0) run.push(p); else flush(); });
+      flush();
+    }
+    const HAND_WEIGHT = .85;                                  // the sketch, slightly lightened for the screen
+    function drawStroke(state, points, count, k) {
+      if (state.hand) { ctx.fillStyle = INK; handStroke(points, count, k); }
+      else strokePath(points, Math.round(count), k);
+    }
+
     function strokePath(points, count, k) {
       ctx.beginPath();
       for (let i = 0; i < count; i++) { const [x, y] = points[i]; i ? ctx.lineTo(x * k, y * k) : ctx.moveTo(x * k, y * k); }
@@ -849,24 +881,29 @@
       ctx.strokeStyle = INK;
       ctx.lineWidth = Math.max(1.2, size * .0034);
       let sealT = 1, sealScale = 1, flowAlpha = 1;
-      const building = phase === 'draw' || (phase === 'morph' && B.enter === 'build');
+      const building = phase === 'draw' || (phase === 'morph' && (B.enter === 'build' || A.hand));
 
       if (building) {
         // Previous drawing (if any) dissolves, then each stroke is drawn in its turn.
-        const p = clamp01(elapsed / B.buildTime);
+        const p = clamp01(elapsed / B.buildTime), fadeBy = A.hand ? .2 : .14;
         if (phase === 'morph') {
-          ctx.globalAlpha = 1 - clamp01(p / .14);
-          if (ctx.globalAlpha > 0) { A.strokes.forEach(st => strokePath(st, N, k)); drawDetails(A, ctx.globalAlpha); }
+          ctx.globalAlpha = 1 - clamp01(p / fadeBy);
+          if (ctx.globalAlpha > 0) { A.strokes.forEach(st => drawStroke(A, st, st.length, k)); drawDetails(A, ctx.globalAlpha); }
           ctx.globalAlpha = 1;
           sealT = ease(clamp01(p / .3));
         } else {
           sealT = 1; sealScale = clamp01((p - .9) / .1);
         }
-        if (phase === 'morph') drawDiscs(A, 1 - clamp01(p / .14));
+        if (phase === 'morph') drawDiscs(A, 1 - clamp01(p / fadeBy));
         drawDiscs(B, 1, p);
-        B.strokes.forEach((st, s) => { const r = progress(B, s, p); if (r > 0) strokePath(st, Math.max(2, Math.round(N * ease(r))), k); });
+        B.strokes.forEach((st, s) => { const r = progress(B, s, p); if (r > 0) drawStroke(B, st, Math.max(2, st.length * (B.hand ? easeOut(r) : ease(r))), k); });
         drawDetails(B, 1, p);
         flowAlpha = 0;
+      } else if (B.hand) {
+        // Holding the sketch (or shown still, with reduced motion).
+        B.strokes.forEach(st => drawStroke(B, st, st.length, k));
+        drawDetails(B, 1);
+        sealT = 1; flowAlpha = 0;
       } else {
         const t = phase === 'morph' ? ease(clamp01(elapsed / MORPH)) : 1;
         if (phase === 'morph') { drawDiscs(A, 1 - clamp01(elapsed / (MORPH * .4))); drawDiscs(B, clamp01((elapsed - MORPH * .6) / (MORPH * .4))); }
@@ -1137,7 +1174,7 @@
       hovering = false; hoverNode = null; hoverTarget = 0; hoverMix = 0;
       phase = instant || reduceMotion.matches ? 'hold' : 'morph';
       phaseStart = performance.now();
-      if (states[index].flow && from !== index) flowStart = phaseStart + (states[index].enter === 'build' ? states[index].buildTime : 0);
+      if (states[index].flow && from !== index) flowStart = phaseStart + (enterTime(states[index]) === states[index].buildTime && !instant ? states[index].buildTime : 0);
       stepButtons.forEach((b, i) => b.setAttribute('aria-pressed', String(i === index)));
       queueNotes(states[index], instant || reduceMotion.matches ? 0 : enterTime(states[index]) * .7);
       if (text) text.textContent = states[index].text;
