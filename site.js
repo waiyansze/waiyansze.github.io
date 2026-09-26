@@ -484,6 +484,45 @@
     event.preventDefault();
     jumpTo(target, hash);
   });
+  /* Selected work opener: the title settles in when it fills the screen; three
+     seconds later, once only, the page glides on to the first chapter. Any wheel,
+     touch, key or click cancels it, and reduced motion never moves the page. */
+  const workIntro = document.querySelector('[data-work-intro]');
+  const workDeck = document.getElementById('work-viewer');
+  if (workIntro && workDeck && 'IntersectionObserver' in window) {
+    const COUNT = 3000, SETTLE = 2700;
+    let countTimer = 0, autoDone = !!location.hash;
+    workIntro.classList.add('is-ready');
+    const deckTop = () => deckApi && deckApi.isPinned()
+      ? deckApi.runway()[0] + 2
+      : workDeck.getBoundingClientRect().top + scrollY - (parseFloat(getComputedStyle(workDeck).scrollMarginTop) || 0);
+    const cancel = () => {
+      clearTimeout(countTimer); countTimer = 0;
+      workIntro.classList.remove('is-counting');
+      autoDone = true;
+      ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(t => removeEventListener(t, cancel, true));
+    };
+    const start = () => {
+      if (autoDone || reduceMotion.matches) return;
+      ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(t => addEventListener(t, cancel, { capture: true, passive: true }));
+      countTimer = setTimeout(() => {
+        workIntro.style.setProperty('--count', COUNT + 'ms');
+        workIntro.classList.add('is-counting');
+        countTimer = setTimeout(() => {
+          const top = deckTop();
+          cancel();
+          if (Math.abs(top - scrollY) > 4) window.scrollTo({ top, behavior: 'smooth' });
+        }, COUNT);
+      }, SETTLE);
+    };
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && e.intersectionRatio >= .6) {
+        workIntro.classList.add('is-in');
+        if (!countTimer) start();
+      } else if (countTimer) cancel();   // scrolled away before it moved on: stay put from now on
+    }, { threshold: [0, .6] }).observe(workIntro);
+  }
+
   addEventListener('hashchange', () => { deckApi?.route(location.hash); });
   if (location.hash) addEventListener('load', () => { deckApi?.route(location.hash); }, { once: true });
 
