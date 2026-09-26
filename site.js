@@ -566,7 +566,7 @@
     const WASH = css.getPropertyValue('--wash').trim() || '#3f6b69';
     const SEAL = css.getPropertyValue('--seal').trim() || '#a93a2c';
     const INK3 = css.getPropertyValue('--ink-3').trim() || '#5f645d';
-    const PAPER = css.getPropertyValue('--paper').trim() || '#fafaf8';
+    const PAPER = css.getPropertyValue('--paper').trim() || '#ffffff';
 
     // Geometry helpers in a 100 × 100 space.
     const line = (a, b) => [a, b];
