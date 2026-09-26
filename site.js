@@ -532,15 +532,20 @@
   /* Digital index: marks the project currently beside the sticky title. */
   const digitalLinks = [...document.querySelectorAll('[data-digital-link]')];
   if (digitalLinks.length && 'IntersectionObserver' in window) {
-    const targets = digitalLinks.map(link => document.querySelector(link.getAttribute('href')));
+    // HTML preview tools may turn local #links into absolute URLs. Resolve the
+    // fragment instead of passing the full href to querySelector.
+    const targets = digitalLinks.map(link => {
+      const id = new URL(link.href, location.href).hash.slice(1);
+      return document.getElementById(decodeURIComponent(id));
+    });
     const seen = new Map();
     const mark = () => {
       let best = -1, bestTop = Infinity;
-      targets.forEach((t, i) => { const r = t.getBoundingClientRect(); if (seen.get(t) && Math.abs(r.top - innerHeight * .3) < bestTop) { bestTop = Math.abs(r.top - innerHeight * .3); best = i; } });
+      targets.forEach((t, i) => { if (!t) return; const r = t.getBoundingClientRect(); if (seen.get(t) && Math.abs(r.top - innerHeight * .3) < bestTop) { bestTop = Math.abs(r.top - innerHeight * .3); best = i; } });
       digitalLinks.forEach((link, i) => { if (i === best) link.setAttribute('aria-current', 'true'); else link.removeAttribute('aria-current'); });
     };
     const io = new IntersectionObserver(entries => { entries.forEach(e => seen.set(e.target, e.isIntersecting)); mark(); }, { rootMargin: '-20% 0px -40% 0px' });
-    targets.forEach(t => io.observe(t));
+    targets.filter(Boolean).forEach(t => io.observe(t));
   }
 
   /* 11 · Hero motion ---------------------------------------------------------
