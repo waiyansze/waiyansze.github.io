@@ -611,8 +611,9 @@
     const WASH = css.getPropertyValue('--wash').trim() || '#3f6b69';
     const SEAL = css.getPropertyValue('--seal').trim() || '#a93a2c';
     const INK3 = css.getPropertyValue('--ink-3').trim() || '#5f645d';
-    const INK2 = css.getPropertyValue('--ink-2').trim() || '#4b504a';
-    const MAT = '#b6b9b5';                                    // the ServiceNow disc's grey
+    // One palette for both drawings: the flat tones of the Systems discs. Darker means
+    // more central: Adobe Commerce is the hub, and in Flowers the trunk plays that part.
+    const TONES = { hub: '#1c1f1c', sap: '#4a4e4a', copilot: '#8e928d', servicenow: '#b6b9b5', dynamics: '#dcdedb' };
     const PAPER = css.getPropertyValue('--paper').trim() || '#ffffff';
 
     // Geometry helpers in a 100 × 100 space.
@@ -648,9 +649,12 @@
     // The Flowers drawing is Wai's own sketch, revealed in the order she drew it.
     // assets/hero-flowers-reveal.webp (built by tools/build-hero-reveal.py from the
     // sketch and its Procreate time-lapse): red = when each pixel was drawn (1–255),
-    // green = how much ink it holds, blue = the mat. The arrangement is drawn in
-    // --ink-2 and the mat in a pale grey, both from the Systems palette, so the three
-    // drawings share one set of tones. It sits in the hero's 100 × 100 space.
+    // green = how much ink it holds, blue = which part it belongs to (+128 inside the
+    // vessel's hatched back panel). Each part takes a Systems tone, and the panel's
+    // hatching becomes a flat fill, the way Systems draws tone. 100 × 100 space.
+    const PART_TONES = [TONES.hub, TONES.sap, TONES.copilot, TONES.copilot, TONES.sap, TONES.servicenow, TONES.servicenow];
+    //                  trunk      vessel     stand          leaves, blossoms rose, stem hatching          mat
+    const FILL_TONE = TONES.dynamics, FILL_AT = 192;          // the panel fills as its hatching begins
     const REVEAL = { x: 4, y: 7.9, w: 92, ready: false };
     (() => {
       const img = new Image();
@@ -664,16 +668,17 @@
         const n = w * h, time = new Uint8Array(n), ink = new Uint8Array(n);
         for (let i = 0; i < n; i++) { time[i] = src[i * 4]; ink[i] = src[i * 4 + 1]; }
         const out = cx.createImageData(w, h);
-        const hex = (v, fallback) => ((v.match(/^#([0-9a-f]{6})$/i) || [])[1] || fallback).match(/../g).map(x => parseInt(x, 16));
-        const line = hex(INK2, '4b504a'), mat = hex(MAT, 'b6b9b5');
+        const rgb = v => v.slice(1).match(/../g).map(x => parseInt(x, 16));
+        const tones = PART_TONES.map(rgb), fill = rgb(FILL_TONE);
+        const tone = new Uint8Array(n * 3), inPanel = new Uint8Array(n);
         for (let i = 0; i < n; i++) {
-          const c = src[i * 4 + 2] > 127 ? mat : line;
-          out.data[i * 4] = c[0]; out.data[i * 4 + 1] = c[1]; out.data[i * 4 + 2] = c[2];
+          const b = src[i * 4 + 2], c = tones[b & 7] || tones[1];
+          tone.set(c, i * 3); inPanel[i] = b >> 7;
         }
-        Object.assign(REVEAL, { canvas: c, ctx: cx, out, time, ink, h: REVEAL.w * h / w, drawnAt: -1, ready: true });
+        Object.assign(REVEAL, { canvas: c, ctx: cx, out, time, ink, tone, inPanel, fill, h: REVEAL.w * h / w, drawnAt: -1, ready: true });
         render(performance.now());
       };
-      img.src = './assets/hero-flowers-reveal.webp?v=2';
+      img.src = './assets/hero-flowers-reveal.webp?v=3';
     })();
     // Systems and Space share twelve strokes, so each line has somewhere to go
     // when one morphs into the other. Order follows the site: Systems → Space → Flowers.
@@ -711,7 +716,7 @@
         ],
         build: [[.14, .3], [.56, .66], [.36, .48], [.42, .54], [.5, .6], [.3, .5], [.22, .42], [.26, .46], [.34, .54], [.6, .8], [.64, .84], [.68, .88]],
         buildTime: 2800,
-        discs: [[50, 50, HUB_R, '#1c1f1c', 0], [...SYS.cop, '#8e928d', 1], [...SYS.dyn, '#dcdedb', 2], [...SYS.sap, '#4a4e4a', 3], [...SYS.sn, '#b6b9b5', 4]],
+        discs: [[50, 50, HUB_R, TONES.hub, 0], [...SYS.cop, TONES.copilot, 1], [...SYS.dyn, TONES.dynamics, 2], [...SYS.sap, TONES.sap, 3], [...SYS.sn, TONES.servicenow, 4]],
         inkLabels: true,
         seal: mid(hair(SYS.sap)),                                                      // my check, on the way in from SAP
         marks: [[SYS.cop[0] + 4.6, SYS.cop[1] - 4.6]],                                     // the agent is mine
@@ -848,10 +853,18 @@
       if (!REVEAL.ready || alpha <= 0) return;
       const R = REVEAL, clock = 1 + easeInOutSine(clamp01(p)) * 262;   // runs a little past 255 so the last marks settle
       if (R.drawnAt !== clock) {
-        const { time, ink, out } = R, d = out.data, SOFT = 7;
+        const { time, ink, tone, inPanel, fill, out } = R, d = out.data, SOFT = 7;
+        const fillA = 255 * clamp01((clock - FILL_AT) / 24);    // the flat tone settles in
         for (let i = 0, n = time.length; i < n; i++) {
           const t = time[i];
-          d[i * 4 + 3] = t && clock > t ? (clock - t >= SOFT ? ink[i] : ink[i] * (clock - t) / SOFT) : 0;
+          const ia = t && clock > t ? (clock - t >= SOFT ? ink[i] : ink[i] * (clock - t) / SOFT) : 0;
+          const fa = inPanel[i] ? fillA * (1 - ia / 255) : 0;   // fill sits under the ink
+          const a = ia + fa, o = i * 4, q = i * 3;
+          if (a <= 0) { d[o + 3] = 0; continue; }
+          d[o] = (tone[q] * ia + fill[0] * fa) / a;
+          d[o + 1] = (tone[q + 1] * ia + fill[1] * fa) / a;
+          d[o + 2] = (tone[q + 2] * ia + fill[2] * fa) / a;
+          d[o + 3] = a;
         }
         R.ctx.putImageData(out, 0, 0);
         R.drawnAt = clock;

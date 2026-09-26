@@ -5,8 +5,11 @@ in which it was still paper: that is when it was (finally) drawn. Undone and
 redrawn marks therefore take their redrawn time. The result is one opaque image:
   red   = when the pixel is drawn (1–255, 0 = no ink)
   green = how much ink it holds (anti-aliased alpha from the full-size sketch)
-  blue  = layer: 255 = the mat (drawn last, below the stand), shown as a light
-          background tone; 0 = the arrangement itself
+  blue  = part (low 3 bits) + 128 if the pixel lies inside the vessel's hatched back
+          panel, which the hero fills with a flat tone (the Systems language for tone)
+Parts follow the drawing order and take tones from the Systems palette in site.js:
+  0 trunk · 1 vessel · 2 stand · 3 leaves and blossoms · 4 rose and side stem ·
+  5 hatching · 6 mat
 The hero reveals the drawing by comparing red to the animation clock.
 
 Usage (from repo root; needs ffmpeg, numpy, scipy, pillow):
@@ -71,10 +74,32 @@ t_img = Image.fromarray(np.where(np.array(t_img) > 0, np.array(t_img), 0).astype
 tm = np.array(t_img); am = np.array(a_img)
 _, (jy, jx) = distance_transform_edt(tm == 0, return_indices=True)
 tm = np.where(am > 0, tm[jy, jx], 0).astype(np.uint8); t_img = Image.fromarray(tm)
-# The mat: the last marks, below its back edge. Kept on its own layer so it can sit back.
-MAT_FROM_TIME, MAT_FROM_Y = 205, .77          # draw time (1–255) and share of the image height
-yy = np.arange(OUT_H)[:, None] / OUT_H
-mat = ((tm >= MAT_FROM_TIME) & (yy >= MAT_FROM_Y) & (np.array(a_img) > 0)) * 255
-rgb = Image.merge('RGB', (t_img, a_img, Image.fromarray(mat.astype(np.uint8))))
+# Parts, from draw time (1–255) and position. Boundaries were read off the time map.
+from scipy import ndimage as ndi
+tt, am = tm.astype(int), np.array(a_img)
+yy = np.arange(OUT_H)[:, None] / OUT_H + np.zeros((1, OUT_W))
+xx = np.zeros((OUT_H, 1)) + np.arange(OUT_W)[None, :] / OUT_W
+part = np.zeros((OUT_H, OUT_W), np.uint8)
+part[tt < 32] = 1                                               # vessel
+part[(tt >= 32) & (tt < 64)] = 2                                # stand
+part[(tt >= 32) & (tt < 64) & (yy < .73)] = 0                   # …except the trunk's base inside the vessel
+part[(tt >= 64) & (tt < 112)] = 0                               # trunk
+part[(tt >= 112) & (tt < 160)] = 3                              # leaves and blossoms
+part[(tt >= 160) & (tt < 192)] = 0                              # late trunk touches…
+part[(tt >= 160) & (tt < 192) & (xx >= .472)] = 4               # …and the rose and side stem
+part[(tt > 0) & (tt < 192) & (yy >= .745) & np.isin(part, (0, 1))] = 2   # anything below the rim is stand
+part[(tt >= 192)] = 5                                           # hatching
+part[(tt >= 205) & (yy >= .77)] = 6                             # the mat
+# The hatched back panel: the one closed shape in the vessel outline.
+struct = (am > 60) & (tt > 0) & (tt < 64)
+closed = ndi.binary_closing(ndi.binary_dilation(struct, iterations=2), iterations=4)
+lab, n = ndi.label(~closed)
+sizes = ndi.sum(np.ones_like(lab), lab, range(n + 1))
+cands = [i for i in range(1, n + 1) if i != lab[0, 0] and sizes[i] > 4000]
+panel = np.isin(lab, cands)
+panel = ndi.binary_dilation(panel, iterations=3) & ~(struct & (am > 200))   # tuck under the outline
+blue = part + panel.astype(np.uint8) * 128
+rgb = Image.merge('RGB', (t_img, a_img, Image.fromarray(blue)))
+print('panel px', int(panel.sum()), 'parts', np.bincount(part[am > 0], minlength=7).tolist())
 rgb.save(OUT, lossless=True, method=6)
 print(f'{OUT}: {OUT_W}×{OUT_H}; video crop x {x0}–{x1}, y {y0}–{y1}; frames used {len(good)}')
