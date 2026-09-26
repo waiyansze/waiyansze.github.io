@@ -967,7 +967,7 @@
     function idleFocus() {
       clearInterval(focusTimer);
       const notes = states[to].notes || [];
-      if (!focusBox || !notes.length || reduceMotion.matches || !noteEls.length) return;
+      if (!focusBox || !focusBox.offsetParent || !notes.length || reduceMotion.matches || !noteEls.length) return;
       let i = 0;
       const move = () => { const n = i % notes.length; placeFocus(notes[n]); activateNote(n); i++; };
       move(); focusTimer = setInterval(() => { if (!paused && !hovering) move(); }, 2600);
@@ -1008,6 +1008,19 @@
         notesBox.append(mark, note);
         noteEls.push([line, mark, note]);
       });
+      // Side notes sit outside the canvas. If real text dimensions make one
+      // touch another note or the surrounding content, use the in-flow list.
+      if (!hero.classList.contains('is-notes-compact') && notesBox.offsetParent) {
+        const noteRects = noteEls.map(([, , note]) => note.getBoundingClientRect());
+        const adjacent = [hero.querySelector('.hero-head'), hero.querySelector('.hero-threads'), hero.querySelector('.hero-intro')]
+          .filter(Boolean).map(el => el.getBoundingClientRect());
+        const intersects = (a, b) => a.left < b.right + 12 && a.right + 12 > b.left && a.top < b.bottom + 12 && a.bottom + 12 > b.top;
+        if (noteRects.some((rect, i) => adjacent.some(other => intersects(rect, other)) ||
+          noteRects.slice(i + 1).some(other => intersects(rect, other)))) {
+          hero.classList.add('is-notes-compact');
+          focusBox?.classList.remove('is-on');
+        }
+      }
       // Left alone, the frame moves from one note to the next; pointing takes over.
       if (hovering && hoverNode) { placeFocus(hoverNode, hoverNode.label); activateNote(hoverNode.note); }
       else idleFocus();
@@ -1056,7 +1069,13 @@
       idleFocus();
       kick();
     }
-    addEventListener('resize', () => { clearTimeout(notesTimer); notesTimer = setTimeout(() => renderNotes(states[to]), 150); });
+    addEventListener('resize', () => {
+      clearTimeout(notesTimer);
+      notesTimer = setTimeout(() => {
+        hero.classList.remove('is-notes-compact');
+        renderNotes(states[to]);
+      }, 150);
+    });
 
     function show(index, instant) {
       from = instant ? index : to; to = index;

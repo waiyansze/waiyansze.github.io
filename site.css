@@ -223,6 +223,21 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 380; font-optica
   .motion-canvas { max-width: min(100%, calc(100svh - 200px)); }
 }
 
+/* The side annotations extend beyond the canvas. On narrower or shorter desktop
+   windows they can reach the heading or intro, so place their text in the
+   document flow beneath the drawing instead. */
+@media (min-width: 1100px) and (min-height: 680px) and (max-width: 1500px),
+       (min-width: 1100px) and (min-height: 680px) and (max-height: 900px) {
+  .motion-lines, .motion-notes, .motion-focus { display: none; }
+  .notes-list { display: grid; }
+}
+
+/* Also cover browser zoom, longer translated text and unusual aspect ratios. */
+.hero.is-notes-compact .motion-lines,
+.hero.is-notes-compact .motion-notes,
+.hero.is-notes-compact .motion-focus { display: none; }
+.hero.is-notes-compact .notes-list { display: grid; }
+
 /* Notes: a marker on the drawing, a fine elbow line, a short text outside the drawing. */
 .motion-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .motion-lines polyline { fill: none; stroke: var(--ink); stroke-width: 1; vector-effect: non-scaling-stroke; animation: note-line .6s var(--ease) backwards; }
