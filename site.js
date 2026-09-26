@@ -1028,12 +1028,17 @@
       if (!notesBox || !linesBox) return;
       const width = canvas.getBoundingClientRect().width || 1;
       const W = 208 / width * 100;                  // a note is 13rem wide, in % of the drawing
-      notes.forEach(n => {
+      const pointsFor = (n, y) => {
         const [ax, ay] = n.at, left = n.side === 'left';
         const edge = left ? -3 : 103, outer = left ? edge - W : edge + W;
         const knee = edge + (ax - edge) * .55;
+        return `${outer},${y} ${edge},${y} ${knee},${ay} ${ax + (left ? -1.8 : 1.8)},${ay}`;
+      };
+      notes.forEach(n => {
+        const [ax, ay] = n.at, left = n.side === 'left';
+        const edge = left ? -3 : 103;
         const line = document.createElementNS(SVGNS, 'polyline');
-        line.setAttribute('points', `${outer},${n.y} ${edge},${n.y} ${knee},${ay} ${ax + (left ? -1.8 : 1.8)},${ay}`);
+        line.setAttribute('points', pointsFor(n, n.y));
         line.setAttribute('pathLength', '1');
         linesBox.append(line);
         const mark = document.createElement('span');
@@ -1047,9 +1052,39 @@
         notesBox.append(mark, note);
         noteEls.push([line, mark, note]);
       });
+      fitNotes(notes, pointsFor);
       // Left alone, the frame moves from one note to the next; pointing takes over.
       if (hovering && hoverNode) { placeFocus(hoverNode, hoverNode.label); activateNote(hoverNode.note); }
       else idleFocus();
+    }
+    // Keep notes clear of the text around the drawing. Its height changes with the
+    // window, so a note on the left is moved down below the tagline (and the
+    // next one below it), and a note on the right is moved up above the intro box.
+    function fitNotes(notes, pointsFor) {
+      if (!notesBox.offsetParent || !noteEls.length) return;
+      const box = canvas.getBoundingClientRect(), H = box.height || 1, GAP = 16, LINE = 6;
+      const rectOf = sel => hero.querySelector(sel)?.getBoundingClientRect();
+      const head = rectOf('.hero-head'), intro = rectOf('.hero-intro');
+      const y = notes.map(n => box.top + n.y / 100 * H);          // where each note's line sits, in px
+      const h = noteEls.map(([, , note]) => note.offsetHeight);
+      const order = side => notes.map((n, i) => i).filter(i => notes[i].side === side).sort((a, b) => y[a] - y[b]);
+      let minTop = head ? head.bottom + GAP : -Infinity;
+      order('left').forEach(i => {
+        if (y[i] - LINE - h[i] < minTop) y[i] = minTop + LINE + h[i];
+        minTop = y[i] + GAP;
+      });
+      let maxLine = intro ? intro.top - GAP : Infinity;
+      order('right').reverse().forEach(i => {
+        if (y[i] > maxLine) y[i] = maxLine;
+        maxLine = y[i] - LINE - h[i] - GAP;
+      });
+      notes.forEach((n, i) => {
+        const pct = Math.max(2, Math.min(98, (y[i] - box.top) / H * 100));
+        if (Math.abs(pct - n.y) < .1) return;
+        const [line, , note] = noteEls[i];
+        line.setAttribute('points', pointsFor(n, pct));
+        note.style.bottom = `calc(${100 - pct}% + ${LINE}px)`;
+      });
     }
     function queueNotes(state, delay) {
       clearTimeout(notesTimer); clearInterval(focusTimer);
