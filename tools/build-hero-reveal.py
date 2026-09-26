@@ -5,6 +5,8 @@ in which it was still paper: that is when it was (finally) drawn. Undone and
 redrawn marks therefore take their redrawn time. The result is one opaque image:
   red   = when the pixel is drawn (1–255, 0 = no ink)
   green = how much ink it holds (anti-aliased alpha from the full-size sketch)
+  blue  = layer: 255 = the mat (drawn last, below the stand), shown as a light
+          background tone; 0 = the arrangement itself
 The hero reveals the drawing by comparing red to the animation clock.
 
 Usage (from repo root; needs ffmpeg, numpy, scipy, pillow):
@@ -69,6 +71,10 @@ t_img = Image.fromarray(np.where(np.array(t_img) > 0, np.array(t_img), 0).astype
 tm = np.array(t_img); am = np.array(a_img)
 _, (jy, jx) = distance_transform_edt(tm == 0, return_indices=True)
 tm = np.where(am > 0, tm[jy, jx], 0).astype(np.uint8); t_img = Image.fromarray(tm)
-rgb = Image.merge('RGB', (t_img, a_img, Image.new('L', (OUT_W, OUT_H), 0)))
+# The mat: the last marks, below its back edge. Kept on its own layer so it can sit back.
+MAT_FROM_TIME, MAT_FROM_Y = 205, .77          # draw time (1–255) and share of the image height
+yy = np.arange(OUT_H)[:, None] / OUT_H
+mat = ((tm >= MAT_FROM_TIME) & (yy >= MAT_FROM_Y) & (np.array(a_img) > 0)) * 255
+rgb = Image.merge('RGB', (t_img, a_img, Image.fromarray(mat.astype(np.uint8))))
 rgb.save(OUT, lossless=True, method=6)
 print(f'{OUT}: {OUT_W}×{OUT_H}; video crop x {x0}–{x1}, y {y0}–{y1}; frames used {len(good)}')

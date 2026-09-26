@@ -611,6 +611,8 @@
     const WASH = css.getPropertyValue('--wash').trim() || '#3f6b69';
     const SEAL = css.getPropertyValue('--seal').trim() || '#a93a2c';
     const INK3 = css.getPropertyValue('--ink-3').trim() || '#5f645d';
+    const INK2 = css.getPropertyValue('--ink-2').trim() || '#4b504a';
+    const MAT = '#b6b9b5';                                    // the ServiceNow disc's grey
     const PAPER = css.getPropertyValue('--paper').trim() || '#ffffff';
 
     // Geometry helpers in a 100 × 100 space.
@@ -646,7 +648,9 @@
     // The Flowers drawing is Wai's own sketch, revealed in the order she drew it.
     // assets/hero-flowers-reveal.webp (built by tools/build-hero-reveal.py from the
     // sketch and its Procreate time-lapse): red = when each pixel was drawn (1–255),
-    // green = how much ink it holds. The drawing sits in the hero's 100 × 100 space.
+    // green = how much ink it holds, blue = the mat. The arrangement is drawn in
+    // --ink-2 and the mat in a pale grey, both from the Systems palette, so the three
+    // drawings share one set of tones. It sits in the hero's 100 × 100 space.
     const REVEAL = { x: 4, y: 7.9, w: 92, ready: false };
     (() => {
       const img = new Image();
@@ -660,12 +664,16 @@
         const n = w * h, time = new Uint8Array(n), ink = new Uint8Array(n);
         for (let i = 0; i < n; i++) { time[i] = src[i * 4]; ink[i] = src[i * 4 + 1]; }
         const out = cx.createImageData(w, h);
-        const rgb = (INK.match(/[0-9a-f]{2}/gi) || ['1c', '1f', '1c']).map(v => parseInt(v, 16));
-        for (let i = 0; i < n; i++) { out.data[i * 4] = rgb[0]; out.data[i * 4 + 1] = rgb[1]; out.data[i * 4 + 2] = rgb[2]; }
+        const hex = (v, fallback) => ((v.match(/^#([0-9a-f]{6})$/i) || [])[1] || fallback).match(/../g).map(x => parseInt(x, 16));
+        const line = hex(INK2, '4b504a'), mat = hex(MAT, 'b6b9b5');
+        for (let i = 0; i < n; i++) {
+          const c = src[i * 4 + 2] > 127 ? mat : line;
+          out.data[i * 4] = c[0]; out.data[i * 4 + 1] = c[1]; out.data[i * 4 + 2] = c[2];
+        }
         Object.assign(REVEAL, { canvas: c, ctx: cx, out, time, ink, h: REVEAL.w * h / w, drawnAt: -1, ready: true });
         render(performance.now());
       };
-      img.src = './assets/hero-flowers-reveal.webp?v=1';
+      img.src = './assets/hero-flowers-reveal.webp?v=2';
     })();
     // Systems and Space share twelve strokes, so each line has somewhere to go
     // when one morphs into the other. Order follows the site: Systems → Space → Flowers.
@@ -757,10 +765,10 @@
         strokes: [],
         enter: 'build',
         buildTime: 6400,
-        seal: [45.9, 54.7],                                                          // where the branch is set into the vessel
+        seal: [51.2, 62.9],                                                          // open paper in the vessel mouth, beside the trunk
         labels: [],
         notes: [
-          { at: [45.9, 54.7], side: 'left', y: 44, mine: true, title: 'Seven years', text: 'My own floral studio: briefs, budgets and installations.' },
+          { at: [51.2, 62.9], side: 'left', y: 44, mine: true, title: 'Seven years', text: 'My own floral studio: briefs, budgets and installations.' },
           { at: [58.6, 45.3], side: 'right', y: 34, title: 'Balance', text: 'Line, balance and placement, set out in a costed proposal first.' }
         ],
         hold: 4600, text: 'Line, balance and placement.', href: '#creative-case'
