@@ -1352,11 +1352,12 @@
     }
     function loop() { if (!raf && visible) { lastFrame = 0; raf = requestAnimationFrame(tick); } }
 
-    // Choosing a medium stops the automatic sequence but keeps that drawing alive.
+    // Choosing a medium stops the automatic sequence. Choosing Flowers again
+    // replays its ink reveal instead of leaving the completed sketch unchanged.
     stepButtons.forEach((b, i) => b.addEventListener('click', () => {
       auto = false;
       pauseButton.textContent = paused ? 'Play' : 'Resume';
-      if (i !== to || phase === 'draw') show(i, false);
+      if (i !== to || phase === 'draw' || (i === 2 && phase === 'hold')) show(i, false);
     }));
     function setPaused(value) {
       const was = paused;
