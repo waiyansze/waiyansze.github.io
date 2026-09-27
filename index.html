@@ -11,8 +11,8 @@
   <title>Wai | Digital Operations &amp; Business Systems</title>
   <link rel="preload" href="./assets/fonts/newsreader-roman.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="./assets/fonts/plex-sans-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="./site.css?v=hero-copy-fit-1">
-  <script src="./site.js?v=flowers-trunk-1" defer></script>
+  <link rel="stylesheet" href="./site.css?v=systems-content-2">
+  <script src="./site.js?v=systems-content-2" defer></script>
 </head>
 <body>
 <!-- SITE:START -->
@@ -22,8 +22,8 @@
   <a class="wordmark" href="#top" aria-label="Wai, back to top">Wai<i class="seal" aria-hidden="true"></i></a>
   <nav class="site-nav" aria-label="Primary">
     <a href="#work">Work</a>
-    <a href="#digital-projects">Digital</a>
     <a href="#thread">Thread</a>
+    <a href="#digital-projects">Digital</a>
     <a href="#contact">Contact</a>
   </nav>
 </header>
@@ -106,78 +106,139 @@
 
               <section class="page" id="freight-case" data-short="Diagnosis" aria-labelledby="diagnosis-title">
                 <div class="page-media">
-                  <div class="graphic diagnosis">
+                  <div class="graphic diagnosis" data-diagnosis>
                     <div class="graphic-head">
-                      <p class="graphic-kicker">From one complaint to a contained issue</p>
-                      <p class="seal-key"><i></i>My part</p>
+                      <p class="graphic-kicker">From one complaint to a coordinated response</p>
+                      <p class="seal-key"><i></i>My investigation and response</p>
                     </div>
-                    <ol class="trace">
-                      <li class="is-mine"><span>Signal</span><p>A customer was charged twice.</p></li>
-                      <li class="is-mine"><span>Pattern</span><p>Invoice, SAP and web order compared: an extra line existed only in SAP. The timing pointed to a recent SAP change.</p></li>
-                      <li class="is-mine"><span>Scope</span><div class="trace-scope"><p><b>½</b> of a month’s eStore orders affected; about 1 in 4 of them already invoiced.</p>
-                        <div class="share" role="img" aria-label="Bar showing one month of eStore orders: about half affected, and about a quarter of the affected orders already invoiced.">
-                          <div class="share-bar"><i class="sk-inv" style="--w: 12%"></i><i class="sk-aff" style="--w: 38%"></i><i class="sk-rest"></i></div>
-                          <div class="share-scale" aria-hidden="true"><span class="at-half">½</span><span class="at-end">1 month</span></div>
-                          <p class="share-key" aria-hidden="true"><span><i class="sk-inv"></i>Already invoiced</span><span><i class="sk-aff"></i>Affected, not yet invoiced</span><span><i class="sk-rest"></i>Unaffected</span></p>
-                        </div></div></li>
-                      <li class="is-mine"><span>Contain</span><p>Invoicing paused. Ticket raised; web, SAP and global teams alerted, with management brought in.</p></li>
-                      <li class="is-mine"><span>Resolve</span><p>Customers told first. Sample orders kept for IT; the rest corrected by me in SAP.</p></li>
-                      <li class="is-other"><span>Specialists</span><p>Root cause and prevention: IT, SAP, MDM and web teams.</p></li>
-                    </ol>
+                    <div class="diag">
+                      <div class="diag-steps" role="tablist" aria-label="Steps of the investigation">
+                        <button type="button" role="tab" class="is-mine" data-diag="signal" aria-selected="false"><span>Signal</span>Duplicate freight charge reported</button>
+                        <button type="button" role="tab" class="is-mine" data-diag="trace" aria-selected="true"><span>Trace</span>Invoice, SAP and web order compared</button>
+                        <button type="button" role="tab" class="is-mine" data-diag="scope" aria-selected="false"><span>Scope</span>½ of a month’s orders affected</button>
+                        <button type="button" role="tab" class="is-mine" data-diag="contain" aria-selected="false"><span>Contain</span>Incident raised, teams brought in</button>
+                        <button type="button" role="tab" class="is-mine" data-diag="correct" aria-selected="false"><span>Correct</span>Customers told, records corrected</button>
+                        <button type="button" role="tab" class="is-other" data-diag="specialists" aria-selected="false"><span>Specialist teams</span>Root cause and prevention</button>
+                      </div>
+                      <div class="diag-stage" aria-live="polite">
+                        <div class="diag-panel" role="tabpanel" data-panel="signal" hidden>
+                          <p class="diag-lead">A customer reported a duplicate freight charge.</p>
+                          <div class="doc doc--note"><p class="doc-name">Customer</p><p>“We’ve been charged for delivery twice.”</p></div>
+                        </div>
+                        <div class="diag-panel" role="tabpanel" data-panel="trace">
+                          <p class="diag-lead">Comparing the three records revealed an additional freight line in SAP. The timing pointed to a recent SAP change.</p>
+                          <div class="docs" role="img" aria-label="Three records side by side. The web order has one freight line. SAP has an additional freight line, marked. The invoice charges freight twice.">
+                            <div class="doc"><p class="doc-name">Adobe Commerce</p><p class="doc-row">Items</p><p class="doc-row">Freight</p></div>
+                            <div class="doc doc--hit"><p class="doc-name">SAP order</p><p class="doc-row">Items</p><p class="doc-row">Freight</p><p class="doc-row doc-row--extra">Freight <em>extra line</em></p></div>
+                            <div class="doc"><p class="doc-name">Invoice</p><p class="doc-row">Items</p><p class="doc-row">Freight</p><p class="doc-row doc-row--echo">Freight <em>charged twice</em></p></div>
+                          </div>
+                        </div>
+                        <div class="diag-panel" role="tabpanel" data-panel="scope" hidden>
+                          <p class="diag-lead"><b>½</b> of a month’s eStore orders affected; about 1 in 4 of them already invoiced.</p>
+                          <div class="share" role="img" aria-label="Bar showing one month of eStore orders: about half affected, and about a quarter of the affected orders already invoiced.">
+                            <div class="share-bar"><i class="sk-inv" style="--w: 12%" title="Already invoiced: about 1 in 4 affected orders"></i><i class="sk-aff" style="--w: 38%" title="Not yet invoiced: about 3 in 4 affected orders"></i><i class="sk-rest" title="Unaffected"></i></div>
+                            <div class="share-scale" aria-hidden="true"><span class="at-half">½</span><span class="at-end">1 month</span></div>
+                            <p class="share-key" aria-hidden="true"><span><i class="sk-inv"></i>Already invoiced</span><span><i class="sk-aff"></i>Not yet invoiced</span><span><i class="sk-rest"></i>Unaffected</span></p>
+                          </div>
+                        </div>
+                        <div class="diag-panel" role="tabpanel" data-panel="contain" hidden>
+                          <p class="diag-lead">I raised the incident, brought in the relevant teams and coordinated the handling of affected orders.</p>
+                          <div class="split">
+                            <div class="split-mine"><p class="split-name">Operational response · Me</p><p>Establish the impact, validate the evidence, communicate with customers, coordinate or carry out order corrections.</p></div>
+                            <div class="split-other"><p class="split-name">Technical investigation · Specialists</p><p>The underlying integration issue, the permanent fix and prevention.</p></div>
+                          </div>
+                        </div>
+                        <div class="diag-panel" role="tabpanel" data-panel="correct" hidden>
+                          <p class="diag-lead">I informed customers, kept sample orders for the investigation and corrected the remaining affected records in SAP.</p>
+                          <p class="diag-outcome"><span>Outcome</span>Affected orders identified and corrected while normal eStore ordering continued. The permanent fix sat with the specialist teams.</p>
+                        </div>
+                        <div class="diag-panel" role="tabpanel" data-panel="specialists" hidden>
+                          <p class="diag-lead">The SAP and integration teams investigated the underlying issue, implemented the permanent fix and owned prevention.</p>
+                          <div class="split">
+                            <div class="split-other"><p class="split-name">Specialist teams</p><p>Root cause, permanent fix and prevention.</p></div>
+                            <div class="split-mine"><p class="split-name">My contribution</p><p>The affected-order scope, linked evidence and sample orders to support the investigation.</p></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div class="page-copy">
-                  <p class="page-eyebrow">Diagnosis</p>
+                  <p class="page-eyebrow">Cross-system diagnosis</p>
                   <h3 id="diagnosis-title">One complaint, traced to half a month’s orders.</h3>
-                  <p>I followed a single double charge through the invoice, SAP and the web order until it was a scoped, contained issue with the right teams on it.</p>
+                  <p>I traced a duplicate freight charge across the invoice, SAP and the Adobe Commerce order. I established the scope, coordinated the immediate response and corrected affected records while normal ordering continued.</p>
                   <dl class="facts">
-                    <div><dt>Owned</dt><dd>Diagnosis, scope, containment, customers, corrections</dd></div>
-                    <div><dt>Others</dt><dd>Root cause and prevention: IT, SAP, MDM and web teams</dd></div>
+                    <div><dt>My role</dt><dd>Investigation · Impact assessment · Customer communication · Operational corrections</dd></div>
+                    <div><dt>Specialists</dt><dd>Technical root-cause investigation and prevention</dd></div>
                   </dl>
                 </div>
               </section>
 
               <section class="page" id="pricing-case" data-short="AI controls" aria-labelledby="pricing-title">
                 <div class="page-media">
-                  <div class="graphic controls">
+                  <div class="graphic controls" data-controls>
                     <div class="graphic-head">
-                      <p class="graphic-kicker">Two agents, one control pattern</p>
-                      <p class="seal-key"><i></i>Designed by me</p>
+                      <p class="graphic-kicker">Two agents. One control pattern.</p>
+                      <p class="seal-key"><i></i>Controls designed by me</p>
                     </div>
-                    <div class="lane">
-                      <p class="lane-name">Key Account Pricing</p>
-                      <ol class="flow flow--5">
-                        <li><b>Price lists</b><small>Key-account PDFs</small></li>
-                        <li class="is-mine"><b>Rules</b><small>Freight and FX confirmed each run</small></li>
-                        <li class="is-mine"><b>Exceptions</b><small>Unmatched SKUs, duplicates</small></li>
-                        <li class="is-mine"><b>My approval</b><small>Nothing moves without sign-off</small></li>
-                        <li><b>IT upload</b><small>Workbook and change log</small></li>
-                      </ol>
+                    <div class="controls-view" data-view="workflow">
+                      <div class="lane">
+                        <p class="lane-name">Key-account pricing</p>
+                        <ol class="flow flow--5">
+                          <li><button type="button" data-step="0" data-detail="Extract agreed prices from key-account contracts."><span>01</span>Signed agreement</button></li>
+                          <li class="is-mine"><button type="button" data-step="1" data-detail="Map local SKUs and confirm freight and FX for each run."><span>02</span>Apply the rules</button></li>
+                          <li class="is-mine"><button type="button" data-step="2" data-detail="Update or compare the workbook; flag unmatched SKUs, duplicates and changes."><span>03</span>Validate changes</button></li>
+                          <li class="is-mine"><button type="button" data-step="3" data-detail="Review exceptions and approve the output."><span>04</span>Human review</button></li>
+                          <li><button type="button" data-step="4" data-detail="Submit the validated workbook and change log."><span>05</span>IT upload</button></li>
+                        </ol>
+                        <p class="lane-out">Pricing workbook · Validation and exception report · Change log</p>
+                      </div>
+                      <div class="lane">
+                        <p class="lane-name">Customer-data validation</p>
+                        <ol class="flow flow--5">
+                          <li><button type="button" data-step="0" data-detail="Account for every source row and identify the records in scope."><span>01</span>Customer export</button></li>
+                          <li class="is-mine"><button type="button" data-step="1" data-detail="Validate price group, market, currency, storefront and email."><span>02</span>Check account rules</button></li>
+                          <li class="is-mine"><button type="button" data-step="2" data-detail="Recommend a correction only when one mapped answer is supported."><span>03</span>Establish the evidence</button></li>
+                          <li class="is-mine"><button type="button" data-step="3" data-detail="Route conflicting or incomplete evidence to manual review."><span>04</span>Hold unclear cases</button></li>
+                          <li><button type="button" data-step="4" data-detail="Produce an action list matched to the source records."><span>05</span>Reconcile results</button></li>
+                        </ol>
+                        <p class="lane-out">Validation report · Manual-review list · Reconciled action list</p>
+                      </div>
+                      <div class="step-detail" aria-live="polite" data-step-detail>
+                        <p><span>Pricing</span><b data-detail-a>Review exceptions and approve the output.</b></p>
+                        <p><span>Customer data</span><b data-detail-b>Route conflicting or incomplete evidence to manual review.</b></p>
+                      </div>
+                      <div class="run">
+                        <p class="run-figure"><b>1 in 25</b> customer records flagged for review on the first run</p>
+                        <p class="run-note">Most flags concerned price groups; others were storefront mismatches and personal email addresses to review.</p>
+                      </div>
                     </div>
-                    <div class="lane">
-                      <p class="lane-name">eStore Customer Validator</p>
-                      <ol class="flow flow--5">
-                        <li><b>Customer export</b><small>Every row read</small></li>
-                        <li class="is-mine"><b>Rules</b><small>Price group, store, currency, email</small></li>
-                        <li class="is-mine"><b>Evidence</b><small>Fix only when one answer is proven</small></li>
-                        <li class="is-mine"><b>Manual review</b><small>Unclear cases, never guessed</small></li>
-                        <li><b>Action list</b><small>Reconciled to the source</small></li>
-                      </ol>
+                    <div class="controls-view controls-rules" data-view="rules" hidden>
+                      <p class="rules-intro">Built within Microsoft 365 Copilot Agent Builder, without Studio, connectors, APIs or write-back to live systems. The agents prepare reviewable outputs; people approve and apply changes.</p>
+                      <dl class="rule-table">
+                        <div><dt>Market and currency</dt><dd>Check that the account’s market, currency and price group agree. Flag inconsistencies.</dd></div>
+                        <div><dt>Evidence before correction</dt><dd>Recommend a replacement only when exactly one mapped answer is supported. Otherwise: “Manual review required”.</dd></div>
+                        <div><dt>Variable inputs</dt><dd>Confirm freight and exchange rates before each pricing run.</dd></div>
+                        <div><dt>Data preservation</dt><dd>Preserve source files and unrelated workbook data. Record changes separately.</dd></div>
+                        <div><dt>Source reconciliation</dt><dd>Account for every row as processed, excluded, out of scope or requiring review. Nothing is silently dropped.</dd></div>
+                      </dl>
+                      <p class="graphic-note">Examples are illustrative. Customer records, internal mappings and commercial values are not shown.</p>
                     </div>
-                    <div class="run">
-                      <p class="run-figure"><b>1 in 25</b> customer records flagged on the first run</p>
-                      <p class="run-note">Mostly wrong price groups; also wrong stores and personal emails to review.</p>
+                    <div class="controls-foot">
+                      <button type="button" class="text-button" data-view-toggle aria-expanded="false">How the checks work <span aria-hidden="true">+</span></button>
+                      <button type="button" class="text-button" data-replay>Replay workflow</button>
                     </div>
                   </div>
                 </div>
                 <div class="page-copy">
                   <p class="page-eyebrow">AI-enabled controls</p>
-                  <h3 id="pricing-title">Basic Copilot access. Real controls.</h3>
-                  <p>Bad eStore data shows up as wrong prices, missing products or the wrong currency. With standard Copilot only, no Studio, connectors or APIs, I built two agents that check the data against the rules and change nothing live without review.</p>
+                  <h3 id="pricing-title">Turn business rules into repeatable checks.</h3>
+                  <p>I designed Copilot agents for key-account pricing and customer-data validation, translating business rules into checks, exception reports and reviewable outputs. Human review stays in each workflow before changes reach live systems.</p>
                   <dl class="facts">
-                    <div><dt>Owned</dt><dd>Rules, controls, testing, user guide</dd></div>
-                    <div><dt>Handover</dt><dd>Trained my manager to run them</dd></div>
+                    <div><dt>My role</dt><dd>Business rules · Workflow design · Validation · Testing · Documentation</dd></div>
+                    <div><dt>Handover</dt><dd>I documented the customer-data validator and trained my manager to run it</dd></div>
                   </dl>
+                  <p class="page-close">Repeatable checks, visible exceptions and human judgement.</p>
                 </div>
               </section>
 
@@ -186,19 +247,23 @@
                   <div class="graphic checkpoint">
                     <div class="graphic-head">
                       <p class="graphic-kicker">Before processing</p>
-                      <p class="seal-key"><i></i>Corrected by me</p>
+                      <p class="seal-key"><i></i>My operational checkpoint</p>
                     </div>
-                    <ul class="checks" aria-label="What I check and sort out before an order is processed">
-                      <li>Billing</li><li>Product compatibility</li><li>Urgent arrangements</li><li>Proforma</li><li>System information</li>
+                    <ul class="checks" aria-label="What I check before an order is processed">
+                      <li title="Confirm that the selected products work with the customer’s system.">Product compatibility</li>
+                      <li title="Check the information needed for accurate billing.">Billing</li>
+                      <li title="Identify proforma and other arrangements needed before the order proceeds.">Processing requirements</li>
+                      <li title="Coordinate time-sensitive requirements with the relevant teams.">Urgent orders</li>
+                      <li title="Investigate conflicting or incomplete records across systems.">System information</li>
                     </ul>
-                    <div class="units units--grid" data-units="100" data-mark="10" role="img" aria-label="About 10 in every 100 orders are corrected at this checkpoint."></div>
-                    <p class="units-legend"><b>≈10%</b> of monthly orders corrected here, before normal processing.</p>
+                    <div class="units units--grid" data-units="100" data-mark="10" role="img" aria-label="Illustration: about 10 in every 100 orders need a product-related correction before processing."></div>
+                    <p class="units-legend"><b>≈10%</b> of monthly orders need a product-related correction before processing. <span class="units-note">Illustrative proportion, not an order count. Proforma and other arrangements are extra work on top.</span></p>
                     <div class="downstream">
-                      <p class="downstream-title">If a wrong order gets through</p>
+                      <p class="downstream-title">What an early check can prevent</p>
                       <ol>
-                        <li><span>Customer</span>Wrong item, a restocking fee, and the item they needed arrives late</li>
-                        <li><span>Team</span>Return, redelivery, debit and credit notes</li>
-                        <li><span>Channel</span>Customers go back to ordering by email</li>
+                        <li><span>Customer</span>An unsuitable item, extra charges or a delay in getting what they need</li>
+                        <li><span>Internal teams</span>Returns, redelivery and debit or credit administration</li>
+                        <li><span>Channel</span>A return to manual email ordering</li>
                       </ol>
                     </div>
                   </div>
@@ -206,11 +271,11 @@
                 <div class="page-copy">
                   <p class="page-eyebrow">Order quality</p>
                   <h3 id="quality-title">Catch the issue before it travels.</h3>
-                  <p>Before an order is processed, I sort out billing, product compatibility, urgent arrangements, proforma and system information. About 10% need correcting here.</p>
+                  <p>Before orders move into processing, I review product compatibility, billing details and system information. I resolve exceptions and coordinate proforma or urgent arrangements so each order is ready for the next team.</p>
                   <dl class="facts">
-                    <div><dt>Why</dt><dd>Wrong orders push customers back to email ordering: the manual work the eStore is there to remove</dd></div>
+                    <div><dt>Why it matters</dt><dd>Incorrect orders create extra work for customers and internal teams, and can push customers back to email ordering</dd></div>
                   </dl>
-                  <p class="more-link"><button type="button" data-more-open="systems-more">More detail: System map · AI rules · Data quality <span aria-hidden="true">→</span></button></p>
+                  <p class="more-link"><button type="button" data-more-open="systems-more">Explore the system map and operational improvements <span aria-hidden="true">→</span></button></p>
                 </div>
               </section>
 
@@ -273,7 +338,7 @@
                   <h3 id="space-plan-title">Plan it, draw it, build it.</h3>
                   <p>I found the property, drew the plans for the landlord and ran the renovation: quotes, contractors, budget.</p>
                   <dl class="facts">
-                    <div><dt>Saved</dt><dd>No separate interior designer needed</dd></div>
+                    <div><dt>Scope</dt><dd>Property · plans · contractors · budget</dd></div>
                   </dl>
                 </div>
               </section>
@@ -351,7 +416,7 @@
                 <div class="page-copy">
                   <p class="page-eyebrow">Brief and budget</p>
                   <h3 id="flowers-brief-title">When the budget is tight, change the flowers, not the idea.</h3>
-                  <p>Mood boards, flower selections, costed proposals. When budgets were tight, I changed flowers, used more space and line, or simplified.</p>
+                  <p>I used costed proposals to protect the core concept within budget, substituting materials, simplifying construction or changing scale where needed.</p>
                 </div>
               </section>
 
@@ -437,7 +502,7 @@
                 <p class="detail-name">Order checks <span>My checkpoint</span></p>
                 <dl>
                   <div><dt>What happens</dt><dd>Billing, product compatibility, urgent arrangements, proforma and system information, before processing.</dd></div>
-                  <div><dt>My part</dt><dd>I correct the exceptions: about 10% of orders.</dd></div>
+                  <div><dt>My part</dt><dd>About 10% need a product-related correction at this checkpoint.</dd></div>
                 </dl>
               </div>
               <div class="sysmap-detail" data-detail="dynamics">
@@ -482,30 +547,28 @@
         </div>
       </section>
 
-      <section class="more-page" id="controls-detail" aria-labelledby="controls-detail-title">
+      <section class="more-page" id="customer-enablement" aria-labelledby="enablement-title">
         <div class="page-media">
           <div class="graphic">
             <div class="graphic-head">
-              <p class="graphic-kicker">Rules the agents follow, for example</p>
-              <p class="seal-key"><i></i>Written by me</p>
+              <p class="graphic-kicker">From account setup to ready to order</p>
+              <p class="seal-key"><i></i>My part</p>
             </div>
             <ol class="rule-list">
-              <li><span>Currency</span>A GBP price group belongs to a UK or Northern Ireland account; EUR to the Republic of Ireland. Anything else is flagged.</li>
-              <li><span>Evidence</span>A new group is recommended only when exactly one mapped replacement is proven. Otherwise: Manual Review Required.</li>
-              <li><span>Variables</span>Freight and exchange rate are confirmed by a person before every pricing run, because both change.</li>
-              <li><span>Reconcile</span>Every source row ends up processed, excluded, out of scope or in review. Nothing is dropped silently.</li>
+              <li><span>Validate the account</span>Check account status, billing and shipping relationships, and group classification.</li>
+              <li><span>Check the setup</span>Confirm price-group accuracy and the relevant product compatibility.</li>
+              <li><span>Guide the user</span>Explain account details and ordering steps through tailored communications and an illustrated guide.</li>
+              <li><span>Support repeat ordering</span>Add previously purchased products to wishlists where appropriate.</li>
             </ol>
-            <p class="graphic-note">Illustrative wording. Mappings, customers and values stay internal.</p>
+            <p class="graphic-note">The illustrated eStore guide is reused for onboarding and day-to-day reference.</p>
           </div>
         </div>
         <div class="page-copy">
-          <p class="page-eyebrow">AI controls · in detail</p>
-          <h3 id="controls-detail-title">A check that runs again beats a one-off clean-up.</h3>
-          <p>The wrong groups and stores came from manual entry, handover gaps and a registration flow that makes mistakes easy. Cleaning them once would not stop them coming back, so I turned the rules into agents that anyone trained can run.</p>
+          <p class="page-eyebrow">Customer enablement</p>
+          <h3 id="enablement-title">Prepare the account and the person using it.</h3>
+          <p>I validate account relationships, pricing groups and product compatibility across ERP and CRM records. I tailor onboarding guidance and, where appropriate, build wishlists from purchase history to help customers find their way around the range.</p>
           <dl class="facts">
-            <div><dt>My role</dt><dd>Problem, rules, controls, testing, user guides, training</dd></div>
-            <div><dt>Boundary</dt><dd>The agents never write to live systems; people make the corrections</dd></div>
-            <div><dt>Tools</dt><dd>Microsoft 365 Copilot Agent Builder, Excel, Word</dd></div>
+            <div><dt>My role</dt><dd>Account validation · User guidance · Customer communications · Reusable resources</dd></div>
           </dl>
         </div>
       </section>
@@ -515,7 +578,7 @@
           <div class="graphic fixes">
             <div class="graphic-head">
               <p class="graphic-kicker">Close the gap at its source</p>
-              <p class="seal-key"><i></i>Fixed by me</p>
+              <p class="seal-key"><i></i>My investigation and follow-through</p>
             </div>
             <ul class="fix-list">
               <li><span>Reporting</span><b>Matomo reporting restored</b></li>
@@ -531,7 +594,7 @@
         <div class="page-copy">
           <p class="page-eyebrow">Visibility &amp; data quality</p>
           <h3 id="visibility-title">Fix information at its source.</h3>
-          <p>Missing or outdated data kept causing problems. I traced each gap to its source and corrected it.</p>
+          <p>I traced recurring information gaps to their source, corrected what sat within my control and coordinated the rest with the responsible teams.</p>
           <dl class="facts">
             <div><dt>Outcome</dt><dd>Cleaner operational data</dd></div>
             <div><dt>Observed</dt><dd>Fewer avoidable enquiries (not measured)</dd></div>
@@ -666,8 +729,8 @@
         </div>
         <div class="page-copy">
           <p class="page-eyebrow">Wedding · concept to build</p>
-          <h3 id="flowers-delivery-title">One concept, a whole wedding.</h3>
-          <p>A London-inspired concept carried through logo, invitation, props, backdrops, flowers and the banquet LED animation.</p>
+          <h3 id="flowers-delivery-title">One brief, coordinated across multiple touchpoints.</h3>
+          <p>A London-inspired brief carried across identity, invitations, props, floral installations, backdrops and the banquet LED animation, from proposal through on-site delivery.</p>
           <dl class="facts">
             <div><dt>Owned</dt><dd>Concept to build, including animation</dd></div>
           </dl>
@@ -676,7 +739,17 @@
     </div>
   </dialog>
 
-  <!-- 3. DIGITAL PROJECTS: supporting evidence of hands-on digital skill, deliberately smaller than the cases. -->
+  <!-- 3. THE THREAD: how I work, in three lines, right after the cases that prove it. -->
+  <section class="thread" id="thread" aria-labelledby="thread-title" data-thread>
+    <h2 class="eyebrow" id="thread-title">The thread · how I work, in any medium</h2>
+    <ol class="thread-steps">
+      <li><span>01</span><h3>See the whole.</h3><p>Start from the evidence and the constraints, not the first fix.</p></li>
+      <li><span>02</span><h3>Give it structure.</h3><p>Turn it into something people can check, cost and decide on.</p></li>
+      <li><span>03</span><h3>Carry it through.</h3><p>Stay with it until it works, and be clear about what others own.</p></li>
+    </ol>
+  </section>
+
+  <!-- 4. DIGITAL PROJECTS: supporting evidence of hands-on digital skill, deliberately smaller than the cases. -->
   <section class="digital" id="digital-projects" aria-labelledby="digital-title">
     <!-- Layered: the title stays on the page as a sticky backdrop column while the
          project cards pass in front of it. The title is never covered. -->
@@ -756,27 +829,23 @@
     </div>
   </section>
 
-  <!-- 4. THE THREAD: how I work, in three lines. The cases above are the proof. -->
-  <section class="thread" id="thread" aria-labelledby="thread-title">
-    <h2 class="eyebrow" id="thread-title">The thread · how I work, in any medium</h2>
-    <ol class="thread-steps">
-      <li><span>01</span><h3>See the whole.</h3><p>Start from the evidence and the constraints, not the first fix.</p></li>
-      <li><span>02</span><h3>Give it structure.</h3><p>Turn it into something people can check, cost and decide on.</p></li>
-      <li><span>03</span><h3>Carry it through.</h3><p>Stay with it until it works, and be clear about what others own.</p></li>
-    </ol>
-  </section>
-
   <!-- 5. CONTACT -->
   <section class="contact" id="contact" aria-labelledby="contact-title">
     <div>
       <p class="eyebrow">Next chapter</p>
       <h2 id="contact-title">Let’s make things work better.</h2>
+      <!-- One line that carries all three chapters: a system's disc, a room's corner,
+           a stem with a leaf, then the seal. It draws itself once when Contact arrives. -->
+      <svg class="contact-line" data-contact-line viewBox="0 0 340 64" aria-hidden="true" focusable="false">
+        <path pathLength="1" d="M2 46 H34 a11 11 0 1 1 0.1 0 H112 V24 H158 V46 H214 C246 46 250 20 284 14 q15 -3 24 8 q-15 5 -24 -8"/>
+        <rect class="contact-seal" x="318" y="8" width="11" height="11"/>
+      </svg>
     </div>
     <div class="contact-copy">
       <p>Open to hybrid roles in digital operations, business systems, process improvement and product operations.</p>
       <p>Based in Reading. Open to relocating to London. No sponsorship required.</p>
       <ul class="contact-links">
-        <li><span>Email</span><a href="mailto:waiswy23@gmail.com">waiswy23@gmail.com</a></li>
+        <li class="contact-email"><span>Email</span><a href="mailto:waiswy23@gmail.com">waiswy23@gmail.com</a><button type="button" class="copy-email" data-copy-email="waiswy23@gmail.com"><span class="copy-label">Copy</span><span class="copy-seal" aria-hidden="true">Copied</span></button><span class="visually-hidden" aria-live="polite" data-copy-status></span></li>
         <li><span>LinkedIn</span><a href="https://www.linkedin.com/in/waiyansze/" target="_blank" rel="noreferrer">in/waiyansze <span aria-hidden="true">↗</span></a></li>
         <li><span>Instagram</span><a href="https://www.instagram.com/szewaiyan/" target="_blank" rel="noreferrer">@szewaiyan <span aria-hidden="true">↗</span></a></li>
       </ul>

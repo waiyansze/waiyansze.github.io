@@ -164,7 +164,8 @@
     const prevButton = deck.querySelector('[data-deck-step="-1"]');
     const nextButton = deck.querySelector('[data-deck-step="1"]');
     const nextLabel = deck.querySelector('[data-deck-next-label]');
-    const after = document.getElementById('digital-projects');
+    const after = document.getElementById('thread');   // the section the deck hands over to
+    const afterName = 'The thread';
     const pinQuery = matchMedia('(min-width: 960px) and (min-height: 640px)');
 
     let pinned = false;
@@ -253,8 +254,8 @@
       contextEl.textContent = chapter.context;
       prevButton.disabled = index === 0;
       const last = index === pages.length - 1;
-      nextLabel.textContent = last ? 'Digital projects' : '';
-      nextButton.setAttribute('aria-label', last ? 'Continue to Digital projects' : 'Next page');
+      nextLabel.textContent = last ? afterName : '';
+      nextButton.setAttribute('aria-label', last ? `Continue to ${afterName}` : 'Next page');
       if (previous >= 0) {
         hint.hidden = true; // the instruction is only needed once
         live.textContent = `${chapter.name}, ${page.local + 1} of ${chapter.count}: ${page.title}`;
@@ -391,7 +392,7 @@
 
     // Old links (from applications already sent) still land on the right page.
     const aliases = {
-      'work-viewer': 'freight-case', 'systems-case': 'freight-case',
+      'work-viewer': 'freight-case', 'systems-case': 'freight-case', 'controls-detail': 'pricing-case',
       'enso-case': 'space-overview', 'creative-case': 'flowers-overview',
       'space-build': 'space-plan', 'space-outcomes': 'space-programmes',
       'flowers-budget': 'flowers-brief', 'flowers-lane-crawford': 'flowers-senreve',
@@ -484,18 +485,90 @@
     event.preventDefault();
     jumpTo(target, hash);
   });
-  /* Selected work opener: the title settles in when it fills the screen; three
-     seconds later, once only, the page glides on to the first chapter. Any wheel,
-     touch, key or click cancels it, and reduced motion never moves the page. */
+  /* Section glide. On desktop each wheel or trackpad gesture that would cross from
+     one section into the next glides straight to the start of the next one (about
+     half a second) and the rest of that gesture's momentum is absorbed, so every
+     section change is one clean move. Inside a section taller than the screen (the
+     deck's pages, Digital projects) the page scrolls as normal until its end.
+     Off for reduced motion and wherever the hero is taller than the screen. */
+  const heroEl = document.querySelector('.hero');
   const workIntro = document.querySelector('[data-work-intro]');
   const workDeck = document.getElementById('work-viewer');
+  const easeOut = t => 1 - Math.pow(1 - t, 3);
+  let gliding = 0, quietUntil = 0;
+  const glideTo = (top, ms = 520) => {
+    cancelAnimationFrame(gliding);
+    if (reduceMotion.matches) { window.scrollTo({ top, behavior: 'auto' }); return; }
+    const from = scrollY, dist = top - from, t0 = performance.now();
+    const step = now => {
+      const k = Math.min(1, (now - t0) / ms);
+      window.scrollTo(0, from + dist * easeOut(k));
+      if (k < 1) gliding = requestAnimationFrame(step);
+      else { gliding = 0; quietUntil = Math.max(quietUntil, performance.now() + 200); }
+    };
+    gliding = requestAnimationFrame(step);
+  };
+  const deckTop = () => deckApi && deckApi.isPinned()
+    ? deckApi.runway()[0] + 2
+    : workDeck.getBoundingClientRect().top + scrollY - (parseFloat(getComputedStyle(workDeck).scrollMarginTop) || 0);
+  if (heroEl && workIntro && workDeck) {
+    const headerH = () => document.querySelector('.site-header')?.offsetHeight || 0;
+    const desktop = matchMedia('(min-width: 960px) and (min-height: 640px)');
+    const snapOn = () => !reduceMotion.matches && desktop.matches && heroEl.offsetHeight <= innerHeight + 2;
+    const topOf = el => el.getBoundingClientRect().top + scrollY - headerH();
+    // Where each section starts, in page order. The deck is one tall section.
+    const starts = () => [0, topOf(workIntro), deckTop(),
+      ...['thread', 'digital-projects', 'contact'].map(id => document.getElementById(id)).filter(Boolean).map(topOf)];
+    const points = () => starts().slice(0, 3);
+    let rest = scrollY, idle = 0;
+    addEventListener('wheel', e => {
+      if (!snapOn() || e.ctrlKey || e.target.closest?.('dialog, .deck-track, [data-deck-index]')) return;
+      const now = performance.now();
+      if (gliding || now < quietUntil) { e.preventDefault(); quietUntil = Math.max(quietUntil, now + 150); return; }
+      const dy = e.deltaY;
+      if (Math.abs(dy) < 2) return;
+      const S = starts(), y = scrollY, maxY = document.documentElement.scrollHeight - innerHeight;
+      let cur = 0;
+      S.forEach((t, i) => { if (t <= y + 2) cur = i; });
+      let target;
+      if (dy > 0) {
+        const next = S[cur + 1];
+        // Cross over only when this move would bring the next section into view.
+        if (next !== undefined && y + innerHeight + dy > next + 1) target = next;
+      } else if (Math.abs(y - S[cur]) < 3 && cur > 0) {
+        // At the start of a section: back to the previous one, showing its end if it is tall.
+        target = cur - 1 === 2 && deckApi?.isPinned()
+          ? deckApi.runway()[1] - 4                    // back into the deck: its last page, still pinned
+          : Math.max(S[cur - 1], S[cur] - innerHeight);
+      } else if (y + dy < S[cur]) {
+        target = S[cur];
+      }
+      if (target === undefined) return;
+      target = Math.max(0, Math.min(maxY, Math.round(target)));
+      if (Math.abs(target - y) < 3) return;
+      e.preventDefault();
+      rest = target;
+      glideTo(target);
+    }, { passive: false });
+    const settle = () => {
+      const y = scrollY, P = points();
+      if (!snapOn() || gliding || performance.now() < quietUntil || y >= P[2] - 2 || y < 0) { rest = y; return; }
+      if (P.some(p => Math.abs(p - y) < 16)) { rest = y; return; }
+      const down = y > rest;
+      const target = down ? P.find(p => p > y) : [...P].reverse().find(p => p < y);
+      rest = target;
+      glideTo(target);
+    };
+    addEventListener('scroll', () => { if (gliding) return; clearTimeout(idle); idle = setTimeout(settle, 90); }, { passive: true });
+  }
+
+  /* Selected work opener: the title settles in quickly when it fills the screen;
+     a moment later, once only, the page glides on to the first chapter. Any wheel,
+     touch, key or click cancels that, and reduced motion never moves the page. */
   if (workIntro && workDeck && 'IntersectionObserver' in window) {
-    const COUNT = 3000, SETTLE = 2700;
+    const COUNT = 1800, SETTLE = 900;
     let countTimer = 0, autoDone = !!location.hash;
     workIntro.classList.add('is-ready');
-    const deckTop = () => deckApi && deckApi.isPinned()
-      ? deckApi.runway()[0] + 2
-      : workDeck.getBoundingClientRect().top + scrollY - (parseFloat(getComputedStyle(workDeck).scrollMarginTop) || 0);
     const cancel = () => {
       clearTimeout(countTimer); countTimer = 0;
       workIntro.classList.remove('is-counting');
@@ -504,14 +577,16 @@
     };
     const start = () => {
       if (autoDone || reduceMotion.matches) return;
-      ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(t => addEventListener(t, cancel, { capture: true, passive: true }));
       countTimer = setTimeout(() => {
+        // Listen for the reader only from here, so the momentum of the scroll
+        // that brought them here doesn't cancel it straight away.
+        ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(t => addEventListener(t, cancel, { capture: true, passive: true }));
         workIntro.style.setProperty('--count', COUNT + 'ms');
         workIntro.classList.add('is-counting');
         countTimer = setTimeout(() => {
           const top = deckTop();
           cancel();
-          if (Math.abs(top - scrollY) > 4) window.scrollTo({ top, behavior: 'smooth' });
+          if (Math.abs(top - scrollY) > 4) glideTo(top, 620);
         }, COUNT);
       }, SETTLE);
     };
@@ -522,6 +597,157 @@
       } else if (countTimer) cancel();   // scrolled away before it moved on: stay put from now on
     }, { threshold: [0, .6] }).observe(workIntro);
   }
+
+  /* The thread: while it is on screen, one step at a time is in focus, marked by a
+     seal-red rule that runs across it for three seconds before handing on. Pointing
+     at a step holds it. Everything stays readable; reduced motion leaves it still. */
+  const thread = document.querySelector('[data-thread]');
+  if (thread && 'IntersectionObserver' in window && !reduceMotion.matches) {
+    const steps = [...thread.querySelectorAll('.thread-steps li')], DWELL = 3000;
+    let at = 0, timer = 0, held = false;
+    thread.style.setProperty('--dwell', DWELL + 'ms');
+    const show = k => steps.forEach((li, j) => li.classList.toggle('is-on', j === k));
+    const run = () => { clearTimeout(timer); show(at); timer = setTimeout(() => { at = (at + 1) % steps.length; run(); }, DWELL); };
+    const stop = () => { clearTimeout(timer); show(-1); thread.classList.remove('is-live', 'is-held'); };
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { thread.classList.add('is-live'); at = 0; if (!held) run(); else show(at); }
+      else stop();
+    }, { threshold: .55 }).observe(thread);
+    steps.forEach((li, j) => li.addEventListener('pointerenter', () => {
+      if (!thread.classList.contains('is-live')) return;
+      held = true; clearTimeout(timer); at = j; show(j); thread.classList.add('is-held');
+    }));
+    thread.querySelector('.thread-steps').addEventListener('pointerleave', () => {
+      if (!held) return;
+      held = false; thread.classList.remove('is-held');
+      if (thread.classList.contains('is-live')) timer = setTimeout(() => { at = (at + 1) % steps.length; run(); }, 1200);
+    });
+  }
+
+  /* Contact: the closing line draws itself once; the email can be copied in one
+     click, confirmed by a seal stamp (and announced to screen readers). */
+  const contactLine = document.querySelector('[data-contact-line]');
+  if (contactLine && 'IntersectionObserver' in window && !reduceMotion.matches) {
+    contactLine.classList.add('is-ready');
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { contactLine.classList.add('is-drawn'); io.disconnect(); }
+    }, { threshold: .8 });
+    io.observe(contactLine);
+  }
+  document.querySelectorAll('[data-copy-email]').forEach(button => {
+    const status = button.parentElement.querySelector('[data-copy-status]');
+    let reset = 0;
+    button.addEventListener('click', async () => {
+      const address = button.dataset.copyEmail;
+      let ok = false;
+      try { await navigator.clipboard.writeText(address); ok = true; }
+      catch {
+        const field = Object.assign(document.createElement('textarea'), { value: address });
+        field.setAttribute('readonly', ''); field.style.cssText = 'position:fixed;opacity:0';
+        document.body.append(field); field.select();
+        try { ok = document.execCommand('copy'); } catch { ok = false; }
+        field.remove();
+      }
+      if (!ok) { if (status) status.textContent = `Copy failed. The address is ${address}.`; return; }
+      button.classList.remove('is-copied'); void button.offsetWidth;   // restart the stamp
+      button.classList.add('is-copied');
+      if (status) status.textContent = 'Email address copied.';
+      clearTimeout(reset);
+      reset = setTimeout(() => { button.classList.remove('is-copied'); if (status) status.textContent = ''; }, 2200);
+    });
+  });
+
+  /* Systems · Diagnosis: the steps are tabs; each one shows its own evidence.
+     The scope bar grows the first time it is shown. Arrow keys move between
+     steps (the deck ignores arrows on tabs), and nothing here changes the page. */
+  document.querySelectorAll('[data-diagnosis]').forEach(box => {
+    const tabs = [...box.querySelectorAll('[data-diag]')];
+    const panels = [...box.querySelectorAll('[data-panel]')];
+    const seen = new Set();
+    const select = (tab, focus) => {
+      tabs.forEach(t => { const on = t === tab; t.setAttribute('aria-selected', String(on)); t.tabIndex = on ? 0 : -1; });
+      panels.forEach(p => {
+        const on = p.dataset.panel === tab.dataset.diag;
+        p.hidden = !on;
+        if (on && !seen.has(p)) { seen.add(p); p.classList.add('is-first'); } else p.classList.remove('is-first');
+      });
+      if (focus) tab.focus();
+    };
+    tabs.forEach((tab, i) => {
+      tab.id = tab.id || `diag-${tab.dataset.diag}`;
+      box.querySelector(`[data-panel="${tab.dataset.diag}"]`)?.setAttribute('aria-labelledby', tab.id);
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', e => {
+        const k = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+        if (!k) return;
+        e.preventDefault();
+        select(tabs[(i + k + tabs.length) % tabs.length], true);
+      });
+    });
+    select(tabs.find(t => t.getAttribute('aria-selected') === 'true') || tabs[0]);
+  });
+
+  /* Systems · AI controls: when the page comes into view, a seal-red line traces
+     each step in turn, in both lanes at once, so the shared pattern shows. It runs
+     once; pointing, focus or a click picks a step and stops it; "Replay workflow"
+     runs it again. "How the checks work" swaps the lanes for the rules. */
+  document.querySelectorAll('[data-controls]').forEach(box => {
+    const lanes = [...box.querySelectorAll('.lane')].map(l => [...l.querySelectorAll('.flow li')]);
+    const buttons = [...box.querySelectorAll('[data-step]')];
+    const detailA = box.querySelector('[data-detail-a]'), detailB = box.querySelector('[data-detail-b]');
+    const replay = box.querySelector('[data-replay]'), toggle = box.querySelector('[data-view-toggle]');
+    const views = { workflow: box.querySelector('[data-view="workflow"]'), rules: box.querySelector('[data-view="rules"]') };
+    const page = box.closest('.page');
+    const STEP = 1400, REST = 3;   // the sequence settles on "Human review"
+    let timers = [], ran = false;
+    lanes.flat().forEach(li => li.insertAdjacentHTML('beforeend',
+      '<svg class="step-trace" aria-hidden="true" focusable="false"><rect x="0.75" y="0.75" width="0" height="0" rx="8" pathLength="1"/></svg>'));
+    // The outline is sized from the step box itself (and again on resize).
+    const sizeOutlines = () => lanes.flat().forEach(li => {
+      const r = li.querySelector('rect'), w = li.offsetWidth + 2, h = li.offsetHeight + 2;
+      if (w > 2) { r.setAttribute('width', w - 1.5); r.setAttribute('height', h - 1.5); }
+    });
+    const show = (k, how) => {
+      lanes.forEach(lane => lane.forEach((li, j) => {
+        li.classList.toggle('is-on', how === 'on' && j === k);
+        li.classList.toggle('is-tracing', how === 'trace' && j === k);
+      }));
+      const a = lanes[0][k]?.querySelector('button'), b = lanes[1][k]?.querySelector('button');
+      if (a) detailA.textContent = a.dataset.detail;
+      if (b) detailB.textContent = b.dataset.detail;
+    };
+    const stop = () => { timers.forEach(clearTimeout); timers = []; };
+    const run = () => {
+      stop(); sizeOutlines(); ran = true;
+      if (reduceMotion.matches) { show(REST, 'on'); return; }
+      lanes[0].forEach((_, k) => timers.push(setTimeout(() => show(k, 'trace'), k * STEP)));
+      timers.push(setTimeout(() => show(REST, 'on'), lanes[0].length * STEP));
+    };
+    buttons.forEach(btn => {
+      const pick = () => { stop(); sizeOutlines(); show(Number(btn.dataset.step), 'on'); };
+      btn.addEventListener('click', pick);
+      btn.addEventListener('focus', pick);
+      btn.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') pick(); });
+    });
+    replay.addEventListener('click', run);
+    toggle.addEventListener('click', () => {
+      const open = views.rules.hidden;
+      stop();
+      views.rules.hidden = !open; views.workflow.hidden = open;
+      replay.hidden = open;
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.innerHTML = open ? 'Back to the workflow <span aria-hidden="true">−</span>' : 'How the checks work <span aria-hidden="true">+</span>';
+    });
+    show(REST, 'on');
+    // Start once the page is really in view: the active page when the deck is
+    // pinned, otherwise when it scrolls into view in its track.
+    const ready = () => !ran && !views.workflow.hidden && (root.classList.contains('deck-pinned') ? page.classList.contains('is-active') : inView);
+    let inView = false;
+    const tryRun = () => { if (ready()) timers.push(setTimeout(() => { if (ready()) run(); }, 450)); };
+    if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { inView = e.isIntersecting; tryRun(); }, { threshold: .6 }).observe(box);
+    new MutationObserver(tryRun).observe(page, { attributes: true, attributeFilter: ['class'] });
+    addEventListener('resize', sizeOutlines);
+  });
 
   addEventListener('hashchange', () => { deckApi?.route(location.hash); });
   if (location.hash) addEventListener('load', () => { deckApi?.route(location.hash); }, { once: true });
@@ -536,7 +762,7 @@
     const prevButton = pageNav.querySelector('[data-page-prev]');
     const prevName = pageNav.querySelector('[data-page-prev-name]');
     const topButton = pageNav.querySelector('[data-page-top]');
-    const sections = [['top', 'Intro'], ['work', 'Selected work'], ['digital-projects', 'Digital projects'], ['thread', 'The thread'], ['contact', 'Contact']]
+    const sections = [['top', 'Intro'], ['work', 'Selected work'], ['thread', 'The thread'], ['digital-projects', 'Digital projects'], ['contact', 'Contact']]
       .map(([id, name]) => ({ el: document.getElementById(id), name })).filter(x => x.el);
     const narrow = matchMedia('(max-width: 699px)');
     let lastY = scrollY, upward = false, queued = false, previous = null;
@@ -814,13 +1040,13 @@
         notes: [
           { at: [50 + RING * Math.cos(245 * deg), 50 + RING * Math.sin(245 * deg)], side: 'left', y: 34, title: 'Where systems disagree', text: 'Traced back to the source.' },
           { at: [86, 15], fs: 20, side: 'right', y: 20, mine: true, title: 'AI, with sign-off', text: 'Copilot to cut manual work.' },
-          { at: mid(hair(SYS.sap)), side: 'right', y: 35, mine: true, title: 'Order accuracy', text: '1 in 10 corrected before processing.' }
+          { at: mid(hair(SYS.sap)), side: 'right', y: 35, mine: true, title: 'Order accuracy', text: '1 in 10 need a product fix before processing.' }
         ],
         // Pointing at a system brings forward what it is linked to (stroke indices
         // as above: discs 0–4, hairlines 5–8, ring arcs 9–11) and its note, if any.
         nodes: [
           { at: [50, 50], r: HUB_R, keep: [0, 1, 2, 3, 4, 5, 6, 7, 8], note: -1, label: 'Adobe Commerce · B2B storefront' },
-          { at: SYS.cop, r: SYS.cop[2], keep: [0, 1, 5], note: 1, label: 'Copilot agents · Data validation and updates' },
+          { at: SYS.cop, r: SYS.cop[2], keep: [0, 1, 5], note: 1, label: 'Copilot agents · Checks for human review' },
           { at: SYS.dyn, r: SYS.dyn[2], keep: [0, 2, 3, 4, 6, 9, 11], note: 0, label: 'Dynamics 365 · Customer records' },
           { at: SYS.sap, r: SYS.sap[2], self: 3, below: true, keep: [0, 2, 3, 4, 7, 9, 10], note: 2, label: 'SAP ERP · Orders and invoicing' },
           { at: SYS.sn, r: SYS.sn[2], self: 4, below: true, keep: [0, 2, 3, 4, 8, 10, 11], note: 0, label: 'ServiceNow · Incidents and requests' }
