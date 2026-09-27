@@ -749,6 +749,102 @@
     addEventListener('resize', sizeOutlines);
   });
 
+  /* Brief & budget reel: the frames drift left without end (the set is repeated
+     once so the loop is seamless), about 40px a second, only while in view.
+     Pointing or focus holds it; Pause stops it; reduced motion leaves a plain
+     scrollable row. */
+  document.querySelectorAll('[data-reel]').forEach(box => {
+    const track = box.querySelector('[data-reel-track]'), toggle = box.querySelector('[data-reel-toggle]');
+    const win = box.querySelector('.reel-window'), steps = [...box.querySelectorAll('[data-reel-step]')];
+    // Arrows move one frame at a time: the next frame's left edge comes to the window's left edge.
+    const frameStarts = () => { const k = [...track.children], o = k[0].offsetLeft; return k.map(el => el.offsetLeft - o); };
+    if (reduceMotion.matches) {
+      toggle.hidden = true;
+      steps.forEach(b => b.addEventListener('click', () => {
+        const d = Number(b.dataset.reelStep), xs = frameStarts(), cur = win.scrollLeft;
+        const to = d > 0 ? xs.find(v => v > cur + 2) : [...xs].reverse().find(v => v < cur - 2);
+        win.scrollLeft = to ?? (d > 0 ? 0 : xs[xs.length - 1]);
+      }));
+      return;
+    }
+    [...track.children].forEach(el => { const c = el.cloneNode(true); c.setAttribute('aria-hidden', 'true'); c.querySelectorAll('img').forEach(i => { i.alt = ''; i.removeAttribute('data-zoom'); }); track.append(c); });
+    let x = 0, last = 0, raf = 0, paused = false, held = false, inView = false;
+    const SPEED = 0.04;
+    let jump = null;   // { from, to, t0 } while an arrow move is running
+    const step = now => {
+      const dt = last ? Math.min(64, now - last) : 0; last = now;
+      const half = track.scrollWidth / 2;
+      if (jump) {
+        const k = Math.min(1, (now - jump.t0) / 450), e = 1 - Math.pow(1 - k, 3);
+        x = jump.from + (jump.to - jump.from) * e;
+        if (k === 1) jump = null;
+      } else if (running()) x += dt * SPEED;
+      x = ((x % half) + half) % (half || 1);
+      track.style.transform = `translateX(${-x}px)`;
+      raf = (running() || jump) ? requestAnimationFrame(step) : 0;
+    };
+    const running = () => inView && !paused && !held && !document.hidden;
+    const update = () => {
+      const run = running() || jump;
+      if (run && !raf) { last = 0; raf = requestAnimationFrame(step); }
+      if (!run && raf) { cancelAnimationFrame(raf); raf = 0; }
+    };
+    steps.forEach(b => b.addEventListener('click', () => {
+      const d = Number(b.dataset.reelStep), xs = frameStarts();
+      const to = d > 0 ? xs.find(v => v > x + 2) : [...xs].reverse().find(v => v < x - 2);
+      const half = track.scrollWidth / 2;
+      jump = { from: x, to: to ?? (d > 0 ? x + half / 6 : x - half / 6), t0: performance.now() };
+      if (jump.to < 0) { x += half; jump.from += half; jump.to += half; }
+      update();
+    }));
+    toggle.addEventListener('click', () => { paused = !paused; toggle.textContent = paused ? 'Play' : 'Pause'; toggle.setAttribute('aria-label', paused ? 'Play reel' : 'Pause reel'); update(); });
+    box.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { held = true; update(); } });
+    box.addEventListener('pointerleave', () => { held = false; update(); });
+    box.addEventListener('focusin', () => { held = true; update(); });
+    box.addEventListener('focusout', e => { if (!box.contains(e.relatedTarget)) { held = false; update(); } });
+    document.addEventListener('visibilitychange', update);
+    if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { inView = e.isIntersecting; update(); }, { threshold: .3 }).observe(box);
+    else { inView = true; update(); }
+  });
+
+  /* Founder slideshow: a cross-fade every few seconds while its page is the one in
+     view, paused while pointed at or focused, with Pause and arrows always there
+     (WCAG 2.2.2). Reduced motion: no automatic change, arrows still work. */
+  document.querySelectorAll('[data-slides]').forEach(box => {
+    const imgs = [...box.querySelectorAll('.slides-frame img')];
+    const caption = box.querySelector('[data-slides-caption]'), count = box.querySelector('[data-slides-count]');
+    const toggle = box.querySelector('[data-slides-toggle]'), page = box.closest('.page');   // null inside a detail sheet
+    const DWELL = 4500;
+    let at = 0, timer = 0, paused = reduceMotion.matches, held = false, inView = false;
+    const show = i => {
+      at = (i + imgs.length) % imgs.length;
+      imgs.forEach((img, k) => { img.classList.toggle('is-on', k === at); img.setAttribute('aria-hidden', String(k !== at)); });
+      caption.textContent = imgs[at].dataset.caption || '';
+      count.textContent = `${at + 1} / ${imgs.length}`;
+      imgs[(at + 1) % imgs.length].loading = 'eager';   // fetch the next one ahead of time
+    };
+    const live = () => !paused && !held && !document.hidden &&
+      (page && root.classList.contains('deck-pinned') ? page.classList.contains('is-active') : inView);
+    const schedule = () => { clearTimeout(timer); if (live()) timer = setTimeout(() => { show(at + 1); schedule(); }, DWELL); };
+    const setPaused = v => {
+      paused = v;
+      toggle.textContent = v ? 'Play' : 'Pause';
+      toggle.setAttribute('aria-label', v ? 'Play slideshow' : 'Pause slideshow');
+      schedule();
+    };
+    box.querySelectorAll('[data-slides-step]').forEach(b => b.addEventListener('click', () => { show(at + Number(b.dataset.slidesStep)); schedule(); }));
+    toggle.addEventListener('click', () => setPaused(!paused));
+    box.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { held = true; schedule(); } });
+    box.addEventListener('pointerleave', () => { held = false; schedule(); });
+    box.addEventListener('focusin', () => { held = true; schedule(); });
+    box.addEventListener('focusout', e => { if (!box.contains(e.relatedTarget)) { held = false; schedule(); } });
+    document.addEventListener('visibilitychange', schedule);
+    if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { inView = e.isIntersecting; schedule(); }, { threshold: .6 }).observe(box);
+    if (page) new MutationObserver(schedule).observe(page, { attributes: true, attributeFilter: ['class'] });
+    setPaused(paused);
+    show(0);
+  });
+
   addEventListener('hashchange', () => { deckApi?.route(location.hash); });
   if (location.hash) addEventListener('load', () => { deckApi?.route(location.hash); }, { once: true });
 
@@ -949,7 +1045,7 @@
         [410, 160], [380, 66], [200, 62], [152, 110], [158, 165], [240, 162], [340, 165], [420, 192], [470, 205], [492, 238],
         [492, 262], [472, 278], [472, 289], [519, 289], [519, 397]].map(gf),
       notes: [
-        { at: gf([4, 200]), side: 'left', y: 34, mine: true, title: 'Lease to launch', text: '3.5 months, within the agreed budget.' },
+        { at: gf([4, 200]), side: 'left', y: 34, mine: true, title: 'Lease to launch', text: 'About 3.5 months, within the agreed budget.' },
         { at: gf([555, 60]), side: 'right', y: 30, title: 'Ensō House', text: 'A 3,000 sq ft creative space next to Tate Modern.' }
       ]
     };
