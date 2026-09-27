@@ -90,6 +90,33 @@ part[(tt >= 160) & (tt < 192) & (xx >= .472)] = 4               # …and the ros
 part[(tt > 0) & (tt < 192) & (yy >= .745) & np.isin(part, (0, 1))] = 2   # anything below the rim is stand
 part[(tt >= 192)] = 5                                           # hatching
 part[(tt >= 205) & (yy >= .77)] = 6                             # the mat
+part[(tt > 0) & (tt < 192) & (yy >= .745) & (part == 4)] = 2    # the stand's late lines are stand, not stem
+part[(tt > 0) & (yy >= .68) & (part == 0)] = 5                  # marks under the front lip are its hatching, not trunk
+# Depth: the trunk and the rose stem stand in front of the vessel's back rim. The rim
+# was drawn first, so where the branch crosses it the pixels were labelled vessel and
+# showed as a grey line cutting through the black trunk. In one-colour ink that was
+# invisible. Rim pixels sitting in a short vertical run between the same front part
+# above and below take that part and its time: the rim now passes behind the branch.
+def in_front(part, tt, front, reach=16):
+    fixed = 0
+    for x in range(OUT_W):
+        col, times = part[:, x], tt[:, x]
+        y = 0
+        while y < OUT_H:
+            if col[y] != 1 or times[y] == 0:
+                y += 1; continue
+            y1 = y
+            while y1 < OUT_H and col[y1] == 1 and times[y1] > 0: y1 += 1
+            above = [v for v in range(max(0, y - 3), y) if times[v] > 0 and col[v] == front]
+            below = [v for v in range(y1, min(OUT_H, y1 + 3)) if times[v] > 0 and col[v] == front]
+            if y1 - y <= reach and above and below:
+                col[y:y1] = front
+                times[y:y1] = max(times[above[-1]], times[below[0]])
+                fixed += y1 - y
+            y = y1
+    return fixed
+print('rim pixels moved behind trunk', in_front(part, tt, 0), 'and stem', in_front(part, tt, 4))
+tm = tt.astype(np.uint8); t_img = Image.fromarray(tm)
 # The hatched back panel: the one closed shape in the vessel outline.
 struct = (am > 60) & (tt > 0) & (tt < 64)
 closed = ndi.binary_closing(ndi.binary_dilation(struct, iterations=2), iterations=4)

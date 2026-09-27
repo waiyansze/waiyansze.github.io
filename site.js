@@ -678,7 +678,7 @@
         Object.assign(REVEAL, { canvas: c, ctx: cx, out, time, ink, tone, inPanel, fill, h: REVEAL.w * h / w, drawnAt: -1, ready: true });
         render(performance.now());
       };
-      img.src = './assets/hero-flowers-reveal.webp?v=3';
+      img.src = './assets/hero-flowers-reveal.webp?v=4';
     })();
     // Space: Ensō House, both floors, from Wai's own plans. Coordinates are in the
     // plan's pixels (her floor-plan deck, 80 dpi) and mapped into the hero's space;
