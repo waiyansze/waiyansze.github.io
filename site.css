@@ -1171,3 +1171,14 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 @media (max-width: 699px) {
   .contact-links span:first-child, .contact-links .copy-email, .contact-links .copy-label { font-size: .75rem; }
 }
+
+/* Full-screen moments only where the page glides section to section (desktop).
+   On phones and tablets they keep a generous but not screen-high space. */
+@media (max-width: 959px), (max-height: 639px) {
+  .work-intro { min-height: 0; padding-block: clamp(72px, 14vh, 120px) clamp(40px, 8vh, 72px); }
+  .thread { min-height: 0; }
+}
+
+/* Operating model: the two landscape photos stack, so each is large enough to read. */
+.deck-pinned #space-operation .pair { flex-direction: column; max-width: calc((var(--media-h) - 60px) / 2 * 1.5); }
+.deck-pinned #space-operation .pair figure { flex: none; width: 100%; }

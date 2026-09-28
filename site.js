@@ -422,6 +422,8 @@
   function openMore(id, opener, target) {
     const sheet = document.getElementById(id);
     if (!sheet || typeof sheet.showModal !== 'function') return false;
+    // Only one detail sheet at a time (a deep link can ask for another while one is open).
+    document.querySelectorAll('dialog.more[open]').forEach(d => { if (d !== sheet) d.close(); });
     moreOpener = opener || document.activeElement;
     root.style.overflow = 'hidden';
     if (!sheet.open) sheet.showModal();
@@ -446,6 +448,7 @@
     sheet.addEventListener('click', event => { if (event.target === sheet) sheet.close(); });
     sheet.addEventListener('close', () => {
       sheet.querySelectorAll('video').forEach(v => v.pause());
+      if (document.querySelector('dialog.more[open]')) return;   // another sheet took over
       root.style.removeProperty('overflow');
       if (moreOpener && document.contains(moreOpener)) moreOpener.focus({ preventScroll: true });
       moreOpener = null;
