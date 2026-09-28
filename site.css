@@ -163,6 +163,7 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 380; font-optica
 .threads-title { font: 500 .8125rem var(--sans); letter-spacing: .02em; }
 .threads { position: relative; display: grid; margin-top: 10px; border-top: 1px solid var(--ink); max-width: 26rem; }
 .threads button {
+  position: relative;
   display: grid; grid-template-columns: 2.2rem minmax(0, 1fr); gap: 0 8px; align-items: baseline;
   padding: 10px 0; border: 0; border-bottom: 1px solid var(--rule-2); background: none; text-align: left; cursor: pointer; color: var(--ink-3);
   transition: color .2s;
@@ -1182,3 +1183,12 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 /* Operating model: the two landscape photos stack, so each is large enough to read. */
 .deck-pinned #space-operation .pair { flex-direction: column; max-width: calc((var(--media-h) - 60px) / 2 * 1.5); }
 .deck-pinned #space-operation .pair figure { flex: none; width: 100%; }
+
+/* Hero threads: while the drawing moves on by itself, a line fills under the thread
+   in view (like the Selected work tabs). Gone once a thread is chosen. */
+.threads button::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--ink);
+  transform: scaleX(var(--p, 0)); transform-origin: left; opacity: 0; transition: opacity .3s;
+}
+.threads-auto .threads button[aria-pressed="true"]::after { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .threads button::after { display: none; } }

@@ -1698,7 +1698,10 @@
       raf = 0;
       const dt = lastFrame ? now - lastFrame : 0; lastFrame = now;
       if (hoverMix !== hoverTarget) hoverMix = hoverTarget > hoverMix ? Math.min(1, hoverMix + dt / 260) : Math.max(0, hoverMix - dt / 380);
+      // Pointing at the drawing holds the sequence: keep the clock (and the progress line) still.
+      if (phase === 'hold' && inside && auto && !paused) phaseStart += dt;
       const elapsed = now - phaseStart;
+      showProgress(elapsed);
       if (phase === 'draw' && elapsed >= states[to].buildTime) { phase = 'hold'; phaseStart = now; flowStart = now; }
       else if (phase === 'morph' && elapsed >= enterTime(states[to])) { from = to; phase = 'hold'; phaseStart = now; }
       else if (phase === 'hold' && elapsed >= states[to].hold && auto && !paused && !inside) { show((to + 1) % states.length); return; }
@@ -1706,11 +1709,37 @@
       if (visible && !paused && (phase !== 'hold' || auto || states[to].flow || states[to].space || hoverMix !== hoverTarget)) raf = requestAnimationFrame(tick);
     }
     function loop() { if (!raf && visible) { lastFrame = 0; raf = requestAnimationFrame(tick); } }
+    // A thin line under the thread in view fills over its time on screen, so it is
+    // clear the drawing moves on by itself, and which thread comes next.
+    function showProgress(elapsed) {
+      const st = states[to], hold = st.hold || 0;
+      const enter = phase === 'draw' ? st.buildTime : phase === 'morph' ? enterTime(st) : lastEnter;
+      if (phase !== 'hold') lastEnter = enter;
+      const done = phase === 'hold' ? enter + elapsed : elapsed;
+      const pct = auto && !reduceMotion.matches ? Math.max(0, Math.min(1, done / (enter + hold))) : 0;
+      stepButtons.forEach((b, i) => b.style.setProperty('--p', i === to ? pct.toFixed(4) : '0'));
+      hero.classList?.toggle('threads-auto', auto && !reduceMotion.matches);
+    }
+    let lastEnter = 0;
 
     // Choosing a medium stops the automatic sequence. Choosing Flowers again
     // replays its ink reveal instead of leaving the completed sketch unchanged.
+    // Choosing a thread holds it; after 15 s without another choice, the sequence
+    // carries on from there (unless it was paused or the pointer is on the drawing).
+    let resumeTimer = 0;
+    const resumeLater = () => {
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(() => {
+        if (paused || reduceMotion.matches) return;
+        if (inside) { resumeLater(); return; }
+        auto = true;
+        if (phase === 'hold') { phaseStart = performance.now(); lastEnter = 0; }   // the line starts again from empty
+        loop();
+      }, 15000);
+    };
     stepButtons.forEach((b, i) => b.addEventListener('click', () => {
       auto = false;
+      resumeLater();
       pauseButton.textContent = paused ? 'Play' : 'Resume';
       if (i !== to || phase === 'draw' || (i === 2 && phase === 'hold')) show(i, false);
     }));
