@@ -759,6 +759,8 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
   .diag-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .diag-steps button { padding: 6px 8px 6px 22px; font-size: .75rem; }
   .diag-steps button::before, .diag-other::before { left: 8px; }
+}
+@container (max-width: 420px) {
   .docs, .split { grid-template-columns: minmax(0, 1fr); }
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -867,7 +869,7 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
   .sysnode { min-height: 46px; justify-items: start; padding: 8px 12px; }
   .flow { grid-template-columns: 1fr 1fr; gap: 12px 18px; }
   .flow li:nth-child(2)::after { display: none; }
-  .flow--5 { grid-template-columns: 1fr 1fr; }
+  .flow--5:not(.controls .flow--5) { grid-template-columns: 1fr 1fr; }
   .flow--5 li:nth-child(2n)::after { display: none; }
   .trace li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
   .rule-list li { grid-template-columns: minmax(0, 1fr); gap: 2px; }
@@ -1104,3 +1106,68 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
   }
 }
 @keyframes flow-in { from { opacity: .08; transform: translateY(36px); } to { opacity: 1; transform: none; } }
+
+/* 16 · Audit fixes (Sep 2026) -------------------------------------------------- */
+
+/* Diagnosis in a narrow graphic (phones, iPad landscape, small laptops): the steps
+   become one row of short pills; each step's words move into the panel below. */
+@container (max-width: 560px) {
+  .diag-steps { display: flex; flex-wrap: wrap; gap: 6px; }
+  .diag-steps button, .diag-steps button.is-other {
+    display: inline-flex; align-items: center; gap: 6px; min-height: 32px; margin: 0; padding: 4px 11px 4px 22px;
+    border: 1px solid var(--rule-2); border-radius: 999px; font-size: 0; color: transparent;
+  }
+  .diag-steps button span { font-size: .6875rem; }
+  .diag-steps button::before, .diag-steps button.is-other::before { left: 9px; top: calc(50% - 4px); }
+  .diag-steps button[aria-selected="true"] { box-shadow: none; border-color: var(--seal); }
+  .diag-steps button.is-other { border-style: dashed; border-top-style: dashed; }
+  .diag-steps button.is-other[aria-selected="true"] { box-shadow: none; border-color: var(--ink-3); }
+  .diag-stage { min-height: 0; padding: 12px; }
+}
+
+/* AI controls on a phone (swipe mode only): the two lanes sit side by side as two
+   short lists, so step 3 of one agent lines up with step 3 of the other. */
+@container (max-width: 460px) {
+  html:not(.deck-pinned) .controls-view[data-view="workflow"] { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 10px; align-items: start; }
+  html:not(.deck-pinned) .controls-view[data-view="workflow"] > :not(.lane) { grid-column: 1 / -1; }
+  html:not(.deck-pinned) .controls .flow--5 { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  html:not(.deck-pinned) .controls .flow--5 li:not(:last-child)::after { display: none; }
+  html:not(.deck-pinned) .controls .flow li > button { gap: 1px; padding: 7px 9px; min-height: 52px; font-size: .8125rem; }
+  html:not(.deck-pinned) .controls .lane-name { min-height: 2.6em; }
+}
+
+/* Phones and small tablets in swipe mode: on Systems the words come first, so the
+   reader knows what a diagram is about before scrolling through it. */
+@media (max-width: 899px) {
+  #systems-case .page-copy { order: -1; }
+}
+
+/* Touch targets: at least 24px tall (WCAG 2.5.8). */
+.text-button { display: inline-flex; align-items: center; min-height: 32px; }
+.wordmark { display: inline-flex; align-items: center; min-height: 32px; }
+.hero-actions .text-link { display: inline-flex; align-items: center; min-height: 32px; padding-bottom: 0; }
+
+/* Phones: no text smaller than 12px. */
+@media (max-width: 699px) {
+  .facts dt, .doc-name, .doc-row--extra em, .doc-row--echo em, .lane-name, .rule-list span,
+  .controls .flow li > button span, .diag-steps button span, .diag-outcome span, .split-name,
+  .step-detail span, .graphic-kicker, .seal-key, .units-note, .lane-out { font-size: .75rem; }
+  .reel-item figcaption { white-space: normal; overflow: visible; line-height: 1.35; }
+}
+
+/* Pinned deck with a narrow graphic (iPad landscape, small laptops): AI controls
+   tighten so the whole page fits the stage. */
+@container (max-width: 560px) {
+  .deck-pinned .controls-view { gap: 8px; }
+  .deck-pinned .controls .step-detail { min-height: 0; padding: 7px 10px; }
+  .deck-pinned .controls .run { padding-top: 8px; }
+  .deck-pinned .controls .run-note { display: none; }
+  .deck-pinned .controls-foot .text-button { min-height: 26px; }
+}
+@media (max-width: 699px) {
+  .diag .diag-steps button span, .copy-email, .copy-seal, .downstream-title, .tag,
+  .trace li > span, .share-key, .share-scale, .units-legend, .sysmap-detail dt, .owners dt { font-size: .75rem; }
+}
+@media (max-width: 699px) {
+  .contact-links span:first-child, .contact-links .copy-email, .contact-links .copy-label { font-size: .75rem; }
+}

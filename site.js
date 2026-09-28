@@ -111,7 +111,7 @@
     button.addEventListener('click', () => {
       if (typeof dialog.showModal !== 'function') return;
       opener = button;
-      lightboxImage.src = img.currentSrc || img.src;
+      lightboxImage.src = img.src;   // always the full-size file, whatever the page showed
       lightboxImage.alt = img.alt;
       lightboxText.textContent = img.closest('figure')?.querySelector('figcaption')?.textContent || img.alt;
       root.style.overflow = 'hidden';
@@ -411,7 +411,8 @@
       go(index);
       return true;
     };
-    return { route, isPinned: () => pinned, stuck: isStuck, runway: () => [startY(), startY() + pages.length * step] };
+    return { route, isPinned: () => pinned, stuck: isStuck, runway: () => [startY(), startY() + pages.length * step],
+      page: () => current, count: () => pages.length, go };
   }
 
   /* 8b · Case detail -------------------------------------------------------
@@ -521,13 +522,42 @@
       ...['thread', 'digital-projects', 'contact'].map(id => document.getElementById(id)).filter(Boolean).map(topOf)];
     const points = () => starts().slice(0, 3);
     let rest = scrollY, idle = 0;
+    // One gesture, one move. A trackpad flick keeps sending wheel events for a
+    // second or more (momentum) with shrinking deltas; a mouse wheel sends a burst
+    // of notches. A new gesture is a pause of 160ms or a delta that suddenly grows
+    // again. After a move, the rest of that gesture is absorbed; the next gesture
+    // is free straight away, even while the last momentum is still dying out.
+    let lastT = 0, lastAbs = 0, locked = false, lockedAt = 0;
+    const lock = now => { locked = true; lockedAt = now; };
     addEventListener('wheel', e => {
-      if (!snapOn() || e.ctrlKey || e.target.closest?.('dialog, .deck-track, [data-deck-index]')) return;
+      if (e.ctrlKey || e.target.closest?.('dialog, [data-deck-index]')) return;
       const now = performance.now();
-      if (gliding || now < quietUntil) { e.preventDefault(); quietUntil = Math.max(quietUntil, now + 150); return; }
-      const dy = e.deltaY;
-      if (Math.abs(dy) < 2) return;
-      const S = starts(), y = scrollY, maxY = document.documentElement.scrollHeight - innerHeight;
+      const horizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY) * 1.2;
+      if (horizontal && e.target.closest?.('.reel-window, .compare-tabs')) return;   // let those scroll sideways themselves
+      const d = horizontal ? e.deltaX : e.deltaY, abs = Math.abs(d);
+      const fresh = now - lastT > 160 || (abs > lastAbs * 1.5 && abs > 8 && now - lockedAt > 220);
+      lastT = now; lastAbs = abs;
+      if (fresh) locked = false;
+      if (gliding || locked) { e.preventDefault(); return; }
+      if (abs < 2) return;
+      const y = scrollY;
+      // Inside the pinned deck: each gesture turns one page (vertical or sideways).
+      if (deckApi && deckApi.isPinned()) {
+        const [a, b] = deckApi.runway();
+        if (y >= a - 3 && y <= b + 3) {
+          const i = deckApi.page(), n = deckApi.count(), dir = d > 0 ? 1 : -1;
+          if (i + dir >= 0 && i + dir < n) { e.preventDefault(); lock(now); deckApi.go(i + dir); return; }
+          // Past the first or last page: glide to the neighbouring section, or, where
+          // section glide is off, simply let the page scroll on.
+          if (horizontal || !snapOn()) return;
+          e.preventDefault(); lock(now);
+          const S = starts();
+          glideTo(dir > 0 ? S[3] : S[1]);
+          return;
+        }
+      }
+      if (horizontal || !snapOn()) return;
+      const S = starts(), maxY = document.documentElement.scrollHeight - innerHeight, dy = d;
       let cur = 0;
       S.forEach((t, i) => { if (t <= y + 2) cur = i; });
       let target;
@@ -546,7 +576,7 @@
       if (target === undefined) return;
       target = Math.max(0, Math.min(maxY, Math.round(target)));
       if (Math.abs(target - y) < 3) return;
-      e.preventDefault();
+      e.preventDefault(); lock(now);
       rest = target;
       glideTo(target);
     }, { passive: false });
@@ -821,11 +851,11 @@
       imgs.forEach((img, k) => { img.classList.toggle('is-on', k === at); img.setAttribute('aria-hidden', String(k !== at)); });
       caption.textContent = imgs[at].dataset.caption || '';
       count.textContent = `${at + 1} / ${imgs.length}`;
-      imgs[(at + 1) % imgs.length].loading = 'eager';   // fetch the next one ahead of time
     };
     const live = () => !paused && !held && !document.hidden &&
       (page && root.classList.contains('deck-pinned') ? page.classList.contains('is-active') : inView);
-    const schedule = () => { clearTimeout(timer); if (live()) timer = setTimeout(() => { show(at + 1); schedule(); }, DWELL); };
+    // Fetch the next frame only once this slideshow is actually playing.
+    const schedule = () => { clearTimeout(timer); if (live()) { imgs[(at + 1) % imgs.length].loading = 'eager'; timer = setTimeout(() => { show(at + 1); schedule(); }, DWELL); } };
     const setPaused = v => {
       paused = v;
       toggle.textContent = v ? 'Play' : 'Pause';
@@ -1207,7 +1237,7 @@
       if (alpha <= 0) return;
       const u = size / 100;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      const px = Math.max(9, size * .024), small = Math.max(8.5, size * .019);
+      const px = Math.max(10.5, size * .024), small = Math.max(9.5, size * .019);   // legible on phones
       if (state.dots) {
         ctx.globalAlpha = alpha * clamp01((p - (state.dotsAt || 0)) / .1);
         ctx.strokeStyle = INK; ctx.lineWidth = Math.max(1, size * .0026);
