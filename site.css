@@ -1192,3 +1192,19 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 }
 .threads-auto .threads button[aria-pressed="true"]::after { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .threads button::after { display: none; } }
+
+/* Plan & build: the designer's quote against what was delivered, as two bars on one scale. */
+.quote-compare { display: grid; gap: 6px; width: 100%; max-width: calc((var(--media-h) - 64px) * 1.04); padding-top: 10px; border-top: 1px solid var(--rule); }
+.qc-row { display: grid; grid-template-columns: 7.2rem minmax(0, 1fr) 8.6rem; gap: 10px; align-items: center; font-size: .8125rem; color: var(--ink-2); }
+.qc-name { font: 500 .6875rem var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); }
+.qc-bar { height: 10px; border-radius: 2px; background: var(--wash-3); overflow: hidden; }
+.qc-bar i { display: block; width: var(--w); height: 100%; background: var(--ink-3); }
+.qc-row.is-mine .qc-bar i { background: var(--seal); }
+.qc-row.is-mine .qc-name, .qc-row.is-mine .qc-val { color: var(--ink); }
+.qc-val { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.deck-pinned #space-plan .sequence { max-width: calc((var(--media-h) - 120px) * 1.04); }
+@media (max-width: 699px) {
+  .qc-row { grid-template-columns: minmax(0, 1fr) auto; row-gap: 3px; }
+  .qc-bar { grid-column: 1 / -1; grid-row: 2; }
+  .qc-name { font-size: .75rem; }
+}
