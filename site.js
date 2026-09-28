@@ -18,11 +18,14 @@
   document.querySelectorAll('[data-units]').forEach(el => {
     const total = Number(el.dataset.units);
     const mark = Number(el.dataset.mark || 0);
+    // Scattered marks (a fixed pattern, so it looks the same on every visit).
+    const spots = el.hasAttribute('data-scatter') ? new Set([7, 18, 26, 33, 49, 52, 64, 71, 85, 96].slice(0, mark)) : null;
     const fill = Number(el.dataset.fill || 0);
     const frag = document.createDocumentFragment();
     for (let i = 0; i < total; i++) {
       const unit = document.createElement('i');
-      if (i < mark) unit.className = 'is-mark';
+      if (spots ? spots.has(i) : i < mark) unit.className = 'is-mark';
+      if (spots) unit.style.setProperty('--i', i);
       else if (i < fill) unit.className = 'is-fill';
       frag.append(unit);
     }
@@ -693,6 +696,33 @@
   /* Systems · Diagnosis: the steps are tabs; each one shows its own evidence.
      The scope bar grows the first time it is shown. Arrow keys move between
      steps (the deck ignores arrows on tabs), and nothing here changes the page. */
+  // Trace: the three records come in one by one, a scan passes down them, the extra
+  // SAP line is marked and a line draws from it to the double charge on the invoice.
+  function playTrace(panel) {
+    const docs = panel.querySelector('.docs'); if (!docs) return;
+    docs.classList.remove('is-scanning'); void docs.offsetWidth;
+    if (!reduceMotion.matches) docs.classList.add('is-scanning');
+    requestAnimationFrame(() => {
+      const a = docs.querySelector('.doc-row--extra'), b = docs.querySelector('.doc-row--echo');
+      let svg = docs.querySelector('.trace-link');
+      if (!svg) { svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('class', 'trace-link'); svg.setAttribute('aria-hidden', 'true'); svg.innerHTML = '<path pathLength="1"/>'; docs.append(svg); }
+      if (!a || !b || !a.offsetWidth) return;
+      const o = docs.getBoundingClientRect(), r1 = a.getBoundingClientRect(), r2 = b.getBoundingClientRect();
+      svg.setAttribute('viewBox', `0 0 ${o.width} ${o.height}`);
+      let d;
+      if (r2.left > r1.right - 4) {         // side by side
+        // an arc under both rows, from the extra SAP line to the double charge
+        const x1 = r1.left + r1.width * .55 - o.left, y1 = r1.bottom - o.top + 2, x2 = r2.left + r2.width * .45 - o.left, y2 = r2.bottom - o.top + 2, dy = 22;
+        d = `M${x1} ${y1} C${x1} ${y1 + dy} ${x2} ${y2 + dy} ${x2} ${y2}`;
+      } else {                               // stacked (phones)
+        const x1 = r1.right - o.left + 4, y1 = r1.top + r1.height / 2 - o.top, x2 = r2.right - o.left + 4, y2 = r2.top + r2.height / 2 - o.top, bx = Math.min(o.width - 2, Math.max(x1, x2) + 14);
+        d = `M${x1} ${y1} C${bx} ${y1} ${bx} ${y2} ${x2} ${y2}`;
+      }
+      svg.querySelector('path').setAttribute('d', d);
+    });
+  }
+  addEventListener('resize', () => document.querySelectorAll('[data-panel="trace"]:not([hidden])').forEach(playTrace));
+
   document.querySelectorAll('[data-diagnosis]').forEach(box => {
     const tabs = [...box.querySelectorAll('[data-diag]')];
     const panels = [...box.querySelectorAll('[data-panel]')];
@@ -703,6 +733,7 @@
         const on = p.dataset.panel === tab.dataset.diag;
         p.hidden = !on;
         if (on && !seen.has(p)) { seen.add(p); p.classList.add('is-first'); } else p.classList.remove('is-first');
+        if (on && p.dataset.panel === 'trace') playTrace(p);
       });
       if (focus) tab.focus();
     };
@@ -725,13 +756,13 @@
     const replay = box.querySelector('[data-diag-replay]'), hint = box.querySelector('[data-diag-hint]');
     const page = box.closest('.page');
     const DWELL = 4200, REST = tabs.findIndex(t => t.dataset.diag === 'trace');
-    let at = -1, t0 = 0, spent = 0, raf = 0, running = false, held = false, done = false, inView = false;
+    let at = -1, t0 = 0, spent = 0, raf = 0, running = false, held = false, done = false, inView = false, idle = 0;
     const setP = (i, v) => tabs.forEach((t, k) => t.style.setProperty('--p', k === i ? v.toFixed(3) : '0'));
     const finish = settle => {
       running = false; cancelAnimationFrame(raf); raf = 0; setP(-1, 0);
       box.classList.remove('is-playing'); done = true;
       if (settle) select(tabs[REST]);
-      replay.hidden = false; hint.hidden = true;
+      replay.hidden = false; hint.hidden = true; replay.textContent = 'Play';
     };
     const frame = now => {
       raf = 0;
@@ -740,26 +771,33 @@
       spent = now - t0;
       setP(at, Math.min(1, spent / DWELL));
       if (spent >= DWELL) {
-        if (at + 1 >= tabs.length) { finish(true); return; }
-        at += 1; select(tabs[at]); t0 = now; spent = 0;
+        at = (at + 1) % tabs.length; select(tabs[at]); t0 = now; spent = 0;   // loops
       }
       raf = requestAnimationFrame(frame);
     };
-    const start = () => {
+    const start = (from = 0) => {
       if (reduceMotion.matches) return;
-      at = 0; select(tabs[0]); t0 = performance.now(); spent = 0; running = true; done = false;
-      box.classList.add('is-playing'); replay.hidden = true; hint.hidden = false;
+      clearTimeout(idle);
+      at = from; select(tabs[at]); t0 = performance.now(); spent = 0; running = true; done = false;
+      box.classList.add('is-playing'); replay.hidden = true; hint.hidden = false; done = false;
       raf = requestAnimationFrame(frame);
     };
     const visibleNow = () => (page && root.classList.contains('deck-pinned')) ? page.classList.contains('is-active') : inView;
-    const maybeStart = () => { if (!running && !done && visibleNow()) start(); };
-    tabs.forEach(tab => tab.addEventListener('click', e => { if (running && e.isTrusted) finish(false); }));
-    tabs.forEach(tab => tab.addEventListener('keydown', () => { if (running) finish(false); }));
+    const maybeStart = () => { if (!running && !done && visibleNow()) start(0); };
+    // Choosing a step stops the loop there; after 15 s without another choice it
+    // carries on from that step.
+    const resumeLater = () => { clearTimeout(idle); idle = setTimeout(() => {
+      if (running || !visibleNow()) return;
+      if (held) { resumeLater(); return; }
+      start(Math.max(0, tabs.findIndex(t => t.getAttribute('aria-selected') === 'true')));
+    }, 15000); };
+    tabs.forEach(tab => tab.addEventListener('click', e => { if (!e.isTrusted) return; if (running) finish(false); done = true; resumeLater(); }));
+    tabs.forEach(tab => tab.addEventListener('keydown', () => { if (running) finish(false); done = true; resumeLater(); }));
     box.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') held = true; });
     box.addEventListener('pointerleave', () => { held = false; });
     box.addEventListener('focusin', () => { held = true; });
     box.addEventListener('focusout', e => { if (!box.contains(e.relatedTarget)) held = false; });
-    replay.addEventListener('click', start);
+    replay.addEventListener('click', () => start(0));
     if (reduceMotion.matches) hint.hidden = true;
     if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { inView = e.isIntersecting; maybeStart(); }, { threshold: .6 }).observe(box);
     if (page) new MutationObserver(maybeStart).observe(page, { attributes: true, attributeFilter: ['class'] });
@@ -921,6 +959,79 @@
     if (page) new MutationObserver(schedule).observe(page, { attributes: true, attributeFilter: ['class'] });
     setPaused(paused);
     show(0);
+  });
+
+  /* Order quality: orders fill the grid, then a checkpoint sweep marks the ones that
+     need a correction. Plays each time the page comes into view. Pointing at a check
+     shows what it covers. */
+  document.querySelectorAll('.checkpoint').forEach(box => {
+    const grid = box.querySelector('[data-scatter]'), note = box.querySelector('[data-check-note]');
+    const page = box.closest('.page');
+    const chips = [...box.querySelectorAll('.checks li')];
+    const base = note?.textContent || '';
+    chips.forEach(li => {
+      li.tabIndex = 0;
+      const show = () => { chips.forEach(c => c.classList.toggle('is-on', c === li)); if (note) note.textContent = li.title; };
+      const hide = () => { li.classList.remove('is-on'); if (note) note.textContent = base; };
+      li.addEventListener('pointerenter', show); li.addEventListener('focus', show); li.addEventListener('click', show);
+      li.addEventListener('pointerleave', hide); li.addEventListener('blur', hide);
+    });
+    if (!grid || reduceMotion.matches) return;
+    let inView = false, shownFor = null;
+    const play = () => { grid.classList.remove('is-playing'); void grid.offsetWidth; grid.classList.add('is-playing'); };
+    const check = () => {
+      const on = (page && root.classList.contains('deck-pinned')) ? page.classList.contains('is-active') : inView;
+      if (on && shownFor !== true) play();
+      shownFor = on;
+    };
+    if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { inView = e.isIntersecting; check(); }, { threshold: .5 }).observe(grid);
+    if (page) new MutationObserver(check).observe(page, { attributes: true, attributeFilter: ['class'] });
+  });
+
+  /* AI controls: records flow along the customer-data lane. About 1 in 25 turns red
+     at the rule check and stops at "Hold unclear cases" for review; the rest run on
+     to the reconciled list. Only while the page is in view; still under reduced motion. */
+  document.querySelectorAll('[data-rec-strip]').forEach(strip => {
+    const lane = strip.closest('.lane'), steps = [...lane.querySelectorAll('.flow li')];
+    const page = strip.closest('.page');
+    let xs = [], raf = 0, inView = false, n = 0, last = 0, t0 = 0;
+    const recs = [];
+    const measure = () => { const o = strip.getBoundingClientRect(); xs = steps.map(li => { const r = li.getBoundingClientRect(); return r.left + r.width / 2 - o.left; }); };
+    const SPEED = 0.07, EVERY = 420;                     // px per ms, ms between records
+    const spawn = () => {
+      const el = document.createElement('i'); const bad = n % 25 === 6; n++;
+      strip.append(el); recs.push({ el, x: xs[0] - 30, bad, wait: 0 });
+    };
+    const frame = now => {
+      raf = 0;
+      const dt = last ? Math.min(64, now - last) : 16; last = now;
+      if (!xs.length || !xs[0]) measure();
+      if (now - t0 > EVERY) { spawn(); t0 = now; }
+      for (let i = recs.length - 1; i >= 0; i--) {
+        const r = recs[i];
+        if (r.bad && r.x >= xs[3]) { r.x = xs[3]; r.wait += dt; r.el.classList.add('is-held'); }
+        else r.x += dt * SPEED;
+        if (r.bad && r.x >= xs[1]) r.el.classList.add('is-flag');
+        const end = xs[4] + 30;
+        r.el.style.transform = `translateX(${r.x}px)`;
+        r.el.style.opacity = r.x < xs[0] ? Math.max(0, 1 - (xs[0] - r.x) / 30) : r.x > xs[4] ? Math.max(0, 1 - (r.x - xs[4]) / 30) : (r.wait > 2600 ? Math.max(0, 1 - (r.wait - 2600) / 400) : 1);
+        if (r.x > end || r.wait > 3000) { r.el.remove(); recs.splice(i, 1); }
+      }
+      raf = requestAnimationFrame(frame);
+    };
+    const run = () => {
+      const on = !document.hidden && ((page && root.classList.contains('deck-pinned')) ? page.classList.contains('is-active') : inView) && strip.offsetParent;
+      if (on && !raf) { measure(); last = 0; raf = requestAnimationFrame(frame); }
+      if (!on && raf) { cancelAnimationFrame(raf); raf = 0; }
+    };
+    if (reduceMotion.matches) {                        // a still picture: a few records, one held
+      requestAnimationFrame(() => { measure(); [0.5, 1.3, 2.2, 4.2].forEach((p, k) => { const el = document.createElement('i'); const x = xs[0] + (xs[4] - xs[0]) * p / 4.4; el.style.transform = `translateX(${k === 2 ? xs[3] : x}px)`; if (k === 2) el.className = 'is-flag is-held'; strip.append(el); }); });
+      return;
+    }
+    if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { inView = e.isIntersecting; run(); }, { threshold: .4 }).observe(strip);
+    if (page) new MutationObserver(run).observe(page, { attributes: true, attributeFilter: ['class'] });
+    document.addEventListener('visibilitychange', run);
+    addEventListener('resize', measure);
   });
 
   addEventListener('hashchange', () => { deckApi?.route(location.hash); });

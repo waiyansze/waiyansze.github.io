@@ -1220,3 +1220,75 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 .diag-foot [hidden] { display: none; }
 .diag-foot .text-button { margin-left: auto; }
 @media (prefers-reduced-motion: reduce) { .diag-steps button::after { display: none; } }
+
+/* 17 · Systems visuals ---------------------------------------------------------- */
+.icon-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.ico { width: 1.15em; height: 1.15em; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; vertical-align: -.22em; }
+
+/* Diagnosis steps: the icon sits before the step name. */
+.diag-steps button span { display: inline-flex; align-items: center; gap: 6px; }
+.diag-steps button span .ico { width: 15px; height: 15px; }
+.diag-steps button[aria-selected="true"] .ico { color: var(--seal); }
+
+/* AI controls: number and icon on one line. */
+.controls .flow li > button span { display: inline-flex; align-items: center; gap: 6px; }
+.controls .flow li > button span .ico { width: 15px; height: 15px; color: var(--ink-2); }
+.controls .flow li.is-on > button span .ico { color: var(--seal); }
+
+/* Order quality chips: icon instead of a tick; pointing explains the check. */
+.checks li { display: inline-flex; align-items: center; gap: 7px; padding-left: 11px; cursor: default; transition: border-color .2s, background .2s; }
+.checks li::before { display: none; }
+.checks li .ico { width: 15px; height: 15px; color: var(--wash); }
+.checks li:hover, .checks li:focus-visible, .checks li.is-on { border-color: var(--ink); outline: none; }
+.checks li.is-on .ico { color: var(--seal); }
+.check-note { min-height: 2.8em; font-size: .8125rem; line-height: 1.4; color: var(--ink-2); }
+
+/* Order quality grid: orders drop in, then a sweep marks the ones caught. */
+@media (prefers-reduced-motion: no-preference) {
+  .units[data-scatter].is-playing i { animation: unit-in .35s var(--ease) both; animation-delay: calc(var(--i) * 9ms); }
+  .units[data-scatter].is-playing i.is-mark { animation: unit-in .35s var(--ease) both, unit-mark .4s ease-out both; animation-delay: calc(var(--i) * 9ms), calc(1.1s + var(--i) * 7ms); }
+  .units[data-scatter] { position: relative; }
+  .units[data-scatter].is-playing::after {
+    content: ""; position: absolute; top: -4px; bottom: -4px; width: 2px; left: 0; background: var(--seal);
+    animation: unit-sweep .9s 1.05s cubic-bezier(.45, 0, .55, 1) both;
+  }
+}
+@keyframes unit-in { from { opacity: 0; transform: translateY(-6px) scale(.6); } }
+@keyframes unit-mark { from { background: var(--sheet); border-color: var(--wash-line); } }
+@keyframes unit-sweep { 0% { left: 0; opacity: 1; } 90% { opacity: 1; } 100% { left: 100%; opacity: 0; } }
+
+/* Diagnosis · Trace: records arrive, a scan passes, the extra line is marked and linked. */
+.docs { position: relative; padding-bottom: 18px; }
+.trace-link { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.trace-link path { fill: none; stroke: var(--seal); stroke-width: 1.5; marker-end: none; stroke-dasharray: 1; stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .docs.is-scanning .doc { animation: doc-in .45s var(--ease) both; }
+  .docs.is-scanning .doc:nth-child(2) { animation-delay: .15s; }
+  .docs.is-scanning .doc:nth-child(3) { animation-delay: .3s; }
+  .docs.is-scanning .doc::after {
+    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: color-mix(in srgb, var(--seal) 55%, transparent);
+    animation: doc-scan 1s .6s ease-in-out both;
+  }
+  .docs.is-scanning .doc-row--extra, .docs.is-scanning .doc-row--echo { animation: row-mark .5s 1.55s ease-out both; }
+  .docs.is-scanning .trace-link path { stroke-dashoffset: 1; animation: link-draw .7s 1.9s var(--ease) forwards; }
+}
+.doc { position: relative; overflow: hidden; }
+@keyframes doc-in { from { opacity: 0; transform: translateY(8px); } }
+@keyframes doc-scan { 0% { top: 0; opacity: 0; } 10% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+@keyframes row-mark { 0% { background: color-mix(in srgb, var(--seal) 22%, transparent); } 100% { background: transparent; } }
+@keyframes link-draw { to { stroke-dashoffset: 0; } }
+
+/* AI controls: records flowing along the customer-data lane. */
+.rec-strip { position: relative; height: 8px; margin: -6px 0 -10px; pointer-events: none; }
+.rec-strip::before { content: ""; position: absolute; left: 0; right: 0; top: 4px; border-top: 1px dashed var(--rule-2); }
+.rec-strip i { position: absolute; left: -4px; top: 0; width: 8px; height: 8px; border-radius: 1px; background: var(--ink-3); will-change: transform; }
+.rec-strip i.is-flag { background: var(--seal); }
+.rec-strip i.is-held { box-shadow: 0 0 0 3px color-mix(in srgb, var(--seal) 22%, transparent); }
+html:not(.deck-pinned) .controls .rec-strip { display: none; }
+@container (min-width: 461px) { html:not(.deck-pinned) .controls .rec-strip { display: block; } }
+@media (max-height: 800px) {
+  .deck-pinned .check-note { min-height: 1.4em; margin-block: -4px; }
+  .deck-pinned .checks { gap: 6px; }
+  .deck-pinned .checks li { padding-block: 4px; }
+  .deck-pinned .controls-view { gap: 8px; }
+}
