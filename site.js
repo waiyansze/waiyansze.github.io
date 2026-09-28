@@ -718,6 +718,51 @@
       });
     });
     select(tabs.find(t => t.getAttribute('aria-selected') === 'true') || tabs[0]);
+
+    // Autoplay: when the page is in view, walk through the steps once (a line fills
+    // under the step in view), then settle on Trace, the evidence. Pointing at or
+    // focusing the graphic holds it; choosing a step stops it; Replay runs it again.
+    const replay = box.querySelector('[data-diag-replay]'), hint = box.querySelector('[data-diag-hint]');
+    const page = box.closest('.page');
+    const DWELL = 4200, REST = tabs.findIndex(t => t.dataset.diag === 'trace');
+    let at = -1, t0 = 0, spent = 0, raf = 0, running = false, held = false, done = false, inView = false;
+    const setP = (i, v) => tabs.forEach((t, k) => t.style.setProperty('--p', k === i ? v.toFixed(3) : '0'));
+    const finish = settle => {
+      running = false; cancelAnimationFrame(raf); raf = 0; setP(-1, 0);
+      box.classList.remove('is-playing'); done = true;
+      if (settle) select(tabs[REST]);
+      replay.hidden = false; hint.hidden = true;
+    };
+    const frame = now => {
+      raf = 0;
+      if (!running) return;
+      if (held || document.hidden) { t0 = now - spent; raf = requestAnimationFrame(frame); return; }
+      spent = now - t0;
+      setP(at, Math.min(1, spent / DWELL));
+      if (spent >= DWELL) {
+        if (at + 1 >= tabs.length) { finish(true); return; }
+        at += 1; select(tabs[at]); t0 = now; spent = 0;
+      }
+      raf = requestAnimationFrame(frame);
+    };
+    const start = () => {
+      if (reduceMotion.matches) return;
+      at = 0; select(tabs[0]); t0 = performance.now(); spent = 0; running = true; done = false;
+      box.classList.add('is-playing'); replay.hidden = true; hint.hidden = false;
+      raf = requestAnimationFrame(frame);
+    };
+    const visibleNow = () => (page && root.classList.contains('deck-pinned')) ? page.classList.contains('is-active') : inView;
+    const maybeStart = () => { if (!running && !done && visibleNow()) start(); };
+    tabs.forEach(tab => tab.addEventListener('click', e => { if (running && e.isTrusted) finish(false); }));
+    tabs.forEach(tab => tab.addEventListener('keydown', () => { if (running) finish(false); }));
+    box.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') held = true; });
+    box.addEventListener('pointerleave', () => { held = false; });
+    box.addEventListener('focusin', () => { held = true; });
+    box.addEventListener('focusout', e => { if (!box.contains(e.relatedTarget)) held = false; });
+    replay.addEventListener('click', start);
+    if (reduceMotion.matches) hint.hidden = true;
+    if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { inView = e.isIntersecting; maybeStart(); }, { threshold: .6 }).observe(box);
+    if (page) new MutationObserver(maybeStart).observe(page, { attributes: true, attributeFilter: ['class'] });
   });
 
   /* Systems · AI controls: when the page comes into view, a seal-red line traces

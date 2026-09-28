@@ -1208,3 +1208,15 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
   .qc-bar { grid-column: 1 / -1; grid-row: 2; }
   .qc-name { font-size: .75rem; }
 }
+
+/* Diagnosis autoplay: a line fills under the step in view; a note says it plays. */
+.diag-steps button { position: relative; }
+.diag-steps button::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: 2px; height: 2px; border-radius: 1px;
+  background: var(--seal); transform: scaleX(var(--p, 0)); transform-origin: left; opacity: 0;
+}
+.diagnosis.is-playing .diag-steps button[aria-selected="true"]::after { opacity: 1; }
+.diag-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 32px; font-size: .75rem; color: var(--ink-3); }
+.diag-foot [hidden] { display: none; }
+.diag-foot .text-button { margin-left: auto; }
+@media (prefers-reduced-motion: reduce) { .diag-steps button::after { display: none; } }
