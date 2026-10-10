@@ -728,6 +728,26 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 .downstream li { display: grid; grid-template-columns: 5.4rem minmax(0, 1fr); gap: 10px; align-items: baseline; font-size: .8125rem; line-height: 1.4; color: var(--ink-2); }
 .downstream li span { font-weight: 500; color: var(--ink); }
 
+/* Space · Plan & build: the built room is the picture; my plan is pinned on it like a
+   drawing laid on site, so "drawn → built" reads at a glance. */
+.drawn-built { position: relative; width: 100%; }
+.deck-pinned .drawn-built { width: min(100%, calc((var(--media-h) - 92px) * 1.5)); }
+.db-built { margin: 0; display: grid; gap: 7px; }
+.db-built img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 3px; }
+.db-plan { position: absolute; left: 14px; bottom: 42px; width: 38%; margin: 0; display: grid; gap: 4px; padding: 6px 6px 5px; background: var(--sheet); border-radius: 4px; box-shadow: 0 10px 30px rgba(28, 31, 28, .22); }
+.db-plan img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 2px; }
+.db-built figcaption b, .db-plan figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
+.db-plan figcaption { font-size: .6875rem; color: var(--ink-3); }
+.deck-pinned #space-plan .quote-compare { max-width: none; width: min(100%, calc((var(--media-h) - 92px) * 1.5)); }
+@media (max-width: 639px) { .drawn-built { display: grid; grid-template-columns: 1fr; gap: 10px; } .db-plan { position: static; width: 58%; padding: 0; box-shadow: none; background: none; } }  /* too small to pin one picture on another */
+/* Space · Operating model: two tall frames side by side fill the column. */
+.pair--tall { max-width: none; align-items: stretch; }
+.pair--tall figure { flex: 1 1 0; }
+.pair--tall img { height: clamp(260px, 60vw, 420px); object-fit: cover; border-radius: 3px; }
+.deck-pinned .pair--tall img { height: calc(var(--media-h) - 40px); }
+.pair--tall figure:first-child img { object-position: 40% 50%; }
+.pair--tall figure:last-child img { object-position: 22% 50%; }
+
 /* Customer enablement: onboarding path, then the self-service hub it hands over to.
    The hub is drawn as a quiet browser frame: illustrative, unbranded, no screenshots. */
 .enable { container-type: inline-size; }
@@ -1234,8 +1254,6 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 }
 
 /* Operating model: the two landscape photos stack, so each is large enough to read. */
-.deck-pinned #space-operation .pair { flex-direction: column; max-width: calc((var(--media-h) - 60px) / 2 * 1.5); }
-.deck-pinned #space-operation .pair figure { flex: none; width: 100%; }
 
 /* Hero threads: while the drawing moves on by itself, a line fills under the thread
    in view (like the Selected work tabs). Gone once a thread is chosen. */
