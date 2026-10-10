@@ -204,6 +204,9 @@ h1, h2, h3 { margin: 0; font-family: var(--serif); font-weight: 380; font-optica
   .motion { grid-row: 1 / 4; align-self: end; }
   .motion-canvas { max-width: min(100%, calc(100svh - 240px)); }
   .hero-line { max-width: min(24rem, calc((100vw - 2 * var(--gutter)) * .278 - 1.25rem)); }
+  /* The eyebrow stays inside the left column, wrapping on narrower laptops, so it
+     never runs under the drawing or across the column rule. */
+  .hero-head .eyebrow { max-width: calc((100vw - 2 * var(--gutter)) * .278 - 1.25rem); }
   .motion-lines, .motion-notes, .motion-focus { display: block; }
   .notes-list { display: none; }
   .hero-threads, .hero-intro { align-self: end; }
