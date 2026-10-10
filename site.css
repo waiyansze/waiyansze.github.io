@@ -1011,11 +1011,6 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 .thread-steps > li > span { grid-row: 1 / 3; padding-top: .7em; font: 500 .75rem var(--sans); letter-spacing: .1em; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 .thread-steps h3 { font-size: clamp(1.9rem, 1.2rem + 2.4vw, 3.2rem); line-height: 1.02; letter-spacing: -.02em; font-weight: 340; }
 .thread-steps p { color: var(--ink-2); max-width: 30rem; }
-.thread-steps .thread-proof { grid-column: 2; list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 0; max-width: 22rem; border-top: 1px solid var(--rule); }
-.thread-proof li { display: grid; grid-template-columns: 5rem minmax(0, 1fr); align-items: baseline; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--rule); font-size: .8125rem; line-height: 1.4; color: var(--ink-2); transition: color .45s var(--ease); }
-.thread-proof b { font-weight: 500; font-size: .625rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
-.thread.is-live .thread-steps > li:not(.is-on) .thread-proof li { color: var(--ink-3); }
-@media (min-width: 900px) { .thread-steps .thread-proof { grid-column: auto; } }
 @media (min-width: 900px) {
   .thread-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(24px, 3vw, 48px); border-top: 0; }
   .thread-steps > li { grid-template-columns: minmax(0, 1fr); align-content: start; padding: 18px 0 0; border-top: 1px solid var(--rule-2); border-bottom: 0; }
