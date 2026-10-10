@@ -705,6 +705,29 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 .downstream li { display: grid; grid-template-columns: 5.4rem minmax(0, 1fr); gap: 10px; align-items: baseline; font-size: .8125rem; line-height: 1.4; color: var(--ink-2); }
 .downstream li span { font-weight: 500; color: var(--ink); }
 
+/* Customer enablement: onboarding path, then the self-service hub it hands over to.
+   The hub is drawn as a quiet browser frame: illustrative, unbranded, no screenshots. */
+.enable { container-type: inline-size; }
+.enable-path span { display: flex; align-items: center; gap: 6px; font: 500 .6875rem var(--sans); letter-spacing: .08em; color: var(--ink-3); }
+.enable-path span .ico { width: 15px; height: 15px; color: var(--ink-2); }
+.enable-path small { font-size: .75rem; }
+.hub { margin: 0; display: grid; gap: 10px; }
+.hub-bar { display: flex; align-items: center; gap: 5px; padding: 7px 10px; border: 1px solid var(--wash-line); border-bottom: 0; border-radius: 8px 8px 0 0; background: var(--sheet); font-size: .6875rem; letter-spacing: .04em; color: var(--ink-3); }
+.hub-bar i { width: 7px; height: 7px; border-radius: 50%; border: 1px solid var(--wash-line); }
+.hub-bar span { margin-left: 8px; }
+.hub-grid { list-style: none; margin: -10px 0 0; padding: 12px; display: grid; grid-template-columns: repeat(auto-fill, minmax(8.6rem, 1fr)); gap: 8px; border: 1px solid var(--wash-line); border-radius: 0 0 8px 8px; background: var(--sheet); }
+.hub-grid li { padding: 8px 10px; border: 1px solid var(--wash-line); border-radius: 6px; font: 400 .9375rem/1.2 var(--serif); }
+.run-vs { color: var(--ink-3); }
+.run-vs b { font: 400 1.3rem/1 var(--serif); color: var(--ink-2); margin-right: 4px; }
+@container (max-width: 520px) {
+  .enable .flow { grid-template-columns: 1fr 1fr; gap: 12px 18px; }
+  .enable .flow li:nth-child(2)::after { display: none; }
+}
+@media (max-height: 780px) {
+  .deck-pinned .enable .flow small { display: none; }  /* keep the page within one screen */
+  .deck-pinned .hub-grid li { padding: 6px 8px; font-size: .875rem; }
+}
+
 /* AI controls: two agents sharing one control pattern */
 .controls { container-type: inline-size; }
 /* Diagnosis: pick a step, see its evidence. */
@@ -965,6 +988,8 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 .thread-steps span { grid-row: 1 / 3; padding-top: .7em; font: 500 .75rem var(--sans); letter-spacing: .1em; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 .thread-steps h3 { font-size: clamp(1.9rem, 1.2rem + 2.4vw, 3.2rem); line-height: 1.02; letter-spacing: -.02em; font-weight: 340; }
 .thread-steps p { color: var(--ink-2); max-width: 30rem; }
+.thread-steps .thread-proof { grid-column: 2; margin-top: 6px; padding-top: 8px; border-top: 1px solid var(--rule); font-size: .8125rem; line-height: 1.5; color: var(--ink-3); }
+@media (min-width: 900px) { .thread-steps .thread-proof { grid-column: auto; } }
 @media (min-width: 900px) {
   .thread-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(24px, 3vw, 48px); border-top: 0; }
   .thread-steps li { grid-template-columns: minmax(0, 1fr); align-content: start; padding: 18px 0 0; border-top: 1px solid var(--rule-2); border-bottom: 0; }
