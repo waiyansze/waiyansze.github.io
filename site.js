@@ -666,7 +666,7 @@
      at a step holds it. Everything stays readable; reduced motion leaves it still. */
   const thread = document.querySelector('[data-thread]');
   if (thread && 'IntersectionObserver' in window && !reduceMotion.matches) {
-    const steps = [...thread.querySelectorAll('.thread-steps li')], DWELL = 3000;
+    const steps = [...thread.querySelectorAll('.thread-steps > li')], DWELL = 3000;
     let at = 0, timer = 0, held = false;
     thread.style.setProperty('--dwell', DWELL + 'ms');
     const show = k => steps.forEach((li, j) => li.classList.toggle('is-on', j === k));
