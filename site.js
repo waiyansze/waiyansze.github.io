@@ -236,15 +236,14 @@
           button.addEventListener('click', () => go(chapter.first + i));
           return button;
         });
-        const extra = [];
-        if (chapter.el.dataset.more) {
-          const more = document.createElement('button');
-          more.type = 'button';
-          more.className = 'index-more';
-          more.textContent = '+ More';
-          more.setAttribute('aria-label', `More detail from ${chapter.name}`);
-          more.addEventListener('click', () => openMore(chapter.el.dataset.more, more));
-          extra.push(more);
+        // The detail pages are named here too, so the reader can see what else there
+        // is without opening anything. Each opens the detail sheet at that page.
+        const extra = detailButtons(chapter);
+        if (extra.length) {
+          const label = document.createElement('span');
+          label.className = 'index-divider';
+          label.textContent = 'In detail';
+          extra.unshift(label);
         }
         indexNav.replaceChildren(...indexButtons, ...extra);
         indexNav.setAttribute('aria-label', `${chapter.name} pages`);
@@ -283,6 +282,34 @@
         scrollTrackTo(chapter, page.local, false);
       }
     }
+
+    // One button per page of a chapter's detail sheet, labelled by its data-short.
+    function detailButtons(chapter) {
+      const sheet = chapter.el.dataset.more && document.getElementById(chapter.el.dataset.more);
+      if (!sheet) return [];
+      return [...sheet.querySelectorAll('.more-page')].map(target => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'index-detail';
+        button.textContent = target.dataset.short || target.querySelector('h3')?.textContent.trim() || 'More';
+        button.setAttribute('aria-label', `${chapter.name} detail: ${button.textContent} (opens a panel)`);
+        button.setAttribute('aria-haspopup', 'dialog');
+        button.addEventListener('click', () => openMore(sheet.id, button, target));
+        return button;
+      });
+    }
+    // Swipe mode (phones, tablets, short windows): the same list sits under each chapter.
+    chapters.forEach(chapter => {
+      const buttons = detailButtons(chapter);
+      if (!buttons.length) return;
+      const row = document.createElement('nav');
+      row.className = 'chapter-detail';
+      row.setAttribute('aria-label', `${chapter.name} in detail`);
+      const label = document.createElement('span');
+      label.textContent = 'In detail';
+      row.append(label, ...buttons);
+      chapter.track.after(row);
+    });
 
     // Swipe mode: native horizontal tracks, one counter per chapter.
     function trackIndex(chapter) {
@@ -377,7 +404,7 @@
       // so arrow keys are never taken over elsewhere on the page.
       if (!isStuck() || !deck.contains(document.activeElement) || dialog.open || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
       if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-      if (event.target.closest('input, textarea, select, video, [role="tab"], [contenteditable="true"]')) return;
+      if (event.target.closest('input, textarea, select, video, [role="tab"], [contenteditable="true"], .reel-window')) return;
       event.preventDefault();
       go(current + (event.key === 'ArrowRight' ? 1 : -1));
     });
@@ -865,62 +892,33 @@
     addEventListener('resize', sizeOutlines);
   });
 
-  /* Brief & budget reel: the frames drift left without end (the set is repeated
-     once so the loop is seamless), about 40px a second, only while in view.
-     Pointing or focus holds it; Pause stops it; reduced motion leaves a plain
-     scrollable row. */
+  /* Brief & budget reel: a native horizontal row that snaps frame by frame, so a
+     trackpad swipe, a finger drag, the arrow keys and the arrow buttons all move
+     it. No autoplay: the reader sets the pace (WCAG 2.2.2), and nothing stops
+     moving under the pointer. The counter and arrow states follow the scroll. */
   document.querySelectorAll('[data-reel]').forEach(box => {
-    const track = box.querySelector('[data-reel-track]'), toggle = box.querySelector('[data-reel-toggle]');
-    const win = box.querySelector('.reel-window'), steps = [...box.querySelectorAll('[data-reel-step]')];
-    // Arrows move one frame at a time: the next frame's left edge comes to the window's left edge.
-    const frameStarts = () => { const k = [...track.children], o = k[0].offsetLeft; return k.map(el => el.offsetLeft - o); };
-    if (reduceMotion.matches) {
-      toggle.hidden = true;
-      steps.forEach(b => b.addEventListener('click', () => {
-        const d = Number(b.dataset.reelStep), xs = frameStarts(), cur = win.scrollLeft;
-        const to = d > 0 ? xs.find(v => v > cur + 2) : [...xs].reverse().find(v => v < cur - 2);
-        win.scrollLeft = to ?? (d > 0 ? 0 : xs[xs.length - 1]);
-      }));
-      return;
-    }
-    [...track.children].forEach(el => { const c = el.cloneNode(true); c.setAttribute('aria-hidden', 'true'); c.querySelectorAll('img').forEach(i => { i.alt = ''; i.removeAttribute('data-zoom'); }); track.append(c); });
-    let x = 0, last = 0, raf = 0, paused = false, held = false, inView = false;
-    const SPEED = 0.04;
-    let jump = null;   // { from, to, t0 } while an arrow move is running
-    const step = now => {
-      const dt = last ? Math.min(64, now - last) : 0; last = now;
-      const half = track.scrollWidth / 2;
-      if (jump) {
-        const k = Math.min(1, (now - jump.t0) / 450), e = 1 - Math.pow(1 - k, 3);
-        x = jump.from + (jump.to - jump.from) * e;
-        if (k === 1) jump = null;
-      } else if (running()) x += dt * SPEED;
-      x = ((x % half) + half) % (half || 1);
-      track.style.transform = `translateX(${-x}px)`;
-      raf = (running() || jump) ? requestAnimationFrame(step) : 0;
-    };
-    const running = () => inView && !paused && !held && !document.hidden;
-    const update = () => {
-      const run = running() || jump;
-      if (run && !raf) { last = 0; raf = requestAnimationFrame(step); }
-      if (!run && raf) { cancelAnimationFrame(raf); raf = 0; }
+    const win = box.querySelector('.reel-window'), track = box.querySelector('[data-reel-track]');
+    const steps = [...box.querySelectorAll('[data-reel-step]')], count = box.querySelector('[data-reel-count]');
+    const frames = [...track.children];
+    const starts = () => { const o = frames[0].offsetLeft; return frames.map(el => el.offsetLeft - o); };
+    const maxLeft = () => win.scrollWidth - win.clientWidth;
+    const at = () => { const xs = starts(), x = win.scrollLeft; let i = 0; xs.forEach((v, k) => { if (v <= x + 4) i = k; }); return x >= maxLeft() - 4 ? frames.length - 1 : i; };
+    const sync = () => {
+      const x = win.scrollLeft;
+      steps.forEach(b => { b.disabled = Number(b.dataset.reelStep) < 0 ? x <= 4 : x >= maxLeft() - 4; });
+      if (count) count.textContent = `${pad(at() + 1)} / ${pad(frames.length)}`;
     };
     steps.forEach(b => b.addEventListener('click', () => {
-      const d = Number(b.dataset.reelStep), xs = frameStarts();
-      const to = d > 0 ? xs.find(v => v > x + 2) : [...xs].reverse().find(v => v < x - 2);
-      const half = track.scrollWidth / 2;
-      jump = { from: x, to: to ?? (d > 0 ? x + half / 6 : x - half / 6), t0: performance.now() };
-      if (jump.to < 0) { x += half; jump.from += half; jump.to += half; }
-      update();
+      const d = Number(b.dataset.reelStep), xs = starts(), x = win.scrollLeft;
+      const to = d > 0 ? xs.find(v => v > x + 4) : [...xs].reverse().find(v => v < x - 4);
+      win.scrollTo({ left: to ?? (d > 0 ? maxLeft() : 0), behavior: reduceMotion.matches ? 'auto' : 'smooth' });
     }));
-    toggle.addEventListener('click', () => { paused = !paused; toggle.textContent = paused ? 'Play' : 'Pause'; toggle.setAttribute('aria-label', paused ? 'Play reel' : 'Pause reel'); update(); });
-    box.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') { held = true; update(); } });
-    box.addEventListener('pointerleave', () => { held = false; update(); });
-    box.addEventListener('focusin', () => { held = true; update(); });
-    box.addEventListener('focusout', e => { if (!box.contains(e.relatedTarget)) { held = false; update(); } });
-    document.addEventListener('visibilitychange', update);
-    if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { inView = e.isIntersecting; update(); }, { threshold: .3 }).observe(box);
-    else { inView = true; update(); }
+    let pending = 0;
+    win.addEventListener('scroll', () => { if (!pending) pending = requestAnimationFrame(() => { pending = 0; sync(); }); }, { passive: true });
+    // The page may be hidden (size 0) at load; measure again whenever it gets a size.
+    if ('ResizeObserver' in window) new ResizeObserver(sync).observe(win);
+    else addEventListener('resize', sync);
+    sync();
   });
 
   /* Founder slideshow: a cross-fade every few seconds while its page is the one in

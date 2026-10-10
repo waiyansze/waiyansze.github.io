@@ -21,8 +21,8 @@
   <title>Wai | Digital Operations, Enablement &amp; Business Systems</title>
   <link rel="preload" href="./assets/fonts/newsreader-roman.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="./assets/fonts/plex-sans-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="./site.css?v=enablement-1">
-  <script src="./site.js?v=enablement-1" defer></script>
+  <link rel="stylesheet" href="./site.css?v=enablement-2">
+  <script src="./site.js?v=enablement-2" defer></script>
 </head>
 <body>
 <!-- SITE:START -->
@@ -296,7 +296,6 @@
                     <div><dt>My role</dt><dd>Account validation · Onboarding communications · Self-service and ordering-channel guidance</dd></div>
                     <div><dt>Context</dt><dd>The eStore launched in 2021, before I joined. Effect on support contacts not measured.</dd></div>
                   </dl>
-                  <p class="more-link"><button type="button" data-more-open="systems-more">Explore the system map, order checks and data fixes <span aria-hidden="true">→</span></button></p>
                 </div>
               </section>
 
@@ -401,7 +400,6 @@
                     <div><dt>Owned</dt><dd>Membership, private hire, budgeting and cost control (QuickBooks), supplier contracts</dd></div>
                     <div><dt>Influenced</dt><dd>Shift to venue hire</dd></div>
                   </dl>
-                  <p class="more-link"><button type="button" data-more-open="space-more">More detail: Booking journey · Programmes <span aria-hidden="true">→</span></button></p>
                 </div>
               </section>
 
@@ -455,7 +453,7 @@
               <section class="page" id="flowers-brief" data-short="Brief & budget" aria-labelledby="flowers-brief-title">
                 <div class="page-media">
                   <div class="reel" data-reel role="region" aria-label="Commissions shaped to the brief and budget">
-                    <div class="reel-window">
+                    <div class="reel-window" tabindex="0" aria-label="Commissions, scroll sideways">
                       <div class="reel-track" data-reel-track>
                       <figure class="reel-item" style="--ar:0.750"><img loading="lazy" decoding="async" src="./assets/flowers-detail.webp" width="1080" height="1440" alt="Airy floral arrangement with trailing stems, pale flowers and sculptural branches" data-zoom><figcaption>Material scale · line, balance, selection</figcaption></figure>
                       <figure class="reel-item" style="--ar:1.505"><img loading="lazy" decoding="async" src="./assets/flowers-setting.webp" width="960" height="638" alt="Paired floral arrangements on tall stands in an arched event venue" data-zoom><figcaption>In the room · proportion and placement</figcaption></figure>
@@ -473,7 +471,7 @@
                       <figure class="reel-item" style="--ar:0.750"><img loading="lazy" decoding="async" src="./assets/flowers-blue-ceremony.webp" width="900" height="1200" alt="Tall columns and low clusters of blue hydrangea, gypsophila and yellow orchid around a candlelit table" data-zoom><figcaption>Ceremony backdrop · hydrangea and orchid</figcaption></figure>
                       </div>
                     </div>
-                    <div class="reel-bar"><button type="button" class="round-button" data-reel-step="-1" aria-label="Previous image">←</button><button type="button" class="round-button" data-reel-step="1" aria-label="Next image">→</button><button type="button" class="text-button" data-reel-toggle>Pause</button></div>
+                    <div class="reel-bar"><span class="reel-count" data-reel-count aria-hidden="true">01 / 14</span><button type="button" class="round-button" data-reel-step="-1" aria-label="Previous image">←</button><button type="button" class="round-button" data-reel-step="1" aria-label="Next image">→</button></div>
                   </div>
                 </div>
                 <div class="page-copy">
@@ -518,7 +516,6 @@
                   <p class="page-eyebrow">Proposal to installation</p>
                   <h3 id="flowers-senreve-title">Proposed, then delivered.</h3>
                   <p>Visual proposals set positions, scale, palette and materials before production, giving clients a clear reference for delivery. From a shop window to a product launch, the finished work closely followed the approved proposal.</p>
-                  <p class="more-link"><button type="button" data-more-open="flowers-more">More detail: Dior · Sulwhasoo · Installation · Wedding <span aria-hidden="true">→</span></button></p>
                 </div>
               </section>
 
@@ -543,7 +540,7 @@
         <p class="more-title" id="systems-more-title"><span>01</span> Systems <small>More detail</small></p>
         <button type="button" class="more-close" data-more-close>Close <span aria-hidden="true">×</span></button>
       </header>
-      <section class="more-page" id="systems-overview" aria-labelledby="systems-title">
+      <section class="more-page" id="systems-overview" data-short="System map" aria-labelledby="systems-title">
         <div class="page-media">
           <div class="graphic sysmap" data-sysmap>
             <div class="graphic-head">
@@ -622,7 +619,7 @@
         </div>
       </section>
 
-      <section class="more-page" id="precheck-case" aria-labelledby="quality-title">
+      <section class="more-page" id="precheck-case" data-short="Order quality" aria-labelledby="quality-title">
         <div class="page-media">
           <div class="graphic checkpoint">
             <div class="graphic-head">
@@ -659,7 +656,7 @@
         </div>
       </section>
 
-      <section class="more-page" id="visibility-case" aria-labelledby="visibility-title">
+      <section class="more-page" id="visibility-case" data-short="Data fixes" aria-labelledby="visibility-title">
         <div class="page-media">
           <div class="graphic fixes">
             <div class="graphic-head">
@@ -696,7 +693,7 @@
         <p class="more-title" id="space-more-title"><span>02</span> Space <small>More detail</small></p>
         <button type="button" class="more-close" data-more-close>Close <span aria-hidden="true">×</span></button>
       </header>
-      <section class="more-page" id="space-experience" aria-labelledby="space-experience-title">
+      <section class="more-page" id="space-experience" data-short="Booking journey" aria-labelledby="space-experience-title">
         <div class="page-media">
           <div class="graphic booking">
             <div class="graphic-head">
@@ -723,7 +720,7 @@
         </div>
       </section>
 
-      <section class="more-page" id="space-programmes" aria-labelledby="space-programmes-title">
+      <section class="more-page" id="space-programmes" data-short="Programmes" aria-labelledby="space-programmes-title">
         <div class="page-media">
           <div class="sheet sheet--six">
             <figure class="sheet-a">
@@ -767,7 +764,7 @@
         <p class="more-title" id="flowers-more-title"><span>03</span> Flowers <small>More detail</small></p>
         <button type="button" class="more-close" data-more-close>Close <span aria-hidden="true">×</span></button>
       </header>
-      <section class="more-page" id="flowers-dior" aria-labelledby="flowers-dior-title">
+      <section class="more-page" id="flowers-dior" data-short="Dior" aria-labelledby="flowers-dior-title">
         <div class="page-media">
           <div class="slides" data-slides role="region" aria-roledescription="carousel" aria-label="Dior fragrance lunch, from proposal to set-up">
             <div class="slides-frame">
@@ -796,7 +793,7 @@
         </div>
       </section>
 
-      <section class="more-page" id="flowers-sulwhasoo" aria-labelledby="flowers-sulwhasoo-title">
+      <section class="more-page" id="flowers-sulwhasoo" data-short="Sulwhasoo" aria-labelledby="flowers-sulwhasoo-title">
         <div class="page-media">
           <div class="slides" data-slides role="region" aria-roledescription="carousel" aria-label="Sulwhasoo VIP and press lunch">
             <div class="slides-frame">
@@ -823,7 +820,7 @@
         </div>
       </section>
 
-      <section class="more-page" id="flowers-onsite" aria-labelledby="flowers-onsite-title">
+      <section class="more-page" id="flowers-onsite" data-short="Installation" aria-labelledby="flowers-onsite-title">
         <div class="page-media">
           <div class="pair">
             <figure>
@@ -843,7 +840,7 @@
         </div>
       </section>
 
-      <section class="more-page" id="flowers-delivery" aria-labelledby="flowers-delivery-title">
+      <section class="more-page" id="flowers-delivery" data-short="Wedding" aria-labelledby="flowers-delivery-title">
         <div class="page-media">
           <div class="compare" data-compare>
             <div class="compare-tabs" role="tablist" aria-label="Choose part of the wedding">
