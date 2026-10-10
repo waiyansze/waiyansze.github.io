@@ -493,7 +493,8 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 .photo figcaption { font-size: .8125rem; color: var(--ink-3); }
 .photo figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 .deck-pinned .photo img { max-height: calc(var(--media-h) - 30px - var(--photo-extra, 0px)); }
-.deck-pinned #space-overview { --photo-extra: 104px; }
+/* Launch: the numerals sit with the copy, so the photo can use the full height. */
+.page-copy .numerals { margin-top: 22px; }
 
 .numerals { display: flex; flex-wrap: wrap; gap: 10px clamp(22px, 3vw, 48px); padding-top: 14px; border-top: 1px solid var(--rule); }
 .numerals div { display: flex; flex-direction: column-reverse; gap: 2px; }
