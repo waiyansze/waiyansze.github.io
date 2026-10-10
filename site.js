@@ -892,6 +892,25 @@
     addEventListener('resize', sizeOutlines);
   });
 
+  /* Customer enablement: on arrival the four onboarding steps light in order, then
+     the self-service hub fills tile by tile, so the page reads setup → independence
+     without extra words. Plays each time the page comes into view; reduced motion
+     shows the finished state. */
+  document.querySelectorAll('.enable').forEach(box => {
+    if (reduceMotion.matches) return;
+    const page = box.closest('.page');
+    [...box.querySelectorAll('.enable-path > li, .hub-grid > li')].forEach((el, i) => el.style.setProperty('--i', i));
+    let inView = false, shown = null;
+    const play = () => { box.classList.remove('is-playing'); void box.offsetWidth; box.classList.add('is-playing'); };
+    const check = () => {
+      const on = (page && root.classList.contains('deck-pinned')) ? page.classList.contains('is-active') : inView;
+      if (on && shown !== true) play();
+      shown = on;
+    };
+    if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { inView = e.isIntersecting; check(); }, { threshold: .5 }).observe(box);
+    if (page) new MutationObserver(check).observe(page, { attributes: true, attributeFilter: ['class'] });
+  });
+
   /* Brief & budget reel: a native horizontal row that snaps frame by frame, so a
      trackpad swipe, a finger drag, the arrow keys and the arrow buttons all move
      it. No autoplay: the reader sets the pace (WCAG 2.2.2), and nothing stops

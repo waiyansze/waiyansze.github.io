@@ -751,6 +751,13 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
   .deck-pinned .hub-grid li { padding: 6px 8px; font-size: .875rem; }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .enable.is-playing .enable-path > li { animation: enable-step .5s var(--ease) both; animation-delay: calc(var(--i) * 280ms); }
+  .enable.is-playing .hub-grid > li { animation: enable-tile .45s var(--ease) both; animation-delay: calc(1.3s + (var(--i) - 4) * 110ms); }
+  @keyframes enable-step { from { opacity: .25; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes enable-tile { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+}
+
 /* AI controls: two agents sharing one control pattern */
 .controls { container-type: inline-size; }
 /* Diagnosis: pick a step, see its evidence. */

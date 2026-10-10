@@ -21,8 +21,8 @@
   <title>Wai | Digital Operations, Enablement &amp; Business Systems</title>
   <link rel="preload" href="./assets/fonts/newsreader-roman.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="./assets/fonts/plex-sans-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="./site.css?v=enablement-5">
-  <script src="./site.js?v=enablement-5" defer></script>
+  <link rel="stylesheet" href="./site.css?v=enablement-7">
+  <script src="./site.js?v=enablement-7" defer></script>
 </head>
 <body>
 <!-- SITE:START -->
@@ -125,12 +125,12 @@
                     </div>
                     <div class="diag">
                       <div class="diag-steps" role="tablist" aria-label="Steps of the investigation">
-                        <button type="button" role="tab" class="is-mine" data-diag="signal" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-signal"/></svg>Signal</span>Duplicate freight charge reported</button>
-                        <button type="button" role="tab" class="is-mine" data-diag="trace" aria-selected="true"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-trace"/></svg>Trace</span>Invoice, SAP and web order compared</button>
-                        <button type="button" role="tab" class="is-mine" data-diag="scope" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-scope"/></svg>Scope</span>½ of a month’s orders affected</button>
-                        <button type="button" role="tab" class="is-mine" data-diag="contain" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-contain"/></svg>Contain</span>Incident raised, teams brought in</button>
-                        <button type="button" role="tab" class="is-mine" data-diag="correct" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-correct"/></svg>Correct</span>Customers told, records corrected</button>
-                        <button type="button" role="tab" class="is-other" data-diag="specialists" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-people"/></svg>Specialist teams</span>Root cause and prevention</button>
+                        <button type="button" role="tab" class="is-mine" data-diag="signal" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-signal"/></svg>Signal</span>Charged twice</button>
+                        <button type="button" role="tab" class="is-mine" data-diag="trace" aria-selected="true"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-trace"/></svg>Trace</span>3 records compared</button>
+                        <button type="button" role="tab" class="is-mine" data-diag="scope" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-scope"/></svg>Scope</span>½ a month’s orders</button>
+                        <button type="button" role="tab" class="is-mine" data-diag="contain" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-contain"/></svg>Contain</span>Teams brought in</button>
+                        <button type="button" role="tab" class="is-mine" data-diag="correct" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-correct"/></svg>Correct</span>Records fixed</button>
+                        <button type="button" role="tab" class="is-other" data-diag="specialists" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-people"/></svg>Specialists</span>Root cause</button>
                       </div>
                       <div class="diag-stage" aria-live="polite">
                         <div class="diag-panel" role="tabpanel" data-panel="signal" hidden>
@@ -138,7 +138,7 @@
                           <div class="doc doc--note"><p class="doc-name">Customer</p><p>“We’ve been charged for delivery twice.”</p></div>
                         </div>
                         <div class="diag-panel" role="tabpanel" data-panel="trace">
-                          <p class="diag-lead">Comparing the three records revealed an additional freight line in SAP. The timing pointed to a recent SAP change.</p>
+                          <p class="diag-lead">SAP had an extra freight line.</p>
                           <div class="docs" role="img" aria-label="Three records side by side. The web order has one freight line. SAP has an additional freight line, marked. The invoice charges freight twice.">
                             <div class="doc"><p class="doc-name">Adobe Commerce</p><p class="doc-row">Items</p><p class="doc-row">Freight</p></div>
                             <div class="doc doc--hit"><p class="doc-name">SAP order</p><p class="doc-row">Items</p><p class="doc-row">Freight</p><p class="doc-row doc-row--extra">Freight <em>extra line</em></p></div>
@@ -146,7 +146,7 @@
                           </div>
                         </div>
                         <div class="diag-panel" role="tabpanel" data-panel="scope" hidden>
-                          <p class="diag-lead"><b>½</b> of a month’s eStore orders affected; about 1 in 4 of them already invoiced.</p>
+                          <p class="diag-lead"><b>½</b> a month’s orders affected; 1 in 4 already invoiced.</p>
                           <div class="share" role="img" aria-label="Bar showing one month of eStore orders: about half affected, and about a quarter of the affected orders already invoiced.">
                             <div class="share-bar"><i class="sk-inv" style="--w: 12%" title="Already invoiced: about 1 in 4 affected orders"></i><i class="sk-aff" style="--w: 38%" title="Not yet invoiced: about 3 in 4 affected orders"></i><i class="sk-rest" title="Unaffected"></i></div>
                             <div class="share-scale" aria-hidden="true"><span class="at-half">½</span><span class="at-end">1 month</span></div>
@@ -154,22 +154,18 @@
                           </div>
                         </div>
                         <div class="diag-panel" role="tabpanel" data-panel="contain" hidden>
-                          <p class="diag-lead">I raised the incident, brought in the relevant teams and coordinated the handling of affected orders.</p>
+                          <p class="diag-lead">I raised the incident and coordinated the response.</p>
                           <div class="split">
-                            <div class="split-mine"><p class="split-name">Operational response · Me</p><p>Establish the impact, validate the evidence, communicate with customers, coordinate or carry out order corrections.</p></div>
-                            <div class="split-other"><p class="split-name">Technical investigation · Specialists</p><p>The underlying integration issue, the permanent fix and prevention.</p></div>
+                            <div class="split-mine"><p class="split-name">Me</p><p>Impact, evidence, customers, corrections</p></div>
+                            <div class="split-other"><p class="split-name">Specialists</p><p>Root cause, fix, prevention</p></div>
                           </div>
                         </div>
                         <div class="diag-panel" role="tabpanel" data-panel="correct" hidden>
-                          <p class="diag-lead">I informed customers, kept sample orders for the investigation and corrected the remaining affected records in SAP.</p>
-                          <p class="diag-outcome"><span>Outcome</span>Affected orders identified and corrected while normal eStore ordering continued. The permanent fix sat with the specialist teams.</p>
+                          <p class="diag-lead">Customers told, records corrected in SAP.</p>
+                          <p class="diag-outcome"><span>Outcome</span>Ordering never stopped.</p>
                         </div>
                         <div class="diag-panel" role="tabpanel" data-panel="specialists" hidden>
-                          <p class="diag-lead">The SAP and integration teams investigated the underlying issue, implemented the permanent fix and owned prevention.</p>
-                          <div class="split">
-                            <div class="split-other"><p class="split-name">Specialist teams</p><p>Root cause, permanent fix and prevention.</p></div>
-                            <div class="split-mine"><p class="split-name">My contribution</p><p>The affected-order scope, linked evidence and sample orders to support the investigation.</p></div>
-                          </div>
+                          <p class="diag-lead">SAP and integration teams owned the root cause and the fix. I gave them the scope and sample orders.</p>
                         </div>
                       </div>
                     </div>
@@ -179,11 +175,7 @@
                 <div class="page-copy">
                   <p class="page-eyebrow">Cross-system diagnosis</p>
                   <h3 id="diagnosis-title">One complaint, traced to half a month’s orders.</h3>
-                  <p>I traced a duplicate freight charge across the invoice, SAP and the Adobe Commerce order. I established the scope, coordinated the immediate response and corrected affected records while normal ordering continued.</p>
-                  <dl class="facts">
-                    <div><dt>My role</dt><dd>Investigation · Impact assessment · Customer communication · Operational corrections</dd></div>
-                    <div><dt>Specialists</dt><dd>Technical root-cause investigation and prevention</dd></div>
-                  </dl>
+                  <p>I traced a double freight charge across three systems, scoped it and fixed the records while ordering carried on.</p>
                 </div>
               </section>
 
@@ -204,7 +196,6 @@
                           <li class="is-mine"><button type="button" data-step="3" data-detail="Review exceptions and approve the output."><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-eye"/></svg>04</span>Human review</button></li>
                           <li><button type="button" data-step="4" data-detail="Submit the validated workbook and change log."><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-upload"/></svg>05</span>IT upload</button></li>
                         </ol>
-                        <p class="lane-out">Pricing workbook · Validation and exception report · Change log</p>
                       </div>
                       <div class="lane">
                         <p class="lane-name">Customer-data validation</p>
@@ -216,7 +207,6 @@
                           <li><button type="button" data-step="4" data-detail="Produce an action list matched to the source records."><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-reconcile"/></svg>05</span>Reconcile results</button></li>
                         </ol>
                         <div class="rec-strip" data-rec-strip aria-hidden="true"></div>
-                        <p class="lane-out">Validation report · Manual-review list · Reconciled action list</p>
                       </div>
                       <div class="step-detail" aria-live="polite" data-step-detail>
                         <p><span>Pricing</span><b data-detail-a>Review exceptions and approve the output.</b></p>
@@ -224,7 +214,7 @@
                       </div>
                       <div class="run">
                         <p class="run-figure"><b>1 in 25</b> customer records flagged for review on the first run</p>
-                        <p class="run-note">Most flags concerned price groups; others were storefront mismatches and personal email addresses to review.</p>
+                        
                       </div>
                     </div>
                     <div class="controls-view controls-rules" data-view="rules" hidden>
@@ -247,12 +237,7 @@
                 <div class="page-copy">
                   <p class="page-eyebrow">AI-enabled controls</p>
                   <h3 id="pricing-title">Turn business rules into repeatable checks.</h3>
-                  <p>I designed Copilot agents for key-account pricing and customer-data validation, translating business rules into checks, exception reports and reviewable outputs. Human review stays in each workflow before changes reach live systems.</p>
-                  <dl class="facts">
-                    <div><dt>My role</dt><dd>Business rules · Workflow design · Validation · Testing · Documentation</dd></div>
-                    <div><dt>Handover</dt><dd>I documented the customer-data validator and trained my manager to run it</dd></div>
-                  </dl>
-                  <p class="page-close">Repeatable checks, visible exceptions and human judgement.</p>
+                  <p>Two Copilot agents I designed check pricing and customer data. A person still approves every change. I trained my manager to run one.</p>
                 </div>
               </section>
 
@@ -264,10 +249,10 @@
                       <p class="seal-key"><i></i>My part</p>
                     </div>
                     <ol class="flow enable-path" aria-label="How a new B2B customer is brought onto the eStore, in four steps, all mine">
-                      <li class="is-mine"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>01</span><b>Validate</b><small>Account, billing, price group and product compatibility across ERP and CRM</small></li>
-                      <li class="is-mine"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-signal"/></svg>02</span><b>Activate</b><small>A tailored account-ready email with the details that customer needs</small></li>
-                      <li class="is-mine"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-clip"/></svg>03</span><b>First order</b><small>Previously ordered items added to Favourites for easy reordering</small></li>
-                      <li class="is-mine"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-doc"/></svg>04</span><b>Self-serve</b><small>A guide hub for everyday questions, without emailing the team</small></li>
+                      <li class="is-mine"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>01</span><b>Validate</b></li>
+                      <li class="is-mine"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-signal"/></svg>02</span><b>Activate</b></li>
+                      <li class="is-mine"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-clip"/></svg>03</span><b>First order</b></li>
+                      <li class="is-mine"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-doc"/></svg>04</span><b>Self-serve</b></li>
                     </ol>
                     <figure class="hub">
                       <p class="hub-bar" aria-hidden="true"><i></i><i></i><i></i><span>eStore guide · live self-service hub</span></p>
@@ -280,22 +265,18 @@
                         <li>Subscriptions</li>
                         <li>Account access</li>
                       </ul>
-                      <figcaption class="graphic-note">Grew from my illustrated PDF guide (2025) into a live page, plus ordering-channel guidance on when to self-serve and when to order with the team.</figcaption>
+                      <figcaption class="graphic-note">Started as my illustrated PDF guide.</figcaption>
                     </figure>
                     <div class="run">
                       <p class="run-figure"><b>36%</b> of UK orders placed online, Jan–Sep 2026 <span class="run-vs">vs <b>21%</b> across all markets</span></p>
-                      <p class="run-note">A team result for the UK eStore that my onboarding and guidance support, not a personal metric.</p>
+                      <p class="run-note">Team result, not mine alone.</p>
                     </div>
                   </div>
                 </div>
                 <div class="page-copy">
                   <p class="page-eyebrow">Customer enablement</p>
                   <h3 id="enablement-title">Make the system usable by the people who order.</h3>
-                  <p>I prepare each new B2B account across ERP and CRM records, then guide the customer to their first order. To keep them independent, I turned my illustrated guide into a live self-service hub for ordering, tracking, compatibility, quotations, subscriptions and account access.</p>
-                  <dl class="facts">
-                    <div><dt>My role</dt><dd>Account validation · Onboarding communications · Self-service and ordering-channel guidance</dd></div>
-                    <div><dt>Context</dt><dd>The eStore launched in 2021, before I joined. Effect on support contacts not measured.</dd></div>
-                  </dl>
+                  <p>I set up each new B2B account and guide the customer to their first order, then a self-service hub keeps them independent.</p>
                 </div>
               </section>
 
