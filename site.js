@@ -458,8 +458,13 @@
     root.style.overflow = 'hidden';
     if (!sheet.open) sheet.showModal();
     const inner = sheet.querySelector('.more-inner');
-    if (target) inner.scrollTop = target.offsetTop - inner.offsetTop - 12;
-    else inner.scrollTop = 0;
+    // Land the target page just below the sticky sheet header (its own top padding
+    // gives the breathing room), measured from the layout rather than guessed.
+    inner.scrollTop = 0;
+    if (target) {
+      const head = sheet.querySelector('.more-head');
+      inner.scrollTop = target.getBoundingClientRect().top - (head ? head.getBoundingClientRect().bottom : inner.getBoundingClientRect().top);
+    }
     sheet.querySelector('[data-more-close]').focus({ preventScroll: true });
     return true;
   }

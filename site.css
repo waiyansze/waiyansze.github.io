@@ -489,7 +489,9 @@ figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 .page-media img { border-radius: 3px; }
 
 .photo { display: grid; gap: 8px; justify-items: start; }
-.photo img { width: auto; max-height: min(58svh, 520px); }
+.photo img { width: auto; max-width: 100%; max-height: min(58svh, 520px); border-radius: 3px; }
+.photo figcaption { font-size: .8125rem; color: var(--ink-3); }
+.photo figcaption b { font-weight: 500; color: var(--ink); margin-right: 6px; }
 .deck-pinned .photo img { max-height: calc(var(--media-h) - 30px - var(--photo-extra, 0px)); }
 .deck-pinned #space-overview { --photo-extra: 104px; }
 
