@@ -83,7 +83,7 @@
       details.forEach(detail => { detail.hidden = detail.dataset.detail !== key; });
     };
     nodes.forEach(node => node.addEventListener('click', () => show(node.dataset.node)));
-    show('checks');
+    show((nodes.find(n => n.getAttribute('aria-pressed') === 'true') || nodes[0]).dataset.node);
   });
 
   /* 6 · Lightbox: any image marked data-zoom can be enlarged. --------------- */
@@ -422,7 +422,7 @@
 
     // Old links (from applications already sent) still land on the right page.
     const aliases = {
-      'work-viewer': 'freight-case', 'systems-case': 'freight-case', 'controls-detail': 'pricing-case',
+      'work-viewer': 'price-group-case', 'systems-case': 'price-group-case', 'controls-detail': 'pricing-case',
       'enso-case': 'space-overview', 'creative-case': 'flowers-overview',
       'space-build': 'space-plan', 'space-outcomes': 'space-programmes',
       'flowers-budget': 'flowers-brief', 'flowers-lane-crawford': 'flowers-senreve',
@@ -755,7 +755,7 @@
   }
   addEventListener('resize', () => document.querySelectorAll('[data-panel="trace"]:not([hidden])').forEach(playTrace));
 
-  document.querySelectorAll('[data-diagnosis]').forEach(box => {
+  document.querySelectorAll('[data-diagnosis]').forEach((box, boxIndex) => {
     const tabs = [...box.querySelectorAll('[data-diag]')];
     const panels = [...box.querySelectorAll('[data-panel]')];
     const seen = new Set();
@@ -770,7 +770,7 @@
       if (focus) tab.focus();
     };
     tabs.forEach((tab, i) => {
-      tab.id = tab.id || `diag-${tab.dataset.diag}`;
+      tab.id = tab.id || `diag-${boxIndex}-${tab.dataset.diag}`;   // unique when two graphics share the page
       box.querySelector(`[data-panel="${tab.dataset.diag}"]`)?.setAttribute('aria-labelledby', tab.id);
       tab.addEventListener('click', () => select(tab));
       tab.addEventListener('keydown', e => {
@@ -787,7 +787,8 @@
     // focusing the graphic holds it; choosing a step stops it; Replay runs it again.
     const replay = box.querySelector('[data-diag-replay]'), hint = box.querySelector('[data-diag-hint]');
     const page = box.closest('.page');
-    const DWELL = 4200, REST = tabs.findIndex(t => t.dataset.diag === 'trace');
+    // The loop settles on the evidence: data-rest names that step (default: trace).
+    const DWELL = 4200, REST = Math.max(0, tabs.findIndex(t => t.dataset.diag === (box.dataset.rest || 'trace')));
     let at = -1, t0 = 0, spent = 0, raf = 0, running = false, held = false, done = false, inView = false, idle = 0;
     const setP = (i, v) => tabs.forEach((t, k) => t.style.setProperty('--p', k === i ? v.toFixed(3) : '0'));
     const finish = settle => {
@@ -1117,9 +1118,10 @@
 
   /* 11 · Hero motion ---------------------------------------------------------
      Three drawings, in the site's order: Systems, Space, Flowers.
-     Systems is drawn flat: Adobe Commerce is the large black disc, the other
-     systems are grey discs joined by hairlines. SAP traffic passes my check,
-     and the Copilot agent's price drafts wait for review before they go in. The
+     Systems is drawn flat, as the data moves: SAP (the large black disc) releases
+     customer data through MDM to Adobe Commerce, Dynamics 365 and ServiceNow.
+     Storefront traffic passes my check, the Copilot agent's drafts wait for
+     review, and a red mark runs my trace back from the storefront to SAP. The
      lines then morph into the Ensō House plan, then dissolve: the arrangement
      is Wai's own ink sketch, revealed in the order she drew it (from its time-lapse).
      The cinnabar seal sits where the judgement happens in each. */
@@ -1145,7 +1147,7 @@
     const SEAL = css.getPropertyValue('--seal').trim() || '#a93a2c';
     const INK3 = css.getPropertyValue('--ink-3').trim() || '#5f645d';
     // One palette for both drawings: the flat tones of the Systems discs. Darker means
-    // more central: Adobe Commerce is the hub, and in Flowers the trunk plays that part.
+    // more central: SAP is where the data starts, and in Flowers the trunk plays that part.
     const TONES = { hub: '#1c1f1c', sap: '#4a4e4a', copilot: '#8e928d', servicenow: '#b6b9b5', dynamics: '#dcdedb' };
     const PAPER = css.getPropertyValue('--paper').trim() || '#ffffff';
 
@@ -1306,61 +1308,76 @@
     const WALK_GF = pathLen(GF.route) / WALK, STAIR = 1300, WALK_LG = pathLen(LG.route) / WALK, REST = 1600;
     // Systems and Space share twelve strokes, so each line has somewhere to go
     // when one morphs into the other. Order follows the site: Systems → Space → Flowers.
-    // Systems geometry. Dynamics, SAP and ServiceNow sit on one ring around
-    // Adobe Commerce: they also talk to each other directly. The Copilot agent
-    // (mine) sits outside the ring and connects only to Adobe Commerce.
-    const RING = 36, HUB_R = 15, SYS = {
-      cop: [86, 15, 6.5],
-      dyn: [50 + RING * Math.cos(200 * Math.PI / 180), 50 + RING * Math.sin(200 * Math.PI / 180), 9.5],
-      sap: [50 + RING * Math.cos(20 * Math.PI / 180), 50 + RING * Math.sin(20 * Math.PI / 180), 10],
-      sn: [50 + RING * Math.cos(115 * Math.PI / 180), 50 + RING * Math.sin(115 * Math.PI / 180), 6.5]
-    };
-    // A hairline from a disc's edge to the edge of the Adobe Commerce disc.
-    const hair = ([x, y, r]) => {
-      const dx = 50 - x, dy = 50 - y, d = Math.hypot(dx, dy);
-      return [[x + dx / d * r, y + dy / d * r], [50 - dx / d * HUB_R, 50 - dy / d * HUB_R]];
-    };
-    // An arc of the ring between two discs, trimmed at their edges (angles in degrees).
+    // Systems geometry, as the data actually moves: SAP is where customer data is
+    // maintained; MDM releases it to each platform (Adobe Commerce, Dynamics 365 CRM,
+    // ServiceNow). The Copilot agent (mine) checks the storefront's records. The arc
+    // is my trace: from where the problem surfaced, back to its source.
     const deg = Math.PI / 180;
-    const ringArc = (a0, r0, a1, r1) => arc(50, 50, RING, a0 * deg + r0 / RING, a1 * deg - r1 / RING, 40);
-    const PEER = [ringArc(200, SYS.dyn[2], 380, SYS.sap[2]), ringArc(20, SYS.sap[2], 115, SYS.sn[2]), ringArc(115, SYS.sn[2], 200, SYS.dyn[2])];
+    const SYS = {
+      sap: [22, 50, 13],
+      mdm: [50, 50, 7],
+      com: [78, 28, 10],
+      crm: [82, 57, 8],
+      sn: [72, 82, 6.5],
+      cop: [58, 12, 5.5]
+    };
+    // A hairline between two discs, trimmed at both edges.
+    const joint = ([x1, y1, r1], [x2, y2, r2]) => {
+      const dx = x2 - x1, dy = y2 - y1, d = Math.hypot(dx, dy);
+      return [[x1 + dx / d * r1, y1 + dy / d * r1], [x2 - dx / d * r2, y2 - dy / d * r2]];
+    };
+    const quad = (a, c, b, n = 40) => Array.from({ length: n + 1 }, (_, i) => {
+      const t = i / n, u1 = 1 - t; return [u1 * u1 * a[0] + 2 * u1 * t * c[0] + t * t * b[0], u1 * u1 * a[1] + 2 * u1 * t * c[1] + t * t * b[1]];
+    });
+    const edge = ([x, y, r], a) => [x + r * Math.cos(a * deg), y + r * Math.sin(a * deg)];
+    const LINKS = {
+      sapMdm: joint(SYS.sap, SYS.mdm), com: joint(SYS.mdm, SYS.com), crm: joint(SYS.mdm, SYS.crm),
+      sn: joint(SYS.mdm, SYS.sn), cop: joint(SYS.cop, SYS.com)
+    };
+    const TRACE = quad(edge(SYS.com, 200), [46, 22], edge(SYS.sap, -40));   // storefront → back to SAP
     const mid = ([a, b]) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
     const states = [
-      { // Systems, drawn flat: Adobe Commerce is the large black disc everything
-        // radiates from; the other systems are solid grey discs of different sizes,
-        // joined by hairlines. Seal red is the only colour: my check and my agent.
+      { // Systems, drawn flat: SAP is the large black disc the data starts from; MDM
+        // passes it on; the platforms are grey discs of different sizes, joined by
+        // hairlines. Seal red is the only colour: my check, my agent, my trace.
+        // Stroke order (used by the flow and by pointing): 0 SAP, 1 Copilot, 2 CRM,
+        // 3 Adobe Commerce, 4 ServiceNow, 5 agent line, 6–8 MDM → CRM / Commerce /
+        // ServiceNow, 9 MDM, 10 SAP → MDM, 11 the trace back.
         strokes: [
-          ellipse(50, 50, HUB_R, HUB_R),                                               // Adobe Commerce
+          ellipse(SYS.sap[0], SYS.sap[1], SYS.sap[2], SYS.sap[2]),                     // SAP
           ellipse(SYS.cop[0], SYS.cop[1], SYS.cop[2], SYS.cop[2]),                     // Copilot agent
-          ellipse(SYS.dyn[0], SYS.dyn[1], SYS.dyn[2], SYS.dyn[2]),                     // Dynamics 365
-          ellipse(SYS.sap[0], SYS.sap[1], SYS.sap[2], SYS.sap[2]),                     // SAP ERP
+          ellipse(SYS.crm[0], SYS.crm[1], SYS.crm[2], SYS.crm[2]),                     // Dynamics 365 CRM
+          ellipse(SYS.com[0], SYS.com[1], SYS.com[2], SYS.com[2]),                     // Adobe Commerce
           ellipse(SYS.sn[0], SYS.sn[1], SYS.sn[2], SYS.sn[2]),                         // ServiceNow
-          hair(SYS.cop), hair(SYS.dyn), hair(SYS.sap), hair(SYS.sn),                   // into Adobe Commerce
-          ...PEER                                                                      // and to each other
+          LINKS.cop, LINKS.crm, LINKS.com, LINKS.sn,                                   // agent → Commerce; MDM → platforms
+          ellipse(SYS.mdm[0], SYS.mdm[1], SYS.mdm[2], SYS.mdm[2]),                     // MDM
+          LINKS.sapMdm,                                                                // SAP → MDM
+          TRACE                                                                        // my trace, back to SAP
         ],
-        build: [[.14, .3], [.56, .66], [.36, .48], [.42, .54], [.5, .6], [.3, .5], [.22, .42], [.26, .46], [.34, .54], [.6, .8], [.64, .84], [.68, .88]],
+        build: [[0, .18], [.62, .72], [.46, .58], [.42, .54], [.5, .62], [.68, .8], [.34, .48], [.3, .44], [.38, .52], [.2, .32], [.12, .26], [.78, .98]],
         buildTime: 2800,
-        discs: [[50, 50, HUB_R, TONES.hub, 0], [...SYS.cop, TONES.copilot, 1], [...SYS.dyn, TONES.dynamics, 2], [...SYS.sap, TONES.sap, 3], [...SYS.sn, TONES.servicenow, 4]],
+        discs: [[...SYS.sap, TONES.hub, 0], [...SYS.mdm, TONES.sap, 9], [...SYS.com, TONES.copilot, 3], [...SYS.crm, TONES.dynamics, 2], [...SYS.sn, TONES.servicenow, 4], [...SYS.cop, TONES.servicenow, 1]],
         inkLabels: true,
-        seal: mid(hair(SYS.sap)),                                                      // my check, between Adobe Commerce and SAP
-        marks: [[SYS.cop[0] + 4.6, SYS.cop[1] - 4.6]],                                     // the agent is mine
+        seal: mid(LINKS.com),                                                          // my check, where the data reaches the storefront
+        marks: [[SYS.cop[0] + 4, SYS.cop[1] - 4]],                                     // the agent is mine
         notes: [
-          { at: [50 + RING * Math.cos(245 * deg), 50 + RING * Math.sin(245 * deg)], side: 'left', y: 34, title: 'Where systems disagree', text: 'Traced back to the source.' },
-          { at: [86, 15], fs: 20, side: 'right', y: 20, mine: true, title: 'AI, with sign-off', text: 'Copilot to cut manual work.' },
-          { at: mid(hair(SYS.sap)), side: 'right', y: 35, mine: true, title: 'Order accuracy', text: '1 in 10 need a product fix before processing.' }
+          { at: edge(SYS.sap, -110), side: 'left', y: 30, title: 'Master data', text: 'Kept in SAP, released by MDM.' },
+          { at: SYS.cop.slice(0, 2), fs: 20, side: 'right', y: 18, mine: true, title: 'AI, with sign-off', text: 'Checks before anyone changes data.' },
+          { at: mid(LINKS.com), side: 'right', y: 36, mine: true, title: 'Where data drifts', text: '1 in 8 price groups wrong; traced back to SAP.' }
         ],
-        // Pointing at a system brings forward what it is linked to (stroke indices
-        // as above: discs 0–4, hairlines 5–8, ring arcs 9–11) and its note, if any.
+        // Pointing at a system brings forward what it is linked to and its note, if any.
         nodes: [
-          { at: [50, 50], r: HUB_R, keep: [0, 1, 2, 3, 4, 5, 6, 7, 8], note: -1, label: 'Adobe Commerce · B2B storefront' },
-          { at: SYS.cop, r: SYS.cop[2], keep: [0, 1, 5], note: 1, label: 'Copilot agents · Checks for human review' },
-          { at: SYS.dyn, r: SYS.dyn[2], keep: [0, 2, 3, 4, 6, 9, 11], note: 0, label: 'Dynamics 365 · Customer records' },
-          { at: SYS.sap, r: SYS.sap[2], self: 3, below: true, keep: [0, 2, 3, 4, 7, 9, 10], note: 2, label: 'SAP ERP · Orders and invoicing' },
-          { at: SYS.sn, r: SYS.sn[2], self: 4, below: true, keep: [0, 2, 3, 4, 8, 10, 11], note: 0, label: 'ServiceNow · Incidents and requests' }
+          { at: SYS.sap.slice(0, 2), r: SYS.sap[2], keep: [0, 9, 10, 11], note: 0, label: 'SAP ERP · Customer data maintained here' },
+          { at: SYS.mdm.slice(0, 2), r: SYS.mdm[2], keep: [0, 2, 3, 4, 6, 7, 8, 9, 10], note: 0, label: 'MDM · Releases data to each platform' },
+          { at: SYS.com.slice(0, 2), r: SYS.com[2], self: 3, below: true, keep: [0, 1, 3, 5, 7, 9, 10, 11], note: 2, label: 'Adobe Commerce · B2B storefront' },
+          { at: SYS.crm.slice(0, 2), r: SYS.crm[2], self: 2, below: true, keep: [2, 6, 9, 10, 0], note: -1, label: 'Dynamics 365 · CRM records' },
+          { at: SYS.sn.slice(0, 2), r: SYS.sn[2], self: 4, below: true, keep: [4, 8, 9, 10, 0], note: -1, label: 'ServiceNow · Incidents and requests' },
+          { at: SYS.cop.slice(0, 2), r: SYS.cop[2], keep: [1, 3, 5], note: 1, label: 'Copilot agents · Checks for human review' }
         ],
-        labels: [['Adobe Commerce', 50, 50.4, 0, 0, 1], ['Copilot agents', SYS.cop[0], SYS.cop[1] + 10.5, 0, 1], ['Dynamics 365', SYS.dyn[0], SYS.dyn[1] + 13.5, 0, 2],
-          ['SAP ERP', SYS.sap[0], SYS.sap[1] + 14, 0, 3], ['ServiceNow', SYS.sn[0], SYS.sn[1] + 10.5, 0, 4]],
-        hold: 6200, text: 'Orders and pricing moving through connected systems.', href: '#systems-case', flow: true
+        labels: [['SAP ERP', SYS.sap[0], SYS.sap[1] + .4, 0, 0, 1], ['MDM', SYS.mdm[0], SYS.mdm[1] + 11, 0, 9],
+          ['Adobe Commerce', SYS.com[0], SYS.com[1] + 14.5, 0, 3], ['Dynamics 365', SYS.crm[0], SYS.crm[1] + 12, 0, 2],
+          ['ServiceNow', SYS.sn[0], SYS.sn[1] + 10.5, 0, 4], ['Copilot agents', SYS.cop[0] - 17, SYS.cop[1] + .4, 0, 1]],
+        hold: 6200, text: 'Customer data released from SAP to every platform.', href: '#systems-case', flow: true
       },
       { // Space: Ensō House, from Wai's own plans. A red dot takes the visitor's route:
         // in at the front steps, a lap of the gallery, down the stair; the ground floor
@@ -1605,7 +1622,7 @@
         sealT = t;
       }
 
-      // Systems running: records flow along the spokes into Adobe Commerce.
+      // Systems running: records flow from SAP through MDM to each platform.
       let pulse = 0;
       if (B.flow && flowAlpha > 0) pulse = drawFlow(now, flowAlpha, k);
 
@@ -1614,7 +1631,7 @@
       const S0 = A.seal, S1 = B.seal;
       const sx = (S0[0] + (S1[0] - S0[0]) * sealT) * k, sy = (S0[1] + (S1[1] - S0[1]) * sealT) * k;
       const sealSize = size * .034 * sealScale;
-      const sealAlpha = B.flow ? emph(7) : 1;   // on Systems the seal sits on the SAP hairline
+      const sealAlpha = B.flow ? emph(7) : 1;   // on Systems the seal sits on the MDM → storefront hairline
       if (sealSize > 0) {
         ctx.globalAlpha = sealAlpha; ctx.fillStyle = SEAL;
         if (B.sealDot) { ctx.beginPath(); ctx.arc(sx, sy, sealSize * .42, 0, Math.PI * 2); ctx.fill(); }
@@ -1628,60 +1645,62 @@
       }
     }
 
-    // Traffic into the hub: records leave Dynamics, SAP and ServiceNow and travel
-    // the hairline into Adobe Commerce; about 1 in 3 from SAP waits at my check.
-    // Between them, records also move round the ring without Adobe Commerce.
-    // The agent's price drafts arrive hollow, pause for review and are filled in.
-    const SPOKES = [hair(SYS.dyn), hair(SYS.sap), hair(SYS.sn)];
-    const AGENT = hair(SYS.cop);
-    const SPAWN = 560, SPEED = 0.0075; // units per ms
+    // Traffic: records leave SAP, pass MDM and fan out to the three platforms. About
+    // 1 in 3 bound for the storefront waits at my check. The agent's drafts arrive
+    // hollow, pause for review and are filled in. Now and then a red mark runs the
+    // trace back from the storefront to SAP: where I followed the problem.
     const segLen = ([a, b]) => Math.hypot(b[0] - a[0], b[1] - a[1]);
-    const CHECK_AT = segLen(SPOKES[1]) / 2;
     const along = ([a, b], d) => {
       const len = segLen([a, b]);
       if (d > len) return null;
       const t = d / len; return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
     };
+    const SPOKES = [LINKS.crm, LINKS.com, LINKS.sn];       // strokes 6, 7, 8
+    const TRUNK = LINKS.sapMdm, TRUNK_LEN = segLen(TRUNK), MDM_GAP = SYS.mdm[2] * 2;   // across the MDM disc
+    const AGENT = LINKS.cop;
+    const SPAWN = 560, SPEED = 0.0075; // units per ms
+    const CHECK_AT = segLen(SPOKES[1]) / 2;
+    const traceLen = TRACE.reduce((sum, p, i) => i ? sum + Math.hypot(p[0] - TRACE[i - 1][0], p[1] - TRACE[i - 1][1]) : 0, 0);
     function drawFlow(now, alpha, k) {
       if (alpha <= 0) return 0;
       const t0 = now - flowStart;
       let pulse = 0;
-      for (let n = Math.max(0, Math.floor((t0 - 6000) / SPAWN)); n * SPAWN <= t0; n++) {
+      const dot = (p, a, r, color) => { ctx.globalAlpha = a; ctx.fillStyle = color; ctx.beginPath(); ctx.arc(p[0] * k, p[1] * k, r, 0, Math.PI * 2); ctx.fill(); };
+      for (let n = Math.max(0, Math.floor((t0 - 7000) / SPAWN)); n * SPAWN <= t0; n++) {
         const which = n % 3, age = t0 - n * SPAWN;
         let dist = age * SPEED;
+        if (dist <= TRUNK_LEN) { dot(along(TRUNK, dist), alpha * emph(10), Math.max(2.2, size * .0075), INK); continue; }
+        dist -= TRUNK_LEN + MDM_GAP;                         // through MDM, then out along a spoke
+        if (dist < 0) continue;
         if (which === 1 && Math.floor(n / 3) % 3 === 1 && dist > CHECK_AT) {   // held at the check
           const HOLD = 1100, waited = (dist - CHECK_AT) / SPEED;
           if (waited < HOLD) { dist = CHECK_AT; pulse = Math.max(pulse, 1 - waited / HOLD); }
           else dist = CHECK_AT + (waited - HOLD) * SPEED;
         }
         const p = along(SPOKES[which], dist);
-        if (!p) continue;
-        ctx.globalAlpha = alpha * emph(6 + which);
-        ctx.fillStyle = INK;
-        ctx.beginPath(); ctx.arc(p[0] * k, p[1] * k, Math.max(2.2, size * .0075), 0, Math.PI * 2); ctx.fill();
+        if (p) dot(p, alpha * emph(6 + which), Math.max(2.2, size * .0075), INK);
       }
-      // Peer traffic: the systems also exchange records directly, round the ring.
-      ctx.fillStyle = INK3;
-      PEER.forEach((route, i) => {
-        const PEER_EVERY = 1700, V = 0.00045;                                   // share of the arc per ms
-        for (let n = Math.max(0, Math.floor((t0 - 3000) / PEER_EVERY)); n * PEER_EVERY <= t0; n++) {
-          let f = (t0 - n * PEER_EVERY - i * 500) * V;
-          if (f < 0 || f > 1) continue;
-          if (n % 2) f = 1 - f;                                                  // both directions
-          const q = route[Math.min(route.length - 1, Math.round(f * (route.length - 1)))];
-          ctx.globalAlpha = alpha * .9 * emph(9 + i);
-          ctx.beginPath(); ctx.arc(q[0] * k, q[1] * k, Math.max(1.8, size * .006), 0, Math.PI * 2); ctx.fill();
+      // The trace: one red mark from the storefront back to SAP, every few seconds.
+      const TRACE_EVERY = 5200, TRACE_V = 0.012;
+      const age = (t0 - 2500) % TRACE_EVERY, d = age * TRACE_V;
+      if (t0 > 2500 && d <= traceLen) {
+        let left = d, q = TRACE[TRACE.length - 1];
+        for (let i = 1; i < TRACE.length; i++) {
+          const L = Math.hypot(TRACE[i][0] - TRACE[i - 1][0], TRACE[i][1] - TRACE[i - 1][1]);
+          if (left <= L) { const t = L ? left / L : 0; q = [TRACE[i - 1][0] + (TRACE[i][0] - TRACE[i - 1][0]) * t, TRACE[i - 1][1] + (TRACE[i][1] - TRACE[i - 1][1]) * t]; break; }
+          left -= L;
         }
-      });
-      const PRICE_EVERY = 2400, REVIEW = 800, len = segLen(AGENT), mid = len / 2, V = 0.006;
+        dot(q, alpha * .95 * emph(11), Math.max(2.4, size * .008), SEAL);
+      }
+      const PRICE_EVERY = 2400, REVIEW = 800, len = segLen(AGENT), half = len / 2, V = 0.006;
       for (let n = Math.max(0, Math.floor((t0 - 6000) / PRICE_EVERY)); n * PRICE_EVERY <= t0; n++) {
-        let d = (t0 - n * PRICE_EVERY) * V, approved = false, reviewing = 0;
-        if (d > mid) {
-          const waited = (d - mid) / V;
-          if (waited < REVIEW) { d = mid; reviewing = waited / REVIEW; approved = reviewing > .55; }
-          else { d = mid + (waited - REVIEW) * V; approved = true; }
+        let d2 = (t0 - n * PRICE_EVERY) * V, approved = false, reviewing = 0;
+        if (d2 > half) {
+          const waited = (d2 - half) / V;
+          if (waited < REVIEW) { d2 = half; reviewing = waited / REVIEW; approved = reviewing > .55; }
+          else { d2 = half + (waited - REVIEW) * V; approved = true; }
         }
-        const p = along(AGENT, d);
+        const p = along(AGENT, d2);
         if (!p) continue;
         const sq = Math.max(7, size * .017), x = p[0] * k - sq / 2, top = p[1] * k - sq / 2;
         ctx.globalAlpha = alpha * emph(5);

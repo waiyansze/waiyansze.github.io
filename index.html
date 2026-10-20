@@ -21,8 +21,8 @@
   <title>Wai | Digital Operations, Enablement &amp; Business Systems</title>
   <link rel="preload" href="./assets/fonts/newsreader-roman.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="./assets/fonts/plex-sans-400.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="./site.css?v=enablement-13">
-  <script src="./site.js?v=enablement-13" defer></script>
+  <link rel="stylesheet" href="./site.css?v=dataflow-2">
+  <script src="./site.js?v=dataflow-2" defer></script>
 </head>
 <body>
 <!-- SITE:START -->
@@ -52,7 +52,7 @@
 
     <!-- One set of lines redraws itself: connected systems, a floor plan, an ikebana
          arrangement. Notes point at the part that was mine in each. -->
-    <figure class="motion" data-motion aria-label="A drawing that changes from connected systems (Adobe Commerce, SAP, Dynamics 365, ServiceNow and Copilot agents), to a floor plan, to a flower arrangement, with notes on each. Pointing at the drawing holds it and shows how each part connects.">
+    <figure class="motion" data-motion aria-label="A drawing that changes from connected systems (customer data maintained in SAP and released through MDM to Adobe Commerce, Dynamics 365 and ServiceNow, with Copilot agents checking the storefront), to a floor plan, to a flower arrangement, with notes on each. Pointing at the drawing holds it and shows how each part connects.">
       <div class="motion-canvas">
         <canvas aria-hidden="true"></canvas>
         <svg class="motion-lines" data-motion-lines viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
@@ -116,56 +116,52 @@
             </header>
             <div class="track" data-track>
 
-              <section class="page" id="freight-case" data-short="Diagnosis" aria-labelledby="diagnosis-title">
+              <section class="page" id="price-group-case" data-short="Diagnosis" aria-labelledby="pricegroup-title">
                 <div class="page-media">
-                  <div class="graphic diagnosis" data-diagnosis>
+                  <div class="graphic diagnosis" data-diagnosis data-rest="trace">
                     <div class="graphic-head">
-                      <p class="graphic-kicker">From one complaint to a coordinated response</p>
-                      <p class="seal-key"><i></i>My investigation and response</p>
+                      <p class="graphic-kicker">From a data check to the source</p>
+                      <p class="seal-key"><i></i>My investigation</p>
                     </div>
                     <div class="diag">
                       <div class="diag-steps" role="tablist" aria-label="Steps of the investigation">
-                        <button type="button" role="tab" class="is-mine" data-diag="signal" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-signal"/></svg>Signal</span>Charged twice</button>
-                        <button type="button" role="tab" class="is-mine" data-diag="trace" aria-selected="true"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-trace"/></svg>Trace</span>3 records compared</button>
-                        <button type="button" role="tab" class="is-mine" data-diag="scope" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-scope"/></svg>Scope</span>½ a month’s orders</button>
-                        <button type="button" role="tab" class="is-mine" data-diag="contain" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-contain"/></svg>Contain</span>Teams brought in</button>
-                        <button type="button" role="tab" class="is-mine" data-diag="correct" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-correct"/></svg>Correct</span>Records fixed</button>
-                        <button type="button" role="tab" class="is-other" data-diag="specialists" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-people"/></svg>Specialists</span>Root cause</button>
+                        <button type="button" role="tab" class="is-mine" data-diag="find" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Find</span>1 in 8 wrong</button>
+                        <button type="button" role="tab" class="is-mine" data-diag="fix" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-correct"/></svg>Fix</span>All corrected</button>
+                        <button type="button" role="tab" class="is-mine" data-diag="recur" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-reconcile"/></svg>Recur</span>Back within days</button>
+                        <button type="button" role="tab" class="is-mine" data-diag="trace" aria-selected="true"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-trace"/></svg>Trace</span>SAP → MDM → store</button>
+                        <button type="button" role="tab" class="is-other" data-diag="sap" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-people"/></svg>SAP team</span>Fix the flow</button>
                       </div>
                       <div class="diag-stage" aria-live="polite">
-                        <div class="diag-panel" role="tabpanel" data-panel="signal" hidden>
-                          <p class="diag-lead">A customer reported a duplicate freight charge.</p>
-                          <div class="doc doc--note"><p class="doc-name">Customer</p><p>“We’ve been charged for delivery twice.”</p></div>
+                        <div class="diag-panel" role="tabpanel" data-panel="find" hidden>
+                          <p class="diag-lead">My Copilot check flagged about <b>1 in 8</b> customer price groups as wrong.</p>
+                          <div class="share" role="img" aria-label="Bar showing all checked customer records: about one in eight had the wrong price group.">
+                            <div class="share-bar"><i class="sk-inv" style="--w: 12.5%" title="Wrong price group: about 1 in 8"></i><i class="sk-rest" title="Correct"></i></div>
+                            <div class="share-scale" aria-hidden="true"><span style="left: 12.5%; transform: translateX(-50%)">1 in 8</span><span class="at-end">All records checked</span></div>
+                            <p class="share-key" aria-hidden="true"><span><i class="sk-inv"></i>Wrong price group</span><span><i class="sk-rest"></i>Correct</span></p>
+                          </div>
+                        </div>
+                        <div class="diag-panel" role="tabpanel" data-panel="fix" hidden>
+                          <p class="diag-lead">Every flagged account was corrected.</p>
+                          <p class="diag-outcome"><span>Expected</span>Problem solved.</p>
+                        </div>
+                        <div class="diag-panel" role="tabpanel" data-panel="recur" hidden>
+                          <p class="diag-lead">Within days, some had switched back after SAP account updates.</p>
+                          <p class="diag-outcome"><span>So</span>Not a one-off clean-up. Something upstream was rewriting them.</p>
                         </div>
                         <div class="diag-panel" role="tabpanel" data-panel="trace">
-                          <p class="diag-lead">SAP had an extra freight line.</p>
-                          <div class="docs" role="img" aria-label="Three records side by side. The web order has one freight line. SAP has an additional freight line, marked. The invoice charges freight twice.">
-                            <div class="doc"><p class="doc-name">Adobe Commerce</p><p class="doc-row">Items</p><p class="doc-row">Freight</p></div>
-                            <div class="doc doc--hit"><p class="doc-name">SAP order</p><p class="doc-row">Items</p><p class="doc-row">Freight</p><p class="doc-row doc-row--extra">Freight <em>extra line</em></p></div>
-                            <div class="doc"><p class="doc-name">Invoice</p><p class="doc-row">Items</p><p class="doc-row">Freight</p><p class="doc-row doc-row--echo">Freight <em>charged twice</em></p></div>
+                          <p class="diag-lead">A routine billing update in SAP, released by MDM, appeared to reset the storefront price group.</p>
+                          <div class="docs" role="img" aria-label="Three systems side by side. In SAP, billing details are updated. MDM releases the record to each platform. In the storefront, the price group is reset to a default, removing the customer's prices and products.">
+                            <div class="doc"><p class="doc-name">SAP</p><p class="doc-row">Account</p><p class="doc-row doc-row--extra">Billing details <em>updated</em></p></div>
+                            <div class="doc"><p class="doc-name">MDM</p><p class="doc-row">Release</p><p class="doc-row">To each platform</p></div>
+                            <div class="doc doc--hit"><p class="doc-name">Storefront</p><p class="doc-row">Account</p><p class="doc-row doc-row--echo">Price group <em>reset to default</em></p></div>
                           </div>
                         </div>
-                        <div class="diag-panel" role="tabpanel" data-panel="scope" hidden>
-                          <p class="diag-lead"><b>½</b> a month’s orders affected; 1 in 4 already invoiced.</p>
-                          <div class="share" role="img" aria-label="Bar showing one month of eStore orders: about half affected, and about a quarter of the affected orders already invoiced.">
-                            <div class="share-bar"><i class="sk-inv" style="--w: 12%" title="Already invoiced: about 1 in 4 affected orders"></i><i class="sk-aff" style="--w: 38%" title="Not yet invoiced: about 3 in 4 affected orders"></i><i class="sk-rest" title="Unaffected"></i></div>
-                            <div class="share-scale" aria-hidden="true"><span class="at-half">½</span><span class="at-end">1 month</span></div>
-                            <p class="share-key" aria-hidden="true"><span><i class="sk-inv"></i>Already invoiced</span><span><i class="sk-aff"></i>Not yet invoiced</span><span><i class="sk-rest"></i>Unaffected</span></p>
-                          </div>
-                        </div>
-                        <div class="diag-panel" role="tabpanel" data-panel="contain" hidden>
-                          <p class="diag-lead">I raised the incident and coordinated the response.</p>
+                        <div class="diag-panel" role="tabpanel" data-panel="sap" hidden>
+                          <p class="diag-lead">Next: a meeting with the SAP team to fix the flow, not just the records.</p>
                           <div class="split">
-                            <div class="split-mine"><p class="split-name">Me</p><p>Impact, evidence, customers, corrections</p></div>
-                            <div class="split-other"><p class="split-name">Specialists</p><p>Root cause, fix, prevention</p></div>
+                            <div class="split-mine"><p class="split-name">Me</p><p>Evidence, validation report, customer impact</p></div>
+                            <div class="split-other"><p class="split-name">SAP team</p><p>Review the flow, warn eStore before changes, add alerts</p></div>
                           </div>
-                        </div>
-                        <div class="diag-panel" role="tabpanel" data-panel="correct" hidden>
-                          <p class="diag-lead">Customers told, records corrected in SAP.</p>
-                          <p class="diag-outcome"><span>Outcome</span>Ordering never stopped.</p>
-                        </div>
-                        <div class="diag-panel" role="tabpanel" data-panel="specialists" hidden>
-                          <p class="diag-lead">SAP and integration teams owned the root cause and the fix. I gave them the scope and sample orders.</p>
                         </div>
                       </div>
                     </div>
@@ -174,8 +170,8 @@
                 </div>
                 <div class="page-copy">
                   <p class="page-eyebrow">Cross-system diagnosis</p>
-                  <h3 id="diagnosis-title">One complaint, traced to half a month’s orders.</h3>
-                  <p>I traced a double freight charge across three systems, scoped it and fixed the records while ordering carried on.</p>
+                  <h3 id="pricegroup-title">Fixed records kept breaking, so I traced where.</h3>
+                  <p>My Copilot check found 1 in 8 price groups wrong. Some reverted after SAP updates, so I traced the flow and took it to the SAP team.</p>
                 </div>
               </section>
 
@@ -510,62 +506,62 @@
         <div class="page-media">
           <div class="graphic sysmap" data-sysmap>
             <div class="graphic-head">
-              <p class="graphic-kicker">The order journey · four connected systems</p>
-              <p class="seal-key"><i></i>My part</p>
+              <p class="graphic-kicker">How customer data moves · SAP to each platform</p>
+              <p class="seal-key"><i></i>Where I work</p>
             </div>
-            <ol class="journey" aria-label="Systems along the order journey. Select one to see what it holds and where my work touches it.">
+            <ol class="journey" aria-label="Customer data, from SAP through MDM to each platform. Select one to see what it holds and where my work touches it.">
               <li>
-                <span class="journey-label">Customer data</span>
-                <button type="button" class="sysnode" data-node="dynamics" aria-pressed="false"><b>Dynamics 365</b></button>
-              </li>
-              <li>
-                <span class="journey-label">Storefront</span>
-                <button type="button" class="sysnode" data-node="commerce" aria-pressed="false"><b>Adobe Commerce</b></button>
-              </li>
-              <li class="journey-me">
-                <span class="journey-label">Before processing</span>
-                <button type="button" class="sysnode sysnode--me" data-node="checks" aria-pressed="true"><b>Order checks</b></button>
-              </li>
-              <li>
-                <span class="journey-label">Order &amp; invoice</span>
+                <span class="journey-label">Source</span>
                 <button type="button" class="sysnode" data-node="sap" aria-pressed="false"><b>SAP ERP</b></button>
               </li>
               <li>
-                <span class="journey-label">Resolution</span>
+                <span class="journey-label">Release</span>
+                <button type="button" class="sysnode" data-node="mdm" aria-pressed="false"><b>MDM</b></button>
+              </li>
+              <li class="journey-me">
+                <span class="journey-label">Platform</span>
+                <button type="button" class="sysnode sysnode--me" data-node="commerce" aria-pressed="true"><b>Adobe Commerce</b></button>
+              </li>
+              <li>
+                <span class="journey-label">Platform</span>
+                <button type="button" class="sysnode" data-node="dynamics" aria-pressed="false"><b>Dynamics 365</b></button>
+              </li>
+              <li>
+                <span class="journey-label">Platform</span>
                 <button type="button" class="sysnode" data-node="servicenow" aria-pressed="false"><b>ServiceNow</b></button>
               </li>
             </ol>
             <div class="sysmap-details" aria-live="polite">
-              <div class="sysmap-detail" data-detail="checks">
-                <p class="detail-name">Order checks <span>My checkpoint</span></p>
+              <div class="sysmap-detail" data-detail="sap">
+                <p class="detail-name">SAP ERP <span>Maintained</span></p>
                 <dl>
-                  <div><dt>What happens</dt><dd>Billing, product compatibility, urgent arrangements, proforma and system information, before processing.</dd></div>
-                  <div><dt>My part</dt><dd>About 10% need a product-related correction at this checkpoint.</dd></div>
+                  <div><dt>Holds</dt><dd>Customer master data, orders and invoicing. Changes for every platform start here.</dd></div>
+                  <div><dt>My part</dt><dd>Tracing evidence when records conflict. Fixes sit with SAP teams.</dd></div>
                 </dl>
               </div>
-              <div class="sysmap-detail" data-detail="dynamics">
-                <p class="detail-name">Dynamics 365 <span>Customer data</span></p>
+              <div class="sysmap-detail" data-detail="mdm">
+                <p class="detail-name">MDM <span>Released</span></p>
                 <dl>
-                  <div><dt>Holds</dt><dd>Customer records used across ordering and billing.</dd></div>
-                  <div><dt>My part</dt><dd>Cleaned customer and price-group records; onboarding guidance.</dd></div>
+                  <div><dt>Holds</dt><dd>Releases SAP data to the storefront, CRM and ServiceNow.</dd></div>
+                  <div><dt>My part</dt><dd>Showed how a release can reset storefront price groups. Now with the SAP team.</dd></div>
                 </dl>
               </div>
               <div class="sysmap-detail" data-detail="commerce">
-                <p class="detail-name">Adobe Commerce <span>Storefront</span></p>
+                <p class="detail-name">Adobe Commerce <span>Where I work</span></p>
                 <dl>
-                  <div><dt>Holds</dt><dd>Orders, products and online pricing.</dd></div>
-                  <div><dt>My part</dt><dd>Order reviews; key-account pricing prepared for IT upload.</dd></div>
+                  <div><dt>Holds</dt><dd>Orders, products, online pricing and customer price groups.</dd></div>
+                  <div><dt>My part</dt><dd>Order checks before processing; Copilot checks of price groups and key-account pricing.</dd></div>
                 </dl>
               </div>
-              <div class="sysmap-detail" data-detail="sap">
-                <p class="detail-name">SAP ERP <span>Order &amp; invoice</span></p>
+              <div class="sysmap-detail" data-detail="dynamics">
+                <p class="detail-name">Dynamics 365 <span>CRM</span></p>
                 <dl>
-                  <div><dt>Holds</dt><dd>Order processing and invoicing.</dd></div>
-                  <div><dt>My part</dt><dd>Tracing evidence when exceptions appear. Fixes sit with SAP teams.</dd></div>
+                  <div><dt>Holds</dt><dd>Customer records used by sales and service.</dd></div>
+                  <div><dt>My part</dt><dd>Cleaned customer and price-group records; onboarding guidance.</dd></div>
                 </dl>
               </div>
               <div class="sysmap-detail" data-detail="servicenow">
-                <p class="detail-name">ServiceNow <span>Resolution</span></p>
+                <p class="detail-name">ServiceNow <span>Service</span></p>
                 <dl>
                   <div><dt>Holds</dt><dd>Issues and requests, routed to the team that owns them.</dd></div>
                   <div><dt>My part</dt><dd>Escalating with evidence and a clear next action.</dd></div>
@@ -576,12 +572,75 @@
         </div>
         <div class="page-copy">
           <p class="page-eyebrow">Overview</p>
-          <h3 id="systems-title">Keeping a connected order journey moving.</h3>
-          <p>Day-to-day operation of the UK eStore across Adobe Commerce, SAP ERP, Dynamics 365 and ServiceNow.</p>
+          <h3 id="systems-title">One source, several platforms.</h3>
+          <p>SAP holds the customer data; MDM releases it to the storefront, CRM and ServiceNow. I work where it reaches customers.</p>
           <dl class="facts">
-            <div><dt>Focus</dt><dd>Order quality · Diagnosis · Customer enablement · Workflow</dd></div>
+            <div><dt>Focus</dt><dd>Data quality · Diagnosis · Customer enablement · Order checks</dd></div>
           </dl>
           <p class="page-tip">Select a system on the map to see where my work touches it.</p>
+        </div>
+      </section>
+
+      <section class="more-page" id="freight-case" data-short="Freight charge" aria-labelledby="diagnosis-title">
+        <div class="page-media">
+          <div class="graphic diagnosis" data-diagnosis>
+            <div class="graphic-head">
+              <p class="graphic-kicker">From one complaint to a coordinated response</p>
+              <p class="seal-key"><i></i>My investigation and response</p>
+            </div>
+            <div class="diag">
+              <div class="diag-steps" role="tablist" aria-label="Steps of the investigation">
+                <button type="button" role="tab" class="is-mine" data-diag="signal" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-signal"/></svg>Signal</span>Charged twice</button>
+                <button type="button" role="tab" class="is-mine" data-diag="trace" aria-selected="true"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-trace"/></svg>Trace</span>3 records compared</button>
+                <button type="button" role="tab" class="is-mine" data-diag="scope" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-scope"/></svg>Scope</span>½ a month’s orders</button>
+                <button type="button" role="tab" class="is-mine" data-diag="contain" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-contain"/></svg>Contain</span>Teams brought in</button>
+                <button type="button" role="tab" class="is-mine" data-diag="correct" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-correct"/></svg>Correct</span>Records fixed</button>
+                <button type="button" role="tab" class="is-other" data-diag="specialists" aria-selected="false"><span><svg class="ico" aria-hidden="true" focusable="false"><use href="#i-people"/></svg>Specialists</span>Root cause</button>
+              </div>
+              <div class="diag-stage" aria-live="polite">
+                <div class="diag-panel" role="tabpanel" data-panel="signal" hidden>
+                  <p class="diag-lead">A customer reported a duplicate freight charge.</p>
+                  <div class="doc doc--note"><p class="doc-name">Customer</p><p>“We’ve been charged for delivery twice.”</p></div>
+                </div>
+                <div class="diag-panel" role="tabpanel" data-panel="trace">
+                  <p class="diag-lead">SAP had an extra freight line.</p>
+                  <div class="docs" role="img" aria-label="Three records side by side. The web order has one freight line. SAP has an additional freight line, marked. The invoice charges freight twice.">
+                    <div class="doc"><p class="doc-name">Adobe Commerce</p><p class="doc-row">Items</p><p class="doc-row">Freight</p></div>
+                    <div class="doc doc--hit"><p class="doc-name">SAP order</p><p class="doc-row">Items</p><p class="doc-row">Freight</p><p class="doc-row doc-row--extra">Freight <em>extra line</em></p></div>
+                    <div class="doc"><p class="doc-name">Invoice</p><p class="doc-row">Items</p><p class="doc-row">Freight</p><p class="doc-row doc-row--echo">Freight <em>charged twice</em></p></div>
+                  </div>
+                </div>
+                <div class="diag-panel" role="tabpanel" data-panel="scope" hidden>
+                  <p class="diag-lead"><b>½</b> a month’s orders affected; 1 in 4 already invoiced.</p>
+                  <div class="share" role="img" aria-label="Bar showing one month of eStore orders: about half affected, and about a quarter of the affected orders already invoiced.">
+                    <div class="share-bar"><i class="sk-inv" style="--w: 12%" title="Already invoiced: about 1 in 4 affected orders"></i><i class="sk-aff" style="--w: 38%" title="Not yet invoiced: about 3 in 4 affected orders"></i><i class="sk-rest" title="Unaffected"></i></div>
+                    <div class="share-scale" aria-hidden="true"><span class="at-half">½</span><span class="at-end">1 month</span></div>
+                    <p class="share-key" aria-hidden="true"><span><i class="sk-inv"></i>Already invoiced</span><span><i class="sk-aff"></i>Not yet invoiced</span><span><i class="sk-rest"></i>Unaffected</span></p>
+                  </div>
+                </div>
+                <div class="diag-panel" role="tabpanel" data-panel="contain" hidden>
+                  <p class="diag-lead">I raised the incident and coordinated the response.</p>
+                  <div class="split">
+                    <div class="split-mine"><p class="split-name">Me</p><p>Impact, evidence, customers, corrections</p></div>
+                    <div class="split-other"><p class="split-name">Specialists</p><p>Root cause, fix, prevention</p></div>
+                  </div>
+                </div>
+                <div class="diag-panel" role="tabpanel" data-panel="correct" hidden>
+                  <p class="diag-lead">Customers told, records corrected in SAP.</p>
+                  <p class="diag-outcome"><span>Outcome</span>Ordering never stopped.</p>
+                </div>
+                <div class="diag-panel" role="tabpanel" data-panel="specialists" hidden>
+                  <p class="diag-lead">SAP and integration teams owned the root cause and the fix. I gave them the scope and sample orders.</p>
+                </div>
+              </div>
+            </div>
+            <div class="diag-foot"><span class="diag-hint" data-diag-hint>Plays through each step · select one to stop</span><button type="button" class="text-button" data-diag-replay hidden>Replay</button></div>
+          </div>
+        </div>
+        <div class="page-copy">
+          <p class="page-eyebrow">Cross-system diagnosis</p>
+          <h3 id="diagnosis-title">One complaint, traced to half a month’s orders.</h3>
+          <p>I traced a double freight charge across three systems, scoped it and fixed the records while ordering carried on.</p>
         </div>
       </section>
 
